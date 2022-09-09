@@ -46,7 +46,7 @@ After your clone completes, [set up your checkout](/WebKit/WebKit/wiki/Contribut
 
 See [below](/WebKit/WebKit/wiki/Migration#webkit-patch) for how to deal with patches uploaded to bugzilla.
 
-## `webkit-patch`
+## webkit-patch
 
 While `Tools/Scripts/webkit-patch` is being replaced by `Tools/Scripts/git-webkit` for developement workflows, `webkit-patch` does continue to work on GitHub based checkouts. In particular:
 ```
@@ -58,7 +58,7 @@ Tools/Scripts/webkit-patch upload
 ```
 will upload local changes to the bugzilla bug mentioned in modified `ChangeLog` files, even if those local changes are committed to a pull request branch.
 
-## `webkit-patch` Reverse Look-up
+## webkit-patch Reverse Look-up
 
 The table bellow includes a number of common `webkit-patch` commands and their `git-webkit` equivalences.
 
