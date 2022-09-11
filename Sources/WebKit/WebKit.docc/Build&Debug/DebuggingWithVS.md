@@ -1,6 +1,6 @@
 # Debugging With Visual Studio
 
-Debugging With Visual Studio IDE
+Debugging with Visual Studio IDE
 
 ## Configuring Debugger 
 

@@ -1,10 +1,10 @@
 # Debugging With Xcode
 
-Debugging with the Xcode IDE
+Debugging with Xcode IDE
 
 ## Overview
 
-You can also use Xcode to build & debug WebKit. Open `WebKit.xcworkspace` at the top level directory.
+You can use Xcode to build & debug WebKit. Open `WebKit.xcworkspace` at the top level directory.
 
 In order to make Xcode use build files built by `make` command above,
 go to File > Workspace Settings... > Advanced... > Custom > Relative to Workspace
