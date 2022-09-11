@@ -30,7 +30,6 @@ A* a4 = a3.ptr();
 a4 = a2.get();
 ```
 
-
 Unlike C++‘s[`std::shared_ptr`](https://en.cppreference.com/w/cpp/memory/shared_ptr),
 the implementation of referencing counting is a part of a managed object.
 The requirements for an object to be used with `RefPtr` and `Ref` is as follows:
