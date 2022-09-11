@@ -4,24 +4,6 @@ The WebKit project outlines a simplified recommended setup. This section outline
 
 ## Remotes
 
-### Alternate Remotes
-
-The WebKit project currently has 5 different remotes:
-
-- [github.com/WebKit/WebKit](https://github.com/WebKit/WebKit)
-- [svn.webkit.org](https://svn.webkit.org/repository/webkit/)
-- [git.webkit.org (https)](https://git.webkit.org/?p=WebKit.git;a=summary)
-- [git.webkit.org (http)](https://git.webkit.org/?p=WebKit.git;a=summary)
-- [github.com/WebKit/WebKit-http](https://github.com/WebKit/WebKit-http)
-
-The first remote, [github.com/WebKit/WebKit](https://github.com/WebKit/WebKit), is an actively maintained `git` mirror of [svn.webkit.org](https://svn.webkit.org/repository/webkit/) that will soon become the canonical home of the WebKit project. We strongly recommend that all contributors use this remote for routine development.
-
-The second remote, [svn.webkit.org](https://svn.webkit.org/repository/webkit/), is the current canonical remote for the WebKit project. If a contributor is contributing to the WebKit project on a release branch, this is the remote they should be using. Note that this remote is Subversion, not git.
-
-[git.webkit.org (https)](https://git.webkit.org/?p=WebKit.git;a=summary) is a deprecated `git` mirror of [svn.webkit.org](https://svn.webkit.org/repository/webkit/). This mirror is maintained, but commit authorship is incorrect. This means that the shas of commits in this repository _do not_ match those from [github.com/WebKit/WebKit](https://github.com/WebKit/WebKit). This remote is sufficient for patch workflows, but contributors relying on it should migrate to [github.com/WebKit/WebKit](https://github.com/WebKit/WebKit) as we start using pull requests.
-
-[git.webkit.org (http)](https://git.webkit.org/?p=WebKit.git;a=summary) and [github.com/WebKit/WebKit-http](https://github.com/WebKit/WebKit-http) the same repository but served in different locations. This remote is no longer maintained and should not be relied on.
-
 ### Forking
 
 Since `git` is a decentralized version control system, a local copy can work with any remote that has the same set of shas. GitHub pull requests take advantage of this. After running [`git-webkit setup`](/WebKit/WebKit/wiki/Contributing#setup), the `.git/config` in the local WebKit repository should look something like this:
@@ -119,10 +101,6 @@ When creating or editing commit messages, `git` will invoke an external editor. 
 ### merge.*
 
 `git` does basic automatic conflict resolution, but certain types of files may be difficult to resolve with what `git` provides. Specifying a `merge.driver` for a category of files can help automatically resolve conflicts in these files when running `git` commands, most notable, `git pull`. This is most common with frequently changing versioning files or ChangeLogs.
-
-### svn-remote
-
-This configuration options pairs a local branch in a contributor's checkout to a subversion branch on a specified remote. This configuration is required to use `git svn` commands. Note that `git-webkit find` allows a pure `git` checkout to reason about Subversion revisions without specifying an `svn-remote` for the branch containing the revision in question.
 
 ## WebKit Options
 

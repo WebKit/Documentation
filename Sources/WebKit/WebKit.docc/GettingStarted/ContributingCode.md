@@ -10,9 +10,17 @@ After downloading the code please run the below command.
 git webkit setup
 ```
 
-The `setup` checks that your environment is optimally configured to contribute, and may prompt you for some additional information.
+The `setup` sub-command of [git-webkit](https://github.com/WebKit/WebKit/tree/main/Tools/Scripts/git-webkit) configures your local WebKit checkout for contributing code to the WebKit project. This script will occasionally prompt the user for input. The script does the following:
 
-### Submitting a pull request
+* Set your [name](/WebKit/WebKit/wiki/Git-Config#username) and [email address](/WebKit/WebKit/wiki/Git-Config#useremail) for the WebKit repository
+* [Make Objective-C diffs easier to digest](/WebKit/WebKit/wiki/Git-Config#diff)
+* Setup a commit message generator
+* Set an [editor for commit messages](/WebKit/WebKit/wiki/Git-Config#coreeditor)
+* Store a [GitHub API token](https://github.com/settings/tokens) in your system credential store
+* Configure `git` to use the [GitHub API token](https://github.com/settings/tokens) when prompted for credentials, if using the HTTPS remote
+* Create a [user owned fork](/WebKit/WebKit/wiki/Git-Config#Forking) of the WebKit repository
+
+## Submitting a pull request
 
 Firstly, please make sure you [file a bug](https://bugs.webkit.org) for the thing you are adding or fixing! Or, find a bug that you think is relevant to the fix you are making.
 
@@ -43,6 +51,28 @@ Once done, you can update your pull request to include the changes by again simp
 ```Bash
 git webkit pr
 ```
+
+## Landing Changes
+
+### Merge-Queue
+
+To land a pull request, add the [`merge-queue`](https://github.com/WebKit/WebKit/labels?q=merge-queue) or [`unsafe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=unfsafe-merge-queue) label to your pull request. These labels will put your pull request into the [Merge-Queue](https://ews-build.webkit.org/#/builders/74) and [Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75), respectively, which will commit your pull request to the WebKit repository
+
+[Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75) inserts reviewer information into a commit's message and modified change logs. We then check to ensure that a pull request has been reviewed by checking the commit message before landing the change. [Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75) _does not_ validate that a pull request builds.
+
+Along with the actions performed by [Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75), [Merge-Queue](https://ews-build.webkit.org/#/builders/74) will validate that a pull request builds and run layout tests before landing the change.
+
+### git-webkit land
+
+_Landing should be achieved via merge-queue, this outlines the current behavior of `git-webkit land`_
+
+To land a change, run `git-webkit land` from the branch to be landed. Note that only a [committer](https://github.com/orgs/WebKit/teams/committers) has the privileges to commit a change to the WebKit repository. `git-webkit land` does the following:
+
+* Check to ensure a pull-request is approved and not blocked
+* Insert reviewer names into the commit message
+* Rebase the pull-request against its parent branch
+* [Canonicalize](https://github.com/WebKit/WebKit/wiki/Source-Control#canonicalization) the commits to be landed
+* Update the pull-request with the landed commit
 
 ## Coding style
 

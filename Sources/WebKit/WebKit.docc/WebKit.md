@@ -67,7 +67,6 @@ For details on submitting your code to the project, read [Contributing Code](htt
 
 ### GitHub
 
-- <doc:Contributing>
 - <doc:Git_Config>
 - <doc:Merging>
 - <doc:Migration>
