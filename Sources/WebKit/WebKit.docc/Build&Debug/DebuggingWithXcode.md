@@ -1,6 +1,6 @@
 # Debugging With Xcode
 
-Debugging with Xcode IDE
+Debugging with Xcode
 
 ## Overview
 

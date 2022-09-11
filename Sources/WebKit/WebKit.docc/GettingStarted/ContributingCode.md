@@ -1,4 +1,4 @@
-# Contributing Code to WebKit
+# Getting Started Contributing
 
 WebKit has a rigorous code contribution process and policy in place to maintain the quality of code.
 

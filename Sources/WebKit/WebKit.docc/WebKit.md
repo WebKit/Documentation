@@ -2,28 +2,28 @@
 
 WebKit is a cross-platform web browser engine. On iOS and macOS, it powers Safari, Mail, iBooks, and many other applications.
 
-## Getting Up and Running Quickly
+## Getting Up and Running
 
-### Downloading the Source Code
+#### Downloading the Source Code
 
 ```sh
 git clone https://github.com/WebKit/WebKit.git WebKit
 ```
 
-### Building WebKit
+#### Building WebKit
 
 ```sh
 cd WebKit
 Tools/Scripts/build-webkit
 ```
 
-### Running Minibrowser
+#### Running Minibrowser
 
 ```sh
 Tools/Scripts/run-minibrowser
 ```
 
-### (Optional) Add Scripts Directory to your PATH
+#### (Optional) Add Scripts Directory to your PATH
 
 ```sh
 export PATH=$PATH:`pwd`/Tools/Scripts
@@ -71,7 +71,7 @@ and stay in touch.
 
 ### Building and Debugging
 
-- <doc:Build>
+- <doc:BuildOptions>
 - <doc:DebuggingWithXcode>
 - <doc:DebuggingWithVS>
 - <doc:Logging>
@@ -79,28 +79,17 @@ and stay in touch.
 
 ### In Depth Articles
 
-- <doc:DisplayTree>
-- <doc:MediaSourceExtensions>
-- <doc:MemoryManagement>
+- <doc:Architecture>
+- <doc:Build>
+- <doc:DOM>
+- <doc:GitHub>
+- <doc:Layout&Rendering>
 - <doc:Libpas>
-- <doc:UnderstandingTheDOM>
-- <doc:WebKitBuildSystem>
-- <doc:WebKit2>
-- <doc:JSWrappers>
-- <doc:AddingNewJSApi>
-
-### GitHub
-
-- <doc:Git_Config>
-- <doc:Merging>
-- <doc:Migration>
-- <doc:Pull_Requests>
-- <doc:Source_Control>
+- <doc:Modules>
 
 ### Other
 
 - <doc:ContributorMeetings>
 - <doc:Licensing>
-- <doc:CI>
 - <doc:Contributors>
 - <doc:Todo>
