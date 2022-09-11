@@ -69,10 +69,6 @@ and stay in touch.
 
 ## Getting started with WebKit
 
-### Getting Code
-
-See [Getting the Code](https://github.com/WebKit/webkit/blob/master/ReadMe.md#getting-the-code)
-
 ### Adding Tools to PATH
 
 For convenience, you can add `Tools/Scripts/` to your path as follows in `~/.zshrc` like so:
