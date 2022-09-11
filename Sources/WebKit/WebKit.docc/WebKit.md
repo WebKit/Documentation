@@ -49,6 +49,7 @@ For details on submitting your code to the project, read [Contributing Code](htt
 
 - <doc:Build>
 - <doc:DebuggingWithXcode>
+- <doc:DebuggingWithVS>
 - <doc:Logging>
 - <doc:Tests>
 

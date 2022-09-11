@@ -139,3 +139,24 @@ This will enable ASan build. If want to attach a debugger, you can also specify 
 Once you don’t need to build or run ASan anymore, you can specify `--no-asan` in place of `--asan` to disable ASan.
 Note that this configuration is saved by creating a file called Asan in the WebKitBuild directory,
 so if you are trying to do a clean Asan build by deleting the build directory you need to rerun this command.
+
+## Building with compile_commands.json
+
+### macOS
+
+```
+make r EXPORT_COMPILE_COMMANDS=YES
+generate-compile-commands WebKitBuild/Release
+```
+
+I would recommend running this command each time you pull the latest code.
+If you add or remove files during development, recompile with `make r EXPORT_COMPILE_COMMANDS=YES` and rerun `generate-compile-commands WebKitBuild/Release`.
+
+
+
+### Linux and Windows
+
+```
+cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1
+```
+

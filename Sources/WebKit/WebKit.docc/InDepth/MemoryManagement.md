@@ -9,10 +9,6 @@ we typically use [`std::unique_ptr`](https://en.cppreference.com/w/cpp/memory/un
 WebKit uses two primary management strategies when objects in other cases:
 [garbage collection](https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)) and [reference counting](https://en.wikipedia.org/wiki/Reference_counting).
 
-## Garbage collection in WebKit
-
-FIXME: Write this.
-
 ## Reference counting in WebKit
 
 ### Overview
