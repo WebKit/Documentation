@@ -4,7 +4,7 @@
 
 The Media Source Extensions specification defines a set of classes which allows clients to implement their own loading, buffering, and variant switching behavior, as opposed to requiring the UA to handle same.
 
-Clients `fetch()` media initialization segments and media segments, typically subsets of a single [fragmented MP4 file](https://www.w3.org/TR/mse-byte-stream-format-isobmff/) or [WebM file](https://www.w3.org/TR/mse-byte-stream-format-webm/), and append those segments into a SourceBuffer object, which is associated with a HTMLMediaElement through a [MediaSource](#mediasource) object.
+Clients `fetch()` media initialization segments and media segments, typically subsets of a single [fragmented MP4 file](https://www.w3.org/TR/mse-byte-stream-format-isobmff/) or [WebM file](https://www.w3.org/TR/mse-byte-stream-format-webm/), and append those segments into a SourceBuffer object, which is associated with a HTMLMediaElement through a <doc:MediaSourceExtensions#MediaSource> object.
 
 ## Relevant Classes
 
@@ -16,9 +16,9 @@ MediaSource serves two purposes:
 * Creating SourceBuffer objects.
 * Associating those SourceBuffer objects with a HTMLMediaElement.
 
-Once created, clients can create query for container and codec support via `isTypeSupported(type)`, [SourceBuffer](#sourcebuffer) objects via `addSourceBuffer(type)`, explicitly set the MediaSource's `duration`, and signal an end of the stream via `endOfStream(error)`.
+Once created, clients can create query for container and codec support via `isTypeSupported(type)`, <doc:MediaSourceExtensions#SourceBuffer> objects via `addSourceBuffer(type)`, explicitly set the MediaSource's `duration`, and signal an end of the stream via `endOfStream(error)`.
 
-Before creating any [SourceBuffer](#sourcebuffer) objects, the MediaSource must be associated with a HTMLMediaElement. 
+Before creating any <doc:MediaSourceExtensions#SourceBuffer> objects, the MediaSource must be associated with a HTMLMediaElement. 
 The MediaSource can be set directly as the HTMLMediaElement's `srcObject`. Alternatively, an [extension](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/Modules/mediasource/DOMURL%2BMediaSource.idl) to DOMURL allows an ObjectURL to be created from a MediaSource object, and that ObjectURL can be set as the HTMLMediaElement's `src`.
 
 A MediaSource object will fire a `"sourceopen"` event when successfully associated with a HTMLMediaElement, and a `"sourceclose"` event when disassociated. 
@@ -29,7 +29,7 @@ The state of the MediaSource object can be queried via its `readyState` property
 ([.idl](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/Modules/mediasource/SourceBuffer.idl), [.h](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/Modules/mediasource/SourceBuffer.h), [.cpp](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/Modules/mediasource/SourceBuffer.cpp))
 
 SourceBuffer accepts buffers of initialization segments and media segments, which are then parsed into media tracks and media samples. Those samples are cached within the SourceBuffer (inside its [SourceBufferPrivate](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/graphics/SourceBufferPrivate.h) object) 
-and enqueued into platform-specific decoders on demand. The primary storage mechanism for these samples is a [SampleMap](#samplemap), which orders those samples both in terms of each sample's DecodeTime and PresentationTime. These two times can differ for codecs that support frame reordering, typically MPEG video codecs such as h.264 and HEVC.
+and enqueued into platform-specific decoders on demand. The primary storage mechanism for these samples is a <doc:MediaSourceExtensions#SampleMap>, which orders those samples both in terms of each sample's DecodeTime and PresentationTime. These two times can differ for codecs that support frame reordering, typically MPEG video codecs such as h.264 and HEVC.
 
 Clients append these segments via `appendBuffer()`, which sets an internal `updating` flag, fires the `"updatestart"` event, and subsequently fires the `"updateend"` event and clears the `updating` flag once parsing is complete. The results of the append are visible by querying the `buffered` property, or by querying the `audioTracks`, `videoTracks`, and `textTracks` TrackList objects.
 
@@ -37,7 +37,7 @@ Clients append these segments via `appendBuffer()`, which sets an internal `upda
 
 ([.h](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/graphics/MediaSourcePrivate.h))
 
-MediaSourcePrivate is an abstract base class which allows [MediaSource](#mediasource) to communicate through the platform boundary to a platform-specific implementation of MediaSource.
+MediaSourcePrivate is an abstract base class which allows <doc:MediaSourceExtensions#MediaSource> to communicate through the platform boundary to a platform-specific implementation of MediaSource.
 
 When the GPU Process is enabled, the MediaSourcePrivate in the WebContent process is typically a [MediaSourcePrivateRemote](https://github.com/WebKit/WebKit/blob/main/Source/WebKit/WebProcess/GPU/media/MediaSourcePrivateRemote.cpp), which will pass commands and properties across the WebContent/GPU process boundary.
 
@@ -45,14 +45,14 @@ For Apple ports, the MediaSourcePrivate is typically a [MediaSourcePrivateAVFObj
 
 For GStreamer-based ports, the MediaSourcePrivate is typically a [MediaSourcePrivateGStreamer](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/graphics/gstreamer/mse/MediaSourcePrivateGStreamer.h).
 
-When running in DumpRenderTree/WebKitTestRunner, a "mock" MediaSourcePrivate can be enabled, and a [MockMediaSourcePrivate](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/mock/mediasource/MockMediaSourcePrivate.h) can be created. This is useful for writing platform-independent tests which exercise the platform-independent [MediaSource](#mediasource) and [SourceBuffer](#sourcebuffer) objects directly.
+When running in DumpRenderTree/WebKitTestRunner, a "mock" MediaSourcePrivate can be enabled, and a [MockMediaSourcePrivate](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/mock/mediasource/MockMediaSourcePrivate.h) can be created. This is useful for writing platform-independent tests which exercise the platform-independent <doc:MediaSourceExtensions#MediaSource> and <doc:MediaSourceExtensions#SourceBuffer> objects directly.
 
 ### SourceBufferPrivate
 
 ([.h](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/graphics/SourceBufferPrivate.h), [.cpp](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/graphics/SourceBufferPrivate.cpp))
 
 SourceBufferPrivate is a semi-abstract base class which accepts initialization segment and media segment buffers, parse those buffers with platform-specific parsers, and enqueue the resulting samples into platform-specific decoders. 
-SourceBufferPrivate is also responsible for caching parsed samples in a [SampleMap](#samplemap).
+SourceBufferPrivate is also responsible for caching parsed samples in a <doc:MediaSourceExtensions#SampleMap>.
 
 ### MediaTime
 
@@ -72,8 +72,8 @@ MediaTime offers convenience methods to convert from (`createTimeWithDouble()`) 
 
 ([.h](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/platform/MediaSample.h))
 
-MediaSample is an abstract base class representing a sample parsed from a media segment. MediaSamples have `presentationTime()`, `decodeTime()`, and `duration()`, each of which are [MediaTime](#mediatime) values, 
-which are used to order these samples relative to one another in a [SampleMap](#samplemap). 
+MediaSample is an abstract base class representing a sample parsed from a media segment. MediaSamples have `presentationTime()`, `decodeTime()`, and `duration()`, each of which are <doc:MediaSourceExtensions#MediaTime> values, 
+which are used to order these samples relative to one another in a <doc:MediaSourceExtensions#SampleMap>. 
 For codecs which support frame reordering, `presentationTime()` and `decodeTime()` for each sample may differ.
 
 ### SampleMap
