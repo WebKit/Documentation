@@ -55,6 +55,8 @@ For details on submitting your code to the project, read [Contributing Code](htt
 
 ### In Depth Articles
 
+- <doc:DisplayTree>
+- <doc:MediaSourceExtensions>
 - <doc:MemoryManagement>
 - <doc:Libpas>
 - <doc:UnderstandingTheDOM>
