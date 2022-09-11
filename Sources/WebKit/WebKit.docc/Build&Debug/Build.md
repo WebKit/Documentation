@@ -1,4 +1,4 @@
-# Building WebKit
+# Building Options
 
 An in depth guide of build options for WebKit.
 

@@ -2,29 +2,37 @@
 
 WebKit is a cross-platform web browser engine. On iOS and macOS, it powers Safari, Mail, iBooks, and many other applications.
 
-## Downloading the Source Code
+## Getting Up and Running Quickly
 
-```
+### Downloading the Source Code
+
+```sh
 git clone https://github.com/WebKit/WebKit.git WebKit
 ```
 
-## Building WebKit
+### Building WebKit
 
-```
+```sh
 cd WebKit
 Tools/Scripts/build-webkit
 ```
 
-## Running Minibrowser
+### Running Minibrowser
 
-```
+```sh
 Tools/Scripts/run-minibrowser
+```
+
+### (Optional) Add Scripts Directory to your PATH
+
+```sh
+export PATH=$PATH:`pwd`/Tools/Scripts
 ```
 
 ## Contribute
 
 Congratulations! You’re up and running. Now you can begin coding in WebKit and contribute your fixes and new features to the project. 
-For details on submitting your code to the project, read [Contributing Code](https://webkit.org/contributing-code/).
+For details on submitting your code to the project, read <doc:ContributingCode>.
 
 ## Feature Status
 
@@ -45,6 +53,13 @@ On Windows, you will have to build it yourself.
 Once your bug is filed, you will receive email when it is updated at each stage in the [bug life cycle](https://webkit.org/bug-life-cycle). 
 After the bug is considered fixed, you may be asked to download the [latest nightly](https://webkit.org/nightly) and confirm that the fix works for you.
 
+## Staying in Touch
+
+Before getting in touch with WebKit developers using any of the avenues below, make sure that you have checked our page on how to ask [questions about WebKit](https://webkit.org/asking-questions/).
+
+You can find WebKit developers, testers, and other interested parties on the [#WebKit Slack workspace](https://webkit.slack.com/).
+[Join the WebKit slack](https://join.slack.com/t/webkit/shared_invite/enQtOTU3NzQ3NTAzNjA0LTc5NmZlZWIwN2MxN2VjODVjNzEyZjBkOWQ4NTM3OTk0ZTc0ZGRjY2MyYmY2MWY1N2IzNTI2MTIwOGVjNzVhMWE),
+and stay in touch.
 
 ## Topics
 
@@ -87,4 +102,5 @@ After the bug is considered fixed, you may be asked to download the [latest nigh
 - <doc:ContributorMeetings>
 - <doc:Licensing>
 - <doc:CI>
+- <doc:Contributors>
 - <doc:Todo>

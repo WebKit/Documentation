@@ -2,9 +2,9 @@
 
 WebKit has a rigorous code contribution process and policy in place to maintain the quality of code.
 
-## Getting setup to contribute
+## Getting Setup to Contribute
 
-After downloading the code please run the below command.
+Please run this command below to setup your environment to make pull requests.
 
 ```Bash
 git webkit setup
