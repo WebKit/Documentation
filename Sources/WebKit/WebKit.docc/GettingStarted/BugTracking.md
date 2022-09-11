@@ -5,16 +5,12 @@
 [bugs.webkit.org](https://bugs.webkit.org/) hosted is the primary bug tracking tool we use.
 We use bugzilla to file bugs, and then perform code review using GitHub.
 
-### Filing a bug and editing bugs
+### Filing and Editing Bugs
 
 To [file a new WebKit bug](https://bugs.webkit.org/enter_bug.cgi), see [reporting bugs](https://webkit.org/reporting-bugs/).
-
 To edit an existing bug, you may need [editbug-bits](https://webkit.org/bugzilla-bits/).
 
-### Code review
-Code reviews are done on GitHub when a pull request is made. See [Submitting a pull request](#submitting-a-pull-request).
-
-### Security Bugs
+### Reporting Security Bugs
 
 Security bugs have their own components in [bugs.webkit.org](https://bugs.webkit.org/).
 We’re also working on a new policy to delay publishing tests for security fixes until after the fixes have been widely deployed.

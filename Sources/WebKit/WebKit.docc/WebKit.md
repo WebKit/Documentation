@@ -10,7 +10,9 @@ Visit [WebKit Feature Status](https://webkit.org/status/) page to see which Web 
 
 ## Trying the Latest
 
-On macOS, [download Safari Technology Preview](https://webkit.org/downloads/) to test the latest version of WebKit. On Linux, download [Epiphany Technology Preview](https://webkitgtk.org/epiphany-tech-preview). On Windows, you'll have to build it yourself.
+On macOS, [download Safari Technology Preview](https://webkit.org/downloads/) to test the latest version of WebKit. 
+On Linux, download [Epiphany Technology Preview](https://webkitgtk.org/epiphany-tech-preview). 
+On Windows, you will have to build it yourself.
 
 ## Reporting Bugs
 
@@ -18,9 +20,10 @@ On macOS, [download Safari Technology Preview](https://webkit.org/downloads/) to
 2. [Create a Bugzilla account](https://bugs.webkit.org/createaccount.cgi) to to report bugs (and to comment on them) if you haven't done so already.
 3. File a bug in accordance with [our guidelines](https://webkit.org/bug-report-guidelines/).
 
-Once your bug is filed, you will receive email when it is updated at each stage in the [bug life cycle](https://webkit.org/bug-life-cycle). After the bug is considered fixed, you may be asked to download the [latest nightly](https://webkit.org/nightly) and confirm that the fix works for you.
+Once your bug is filed, you will receive email when it is updated at each stage in the [bug life cycle](https://webkit.org/bug-life-cycle). 
+After the bug is considered fixed, you may be asked to download the [latest nightly](https://webkit.org/nightly) and confirm that the fix works for you.
 
-## Getting the Code
+## Downloading the Code
 
 Run the following command to clone WebKit's Git repository:
 
@@ -38,29 +41,34 @@ For details on submitting your code to the project, read [Contributing Code](htt
 
 ### Getting Started
 
-- <doc:/Introduction>
-- <doc:/ContributingCode>
-- <doc:/BugTracking>
+- <doc:Introduction>
+- <doc:ContributingCode>
+- <doc:BugTracking>
 
 ### Building and Debugging
 
-- <doc:/Build>
+- <doc:Build>
+- <doc:DebuggingWithXcode>
+- <doc:Logging>
 
 ### In Depth Articles
 
-- <doc:/MemoryManagement>
-- <doc:/Libpas>
+- <doc:MemoryManagement>
+- <doc:Libpas>
+- <doc:UnderstandingTheDOM>
+- <doc:WebKitBuildSystem>
+- <doc:WebKit2>
 
 ### GitHub
 
-- <doc:/Contributing>
-- <doc:/Git_Config>
-- <doc:/Merging>
-- <doc:/Migration>
-- <doc:/Pull_Requests>
-- <doc:/Source_Control>
+- <doc:Contributing>
+- <doc:Git_Config>
+- <doc:Merging>
+- <doc:Migration>
+- <doc:Pull_Requests>
+- <doc:Source_Control>
 
 ### Other
 
-- <doc:/ContributorMeetings>
-- <doc:/Licensing>
+- <doc:ContributorMeetings>
+- <doc:Licensing>

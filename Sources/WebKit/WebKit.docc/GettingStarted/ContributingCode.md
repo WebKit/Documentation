@@ -2,7 +2,49 @@
 
 WebKit has a rigorous code contribution process and policy in place to maintain the quality of code.
 
-### Coding style
+## Getting setup to contribute
+
+After downloading the code please run the below command.
+
+```Bash
+git webkit setup
+```
+
+The `setup` checks that your environment is optimally configured to contribute, and may prompt you for some additional information.
+
+### Submitting a pull request
+
+Firstly, please make sure you [file a bug](https://bugs.webkit.org) for the thing you are adding or fixing! Or, find a bug that you think is relevant to the fix you are making.
+
+Assuming you are working off "main" branch, once your patch is working and [tests are passing](#correctness-testing-in-webkit), simply run:
+
+```Bash
+git webkit pr --issue <your bug number here>
+```
+
+That will pull down the details from [bugs.webkit.org](https://bugs.webkit.org), create a new git branch, and generate a commit message for you.
+If necessary, please add additional details describing what you've added, modified, or fixed.
+
+Once your pull request is on GitHub, the Early Warning System (a.k.a. EWS) will automatically build and run tests against your code change.
+This allows contributors to find build or test failures before committing code changes to the WebKit’s repository.
+
+Note, if you'd like to submit a draft pull request, you can do so by running:
+
+```Bash
+git webkit pr --draft
+```
+
+## Addressing review feedback
+
+After you receive review feedback on GitHub, you should collaborate with the reviewer to address the feedback.
+
+Once done, you can update your pull request to include the changes by again simply running:
+
+```Bash
+git webkit pr
+```
+
+## Coding style
 
 Code you write must follow WebKit’s [coding style guideline](https://webkit.org/contributing-code/#code-style-guidelines).
 You can run `Tools/Scripts/check-webkit-style` to check whether your code follows the coding guidelines or not
@@ -13,17 +55,17 @@ it automatically runs the style checker against the code you changed so there is
 Some older parts of the codebase do not follow these guidelines.
 If you are modifying such code, it is generally best to clean it up to comply with the current guidelines.
 
-### Convenience Tools
+## Convenience Tools
 
 `Tools/Scripts/webkit-patch` provides a lot of utility functions like applying the latest patch on [bugs.webkit.org](https://bugs.webkit.org/) (`apply-from-bug`)
 and uploading a patch (`upload --git-commit=<commit hash>`) to a [bugs.webkit.org](https://bugs.webkit.org/) bug.
 Use `--all-commands` to the list of all commands this tool supports.
 
-### Regression Tests
+## Regression Tests
 
 Once you have made a code change, you need to run the aforementioned tests (layout tests, API tests, etc...)
 to make sure your code change doesn’t break existing functionality.
-These days, uploading a patch on [bugs.webkit.org](https://bugs.webkit.org/) triggers the Early Warning System (a.k.a. EWS)
+These days, uploading a patch on [bugs.webkit.org](https://bugs.webkit.org/) triggers the Early Warning System (a.k.a. EWS).
 
 For any bug fix or a feature addition, there should be a new test demonstrating the behavior change caused by the code change.
 If no such test can be written in a reasonable manner (e.g. the fix for a hard-to-reproduce race condition),
@@ -32,7 +74,7 @@ then the reason writing a tests is impractical should be explained in the accomp
 Any patch which introduces new test failures or performance regressions may be reverted.
 It’s in your interest to wait for the Early Warning System to fully build and test your patch on all relevant platforms.
 
-### Commit messages
+## Commit messages
 
 Commit messages serve as change logs, providing historical documentation for all changes to the WebKit project.
 Running `git-webkit setup` configures your git hooks to properly generate commit messages.
