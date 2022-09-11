@@ -23,5 +23,3 @@ to share their thoughts and ideas for the project. This is a collection of notes
 - <doc:/2019>
 - <doc:/2020>
 - <doc:/2021>
-- <doc:/2022>
-
