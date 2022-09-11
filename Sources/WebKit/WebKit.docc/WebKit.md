@@ -50,6 +50,7 @@ For details on submitting your code to the project, read [Contributing Code](htt
 - <doc:Build>
 - <doc:DebuggingWithXcode>
 - <doc:Logging>
+- <doc:Tests>
 
 ### In Depth Articles
 
@@ -58,6 +59,8 @@ For details on submitting your code to the project, read [Contributing Code](htt
 - <doc:UnderstandingTheDOM>
 - <doc:WebKitBuildSystem>
 - <doc:WebKit2>
+- <doc:JSWrappers>
+- <doc:AddingNewJSApi>
 
 ### GitHub
 
@@ -72,3 +75,5 @@ For details on submitting your code to the project, read [Contributing Code](htt
 
 - <doc:ContributorMeetings>
 - <doc:Licensing>
+- <doc:CI>
+- <doc:Todo>

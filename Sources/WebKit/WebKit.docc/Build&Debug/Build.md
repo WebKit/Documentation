@@ -124,3 +124,18 @@ run-minibrowser --debug --wpe
 
 Pass one of `--gtk`, `--jsc-only`, or `--wpe` to indicate the port to use.
 
+## Fixing mysterious build or runtime errors after Xcode upgrades
+
+If you see mysterious build failures or if you’ve switched to a new version of
+macOS or Xcode, delete the `WebKitBuild` directory.
+`make clean` may not delete all the relevant files,
+and building after doing that without deleting the `WebKitBuild` directory may result in mysterious build or dyld errors.
+
+## Building with Address Sanitizer to investigate memory corruption bugs
+
+To build [Address Sanitizer](https://en.wikipedia.org/wiki/AddressSanitizer) or ASan builds to analyze security bugs,
+run `Tools/Scripts/set-webkit-configuration --asan --release`.
+This will enable ASan build. If want to attach a debugger, you can also specify `--debug` instead of `--release`.
+Once you don’t need to build or run ASan anymore, you can specify `--no-asan` in place of `--asan` to disable ASan.
+Note that this configuration is saved by creating a file called Asan in the WebKitBuild directory,
+so if you are trying to do a clean Asan build by deleting the build directory you need to rerun this command.

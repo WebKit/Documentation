@@ -1,4 +1,4 @@
-# WebKit's Build System
+# Build System
 
 An overview of how the WebKit build system is structured.
 

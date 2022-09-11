@@ -2,6 +2,35 @@
 
 Debugging with the Xcode IDE
 
+## Overview
+
+You can also use Xcode to build & debug WebKit. Open `WebKit.xcworkspace` at the top level directory.
+
+In order to make Xcode use build files built by `make` command above,
+go to File > Workspace Settings... > Advanced... > Custom > Relative to Workspace
+and adjust the relative paths of Products and Intermediates to point to `WebKitBuild` directory.
+![Screenshot of Xcode Workspace Settings](xcode-workspace-settings.png)
+![Screenshot of Xcode Workspace Settings - Advanced Build Location](xcode-workspace-build-location.png)
+Note that debugging WebCore code typically requires attaching to the relevant WebContent process,
+not the application process, which is mostly running code in [Source/WebKit/UIProcess](https://github.com/WebKit/WebKit/tree/main/Source/WebKit/UIProcess).
+Depending on what you’re debugging, you’d have to attach & debug different processes in the coalition.
+
+You may find it useful to use the debug helpers under `Tools/lldb/lldb_webkit.py`.
+This can be added to `~/.lldbinit` for automatic loading into LLDB on launch by adding the line `command script import {Path to WebKit}/Tools/lldb/lldb_webkit.py`.
+For more details, see the Wiki article on [lldb formatters](https://trac.webkit.org/wiki/lldb%20formatters).
+
+When debugging a debug build in LLDB, there are also a few functions that can be called on objects that will dump debugging info.
+
+* RenderObject
+    * showNodeTree()
+    * showLineTree()
+    * showRenderTree()
+* Node
+    * showTree()
+    * showNodePath()
+    * showTreeForThis()
+    * showNodePathForThis()
+
 ## Debugging Layout Tests
 
 The easiest way to debug a layout test is with WebKitTestRunner or DumpRenderTree.
