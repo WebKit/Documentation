@@ -85,6 +85,7 @@ and stay in touch.
 - <doc:GitHub>
 - <doc:Layout&Rendering>
 - <doc:Libpas>
+- <doc:MemoryManagement>
 - <doc:Modules>
 
 ### Other

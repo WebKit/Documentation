@@ -16,7 +16,3 @@
 
 - <doc:JSWrappers>
 - <doc:AddingNewJSApi>
-
-### Memory Management
-
-- <doc:MemoryManagement>

@@ -1,4 +1,4 @@
-# Understanding The DOM
+# DOM
 
 A deep dive into the Document Object Model.
 
