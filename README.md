@@ -30,5 +30,5 @@ make github
 
 ## Import Documentation into Xcode
 
-Open the WebKit.doccarchive and it will be automatically imported into Xcode.
+Open `WebKit.doccarchive` and it will be automatically be imported into Xcode.
 Running `make docc` will also launch Xcode and import the document.
