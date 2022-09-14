@@ -8,3 +8,5 @@ preview:
 docc:
 	rm -rf docs/
 	xcodebuild docbuild -scheme WebKit -destination 'platform=macOS' -derivedDataPath ./docs
+	echo "WebKit.doccarchive generated at docs/Build/Products/Debug/"
+	open docs/Build/Products/Debug/WebKit.doccarchive
