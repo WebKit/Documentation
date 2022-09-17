@@ -83,6 +83,7 @@ and stay in touch.
 - <doc:Build>
 - <doc:DOM>
 - <doc:GitHub>
+- <doc:JavaScriptCore>
 - <doc:Layout&Rendering>
 - <doc:Libpas>
 - <doc:MemoryManagement>
