@@ -72,6 +72,7 @@ and stay in touch.
 ### Building and Debugging
 
 - <doc:BuildOptions>
+- <doc:DebuggingOnTheCommandLine>
 - <doc:DebuggingWithXcode>
 - <doc:DebuggingWithVS>
 - <doc:Logging>
