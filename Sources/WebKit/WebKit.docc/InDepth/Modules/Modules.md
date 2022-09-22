@@ -66,6 +66,10 @@ The source code for the Modules can be found [here](https://github.com/WebKit/We
 
 ## Topics
 
+### Compression
+
+- <doc:CompressionStreams>
+
 ### Media
 
 - <doc:MediaSourceExtensions>
