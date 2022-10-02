@@ -4,41 +4,29 @@ This repository contains the documentation for the WebKit Project.
 
 ## Build Documentation
 
+### Install Dependencies
+
+```python
+pip3 install mkdocs-material
+```
+
 ### Preview Documentation Locally
 
-This will bring up a local web server, so you can view the documentation locally.
+This will bring up a local web server, so you can see the documentation locally. Any updates you make will be automatically visible.
 
 ```
-make preview
+mkdocs serve
 ```
 
-### DocC Archive (Xcode)
+### Release Build
 
-Generate a DocC Archive that will be automatically imported into Xcode's documentation.
-
-```
-make docc
-```
-
-#### Build DocC Archive in Xcode
-
-Generate a DocC Archive in Xcode. This documentation will be available under the Workspace Documentation section.
-You will need to export `WebKit` and import it to add the DocC Archive to the Imported Documentation section.
+Build documentation for static site.
 
 ```
-Open Package.swift
-Product -> Build Documentation (⌃⇧⌘D)
+mkdocs build
+python3 -m http.server --directory site/ # (Optional) View generated documentation
 ```
 
-### GitHub Release
+### Overview
 
-Generate documentation for a release on GitHub Pages.
-
-```
-make github
-```
-
-## Import Documentation into Xcode
-
-Open `WebKit.doccarchive` and the documentation will be automatically imported into Xcode under the Imported Documention section.
-When running `make docc` the documentation will automatically be imported into Xcode.
+The documentation uses the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme. This documentation has been collected from a variety of sources including [Trac](https://trac.webkit.org),[GitHub Wiki](https://github.com/WebKit/WebKit/wiki), and Source Code markdown files.
