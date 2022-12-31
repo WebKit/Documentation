@@ -29,4 +29,4 @@ python3 -m http.server --directory site/ # (Optional) View generated documentati
 
 ### Overview
 
-The documentation uses the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme. This documentation has been collected from a variety of sources including [Trac](https://trac.webkit.org),[GitHub Wiki](https://github.com/WebKit/WebKit/wiki), and Source Code markdown files.
+The documentation uses the [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) theme. This documentation has been collected from a variety of sources including [Trac](https://trac.webkit.org), [GitHub Wiki](https://github.com/WebKit/WebKit/wiki), and WebKit source code markdown files.
