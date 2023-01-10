@@ -59,7 +59,7 @@ WebKit Contributors Meeting November 9-10, 2022
 - One of Igalia's biggest areas of work is WPE for Android
 - Driven by having so many embedded devices running Android
 - Completed Android WebView compat for a subset of APIs, hardware acceleration for media playback (decoding only, not encoding), PSON (important for security), fullscreen support, 64-bit ARM target support, lots of refactoring
-- JavaScriptCore work: off-thread compilation, 32-bit platform-related work including WASM signalling memory
+- JavaScriptCore work: off-thread compilation, 32-bit platform-related work including WASM signaling memory
 - Web Platform work: GamePad API (for a customer that wants to support gaming on embedded device), HTML interactive form validation, Layer-Based SVG engine, WebSpeech API (still in progress), :focus-visible, ARIA attribute reflection
 - QA work: 2 new Ubuntu 22 bots, new bot to build with clang, Raspberry Pi bot
 - Interop 2022 (cross-browser project with focus areas for improving interop): as of Mon Nov 7, Safari is on top (after starting the year at the bottom). All browsers have significantly improved over the year, from ~60% to ~80%. Many contributions, not just from Igalia
@@ -76,7 +76,7 @@ WebKit Contributors Meeting November 9-10, 2022
 ##### Q&A
 
 - Q from Geoff: about the layer-based SVG engine, what got Igalia interested in this work?
-- A from Brian: We did a podcast on this. Original creators of KSVG are igalians, they know all the warts. Will share a link to podcast in Slack. Important for embedded devices for efficiency and enables things that would not otherwise be possible
+- A from Brian: We did a podcast on this. Original creators of KSVG are Igalians, they know all the warts. Will share a link to podcast in Slack. Important for embedded devices for efficiency and enables things that would not otherwise be possible
 - https://www.igalia.com/chats/Igalia-Chats-Niko-SVG-WPE
 - A from Niko: You'll hear more soon. Igalia is interested to reduce paint time, esp on low-end CPUs. We are doing painting on software, so if you can do more hardware-accelerated then you win, esp on embedded devices
 - Q from Tim: Activity from Igalia on content-visibility and similar properties. Why is Igalia interested?
@@ -122,7 +122,7 @@ WebKit Contributors Meeting November 9-10, 2022
     - Ideas about a "Media tab" in Web Inspector
 - GPU Process
 - Called "Web Compositor"
-    - Async composititon
+    - Async composition
     - Async scrolling
     - Video rendering
 - Want to enable for PlayStation, currently enabled in Windows build
@@ -178,7 +178,7 @@ Site isolation is the next step to make browsers more secure, and its implementa
 - New cross-origin iframe loading flow
     - decidePolicyForNavigationAction - tell old process navigation will likely continue in new process
     - when navigation commits, tell old process that happened, switch from LocalFrame to RemoteFrame in frame tree
-    - When loading completes in new process, tell old process that happened, then onload can fire
+    - When loading completes in new process, tell old process that happened, then on-load can fire
     - Make all FrameTree traversal use IPC to pull or push info
 - Other things to consider
     - Drawing to the screen/compositing
@@ -244,12 +244,12 @@ A closer look at the status of the Layer-Based SVG Engine in WebKit.
 
 ##### Notes
 
-- based in germany - started contributing to khtml in 2001, co-founded ksvg with rob buis (also an igalian) and moved on as it moved into webkit
+- based in Germany - started contributing to KHTML in 2001, co-founded ksvg with Rob Buis (also an Igalian) and moved on as it moved into webkit
 - been working exclusively in webkit for some time
 - What is LBSE? The layout based SVG engine we’ve been developing at Igalia in WebKit since 2019
 - aimed at resolving architectural issues present for 15+ years
 - Allows us to use hardware acceleration and features of CSS that are useful
-- POC patch in october 2021 passed all existing tests, pixel perfect
+- POC patch in October 2021 passed all existing tests, pixel perfect
 - performance was comparable to legacy engine in motion mark - some tests were way faster, some were slower… but in principle we proved it is possible and not a perf issue
 - how is it achieved? coordinating system decisions in the redesign with CSS, reuse as much code as possible in RenderLayer without SVG specific changes
 - evolution since 2021: the “final” version of the prototype was a drop in replacement for the old SVG engine, but it was not a way to upstream it - it would be a huge patch.  It is all or nothing, there is no way to merge parts - too big a change at once
@@ -257,24 +257,24 @@ A closer look at the status of the Layer-Based SVG Engine in WebKit.
 - Unfortunately this means a lot of manual rework, basically equivalent to yet another rewrite… but..
 - there is a master bug report 90738 “Harmonize HTML and SVG Rendering”
 - 89 patches landed, 75% upstream
-- we started adding runtime flags in november last year
-- and it wasn’t until januay this year we were beginning into real foundations
+- we started adding runtime flags in November last year
+- and it wasn’t until January this year we were beginning into real foundations
 - along the way some interesting and important upstream bugs were fixed - some about a decade old, perspective should not be affected by transform-origin
-- by the end of april we were on to svg text
+- by the end of April we were on to SVG text
 - then we added all of the basic shapes, then viewbox, then compositing - this also fixed a 10+ year old bug about upscaling an object via css transforms
-- (that brings us through july)
+- (that brings us through July)
 - in august we activated support for ‘defs’ and foreign objects and image elements and activated remaining shapes (polyline, polygon, line)
-- in september we fixed some bigs about compositing and device pixels alignment and pixel snapping when elements are composited
+- in September we fixed some bigs about compositing and device pixels alignment and pixel snapping when elements are composited
 - we activated sub-pixel precision for render tree dumps
-- very recently (in october) the size negotiation for <object> + RenderSVGRoot, fixed SVGImage container size propagations , assured HTML documents create a new formatting context - also fixes a 15+ year old bug!
+- very recently (in October) the size negotiation for <object> + RenderSVGRoot, fixed SVGImage container size propagations , assured HTML documents create a new formatting context - also fixes a 15+ year old bug!
 - panning and zooming was enabled, there is 1 important interop deviation we need to look into.
 - we fixed transform support for svg <text> elements
 - so… where do we stand now?
-- when we said 75%, most of the core layout is upstreamed… All the renderlayer, etc.  So, roughly 95% of it is done - there is a patch pending review to fix wrong answers to some DOM APIs - will fix a number of issues
+- when we said 75%, most of the core layout is upstreamed… All the render layer, etc.  So, roughly 95% of it is done - there is a patch pending review to fix wrong answers to some DOM APIs - will fix a number of issues
 - once this is bug we can go back to the list of open bugs, we are missing patterns, gradients, masking, I think we will have a patch in the next few weeks - some of this is solved downstream
 - that is the short term list - but the long term plan involves more performance work and making sure that all of the layout test pass
 - There are optimization that we can do to make it faster, we will be dealing with adding those to reduce the overhead and only construct layers if necessary and show that it is not then a massive overhead
-- while we said we are 75% completed, we belive that we can hit the goal in 2023 and show it complete and fast
+- while we said we are 75% completed, we believe that we can hit the goal in 2023 and show it complete and fast
 - (showing some video/demos)
 - (key here is looking at cpu use and timing is really improved)
 - (room gasps audibly, but they are all muted)
@@ -289,7 +289,7 @@ There is another demo, but I ran long so I will just share the link and you can 
 
 ##### Q&A
 
-- Q from cam “how sure are you that these optimzations will improve performance”
+- Q from cam “how sure are you that these optimizations will improve performance”
 - A I have done some things and I have high expectations that it will greatly improve - one for example was real bad - 25% regression and this makes a huge difference if you do that
 - Q from cam - (something about pixel precision that are scaled up and down)
 - A I shared some things just today that are pixel tests and it surprised me that it is legacy that actually had more problems.
@@ -300,10 +300,10 @@ There is another demo, but I ran long so I will just share the link and you can 
 - Q from Said “I went through a lot of patches trying to understand the new changes, but I couldn’t understand what you are trying to do.  My question is is there a way you can write some documentation about the changes and the difference between them”
 - A Yes, indeed - I published a really lengthy post about it before we started upstreaming. It is out of date, but yes I think that kind of document is really useful. I agree I’m happy to do that, I’ve been kind of working on this in isolation for a few years which isn’t my preference, but that kind of thing is what happens - I am really happy when people are reviewing and comparing and asking these questions.  What I was trying to do here was trying to break down these commits into reviewable chunks, I hope that we are now at a point where all of the readme notes to help the planning are gone and we can do that
 - Said yes, I’m not asking for an explanation of every line, just the interesting changes
-- Q from said about foreign object - is there a way to enable this only for that intitally, we need that
+- Q from said about foreign object - is there a way to enable this only for that initially, we need that
 - A yes, I had a similar idea even
 
-### Thrusday
+### Thursday
 
 #### Standards Positions
 
@@ -396,7 +396,7 @@ A short overview of how we’re managing our repository in GitHub and what we’
     - Big difference between security PRs and security bugs: Security PRs are available to everyone in the security group, bug access is more limited
     - Complications with landing to make it hard to make mistakes
 - Use -v flag on git-webkit to get info about setup
-- git-webkit pr --remote security to create Security Pull Request
+- `git-webkit pr --remote security` to create Security Pull Request
 - Git and GitHub can't secure specific branches, but can secure entire repositories
 - Hence, WebKit-security is a mirror
 - WebKit/metadata/git_config_extension contains project configuration settings
@@ -431,7 +431,7 @@ A short overview of how we’re managing our repository in GitHub and what we’
 
 ##### Q&A
 
-- Q from Basuke Suzuki: Bugzilla is low priority, can you add automatic comments back to the bugzilla? (edited) 
+- Q from Basuke Suzuki: Bugzilla is low priority, can you add automatic comments back to the Bugzilla? (edited) 
 - Jonathan: How are you uploading your PRs? It should make a comment.
 - Basuke: I do it manually
 - Jonathan: Use the script to get automatic comments (edited) 
@@ -480,7 +480,7 @@ Investigation for the precompiled bytecode generation to minimize the cost of JS
 - Apple implemented bytecode cache a few years ago. We can use --diskCachePath option with JSC. The first evaluation is the same, but it looks in the cache. This just uses disk and requires original source. Which is not our usecase.
 - What is in the cache file? The entire source code is stored inside the file. Other information is stored, we say bytecode but it contains additional information.
 - There are two timings for bytecode generation, before the execution and during the execution there are many modifications happening.
-- What we did. The function metadata is not necessary as it will be generated and is large and our goal is boot time speed up. The large size of this causes high I/O cost which kills the benefit. Also, bytecode cache system is good but doesn't fit our purpose, extra I/O cost, first source is loaed then cache is checked.
+- What we did. The function metadata is not necessary as it will be generated and is large and our goal is boot time speed up. The large size of this causes high I/O cost which kills the benefit. Also, bytecode cache system is good but doesn't fit our purpose, extra I/O cost, first source is loaded then cache is checked.
 - Added an option to jsc to generate the byte code file. From there, we need to accept this as source, there's a notion of SourceProvider which we used to parse the bytecode file. Added functions to get information from the cached information mostly in CachedTypes.
 - Result: Performance is significant, 1/2 to 1/3 time for initial evaluation. Very first line throws exception so most time is compilation/prep time. For 900kb source time was 107ms->47ms, 6M file 365 ms-> 103ms.
 -  For file size, it contains original source but not too big. Extra cost (~20%) was acceptable for our use case. At first memory usage increased, at first didn't know why, but then found that source code and instruction stream is duplicated.
@@ -490,15 +490,20 @@ Investigation for the precompiled bytecode generation to minimize the cost of JS
 ##### Q&A
 
 - Q (Mark Lam): Regarding API, is the only way parsing string? . A: There's two, one for generation and one for taking it. Q: Can you use map the file? Around the memory footprint. A: It might be possible, Q: Does the bytecode format (instruction stream) lend itself into memory mapping? A: Current just allocates memory, but instruction stream should be able to. Q: On PC, what does architecture dependency? A: Endianness, can be different if compiler is changed, cache entry is copied into the file so the layout of the memory of the class must be the same (including alignment).
-- (Ben Niham): I don't think this disk cache is in use for Safari but there might be some internal usecase. There might be a private API for some case. (Basuke) Disk cache is also used in same boot session or if binary is rebuilt, it won't be used. (Mark Lam) We do have some internal cases. We don't use across boot sessions for security. (Basuke) For this I disabled that with fixed info.
+- (Ben Niham): I don't think this disk cache is in use for Safari but there might be some internal use case. There might be a private API for some case. (Basuke) Disk cache is also used in same boot session or if binary is rebuilt, it won't be used. (Mark Lam) We do have some internal cases. We don't use across boot sessions for security. (Basuke) For this I disabled that with fixed info.
 - (Yusuke) Measured result looks following, would like to followup Mark's question around memory usage. Would suggest mmap from the file. Usually footprint doesn't count this memory. Some data would need to be regenerated, but some could be used fixed. Another thing is following up why why cache on disk, we don't have a precompiled file.
-- Q (Basuke): After evaluation what is purpose of source code A (Yusuke): If bytecode cache is not enabled, we need source code even if entirely done. We need a string right now for bytecode cache today, error handling case. I don't think this is mandatory for bytecode cache, we might need to do plumbing but it should be possible.
-- (Basuke) Right now looks like main use-case is for generating hash for the code cache (Yusuke) If we are using a pregenerated bytecode cache file, right now it probably doesn't work, but if we do some work, I don't think there's a super large blocking issue that would avoid purging the source string.
+- Q (Basuke): After evaluation what is purpose of source code A?
+- (Yusuke): If bytecode cache is not enabled, we need source code even if entirely done. We need a string right now for bytecode cache today, error handling case. I don't think this is mandatory for bytecode cache, we might need to do plumbing but it should be possible.
+- (Basuke) Right now looks like main use-case is for generating hash for the code cache 
+- (Yusuke) If we are using a pre-generated bytecode cache file, right now it probably doesn't work, but if we do some work, I don't think there's a super large blocking issue that would avoid purging the source string.
 - (Mark Lam) Function.toString is another case. Have you tried to apply this to the builtins as we build those into the binary.
-- Q (Basuke) Entire instruction stream is generated at beginning? A (Mark Lam) No. (Yusuke) For one function, but not for inner functions for outer function. Current bytecode cache, every time each calling function build up bytecode. If we want to forcibly generate all instruction stream we need to do so. If you made something that forced generation of all functions then you wouldn't need the source, but we have different instruction stream for constructor or other function so each function could have 2 instruction streams when called normally or from new. Which might generate a lot of unused code.
-- (Mark Lam) There's a jsc option for eagerly generate bytecode.
+- Q (Basuke) Entire instruction stream is generated at beginning? 
+- A (Mark Lam) No.
+- (Yusuke) For one function, but not for inner functions for outer function. Current bytecode cache, every time each calling function build up bytecode. If we want to forcibly generate all instruction stream we need to do so. If you made something that forced generation of all functions then you wouldn't need the source, but we have different instruction stream for constructor or other function so each function could have 2 instruction streams when called normally or from new. Which might generate a lot of unused code.
+- (Mark Lam) There's a JSC option for eagerly generate bytecode.
 - (Yusuke) Given the result, the hybrid result seems to be good. If previous run didn't generate a function then generate it from source will probably work. If eager generates too much code.
-- (Alex) In a similar case, I store bytecode and source so that if I change the bytecode it can generate it for a reason like that. (Basuke) This may help for cases on upgrading.
+- (Alex) In a similar case, I store bytecode and source so that if I change the bytecode it can generate it for a reason like that. 
+- (Basuke) This may help for cases on upgrading.
 - (Mark Lam) - The inspector will cause throwing away of bytecode.
 
 #### clang-tidy on JSC
@@ -548,10 +553,10 @@ A look at Interop 2022, how it’s scored and how to help. And at what’s being
 - We can add other browsers—including WebKitGTK—and see the results of that too, and not just STP.
 - The Interop project is being managed on the GitHub repo. If we go into the 2023 directory we can see a README that gives a lot more detail than I'm going to.
 - In Sep–Oct, we got submissions for feature proposals, but that's now come and gone.
-- We're now in the point where we're deciding what the positions of the six organisations are. And then make a determination from that. A single exclusion just excludes this.
+- We're now in the point where we're deciding what the positions of the six organizations are. And then make a determination from that. A single exclusion just excludes this.
 - Will launch in January, scored somehow, which we keep discussing.
 - Got a lot of proposals for 2023—83, after 10 in 2022, and 5 in 2021. Partly because the project has got a lot more attention now, and a lot more attention from web developers and a lot more proposals!
-- Choosing proposals is partly a question of prioritising, what things we think are important to developers.
+- Choosing proposals is partly a question of prioritizing, what things we think are important to developers.
 - If you have opinions—if you were at Apple/Igalia people to people in your org, for everyone else speak to those at Apple (Jen, Tim, Sam), or Igalia (Eric, Brian)
 
 #### WebDriver
@@ -597,7 +602,7 @@ GPU Process status and plans for the next year.
 - tightens the sandbox
 - one of the goals it to keep risky code in the Web Content Process
 - Also consider image and pdf decoding to be risky
-- compliated formats with old code that can be more easily exploited
+- compilated formats with old code that can be more easily exploited
 - Sandboxing - what is it?
 - it's a thing we use on Apple Platforms to limit the functionality of a process
 - allows you to describe what a process is allowed to access.
@@ -605,7 +610,7 @@ GPU Process status and plans for the next year.
 - this is fragile, we can block a call that we shouldn't be
 - if someone changes code in another framework, that can cause issues.
 - sandboxing is incredibly powerful, our strongest weapon in the security race
-- this has been recognized in the industry - hexacon (edited) 
+- this has been recognized in the industry - hexacon
 - do the same that we did for iOS for macOS
 - What have to moved?
 - 2d canvas - two years ago
@@ -615,42 +620,42 @@ GPU Process status and plans for the next year.
 - Then we do do IOKit blocking, so we succeeded in doing that for iOS 16
 - We're working on that for this year
 - the reason we did iOS first is because it was easier, we had an existing model that made it easier to do
-- dom rendering also mostly works, because 90% is shared with iOS
+- DOM rendering also mostly works, because 90% is shared with iOS
 - there are small things like form controls that we need to do some custom work for mac
 - webrx and webgpu are not ready yet
 - there's a lot of interops between these, and all the code paths need to work
 - we need to avoid bouncing between the GPU and the web process
 - iOS already used UI-side compositing
 - it's a confusing term
-- when we say 'compoisting' we're misuing the term
+- when we say 'compositing' we're misusing the term
 - it's not the thing that runs the shaders together
 - we're creating the core animations layers in the UIprocess, not in the webprocess
 - if we want to cut off IOKit, we can't use those in the WebContent process
 - all IOS surfaces access has to be in the GPU process
 - We can't use CA backing store in the web content process
-- dom rendering has to all be done in the GPU process
+- DOM rendering has to all be done in the GPU process
 - This need to be transparent to most of the code in WebCore
-- most of the code still uses graphics contenxt, still uses image buffer
+- most of the code still uses graphics context, still uses image buffer
 - there are things we need to do special things for images, pdfs and fonts
-- We can encode the informatoin about the filters to do the work in the gpu process
+- We can encode the information about the filters to do the work in the gpu process
 - web content creates image buffers,
 - in the uiprocess model, we explicitly create image buffers
-- we have a implementatin that encodes into display list commands
+- we have a implementation that encodes into display list commands
 - in the gpu process we have a concrete image buffer
-- we transit the ioSurfaces through the webprocess in an opque manner
+- we transit the ioSurfaces through the webprocess in an opaque manner
 - graphic context was made into a pure virtual class two years ago
 - we also did some work with display lists that helped
 - we subclass it as a display List Recorder, which just records the commands
 - we subclass that as the remote proxy that knows how to replay those commands
 - We do the same thing for images
-- If dom rendering is enabled, you'd get a graphics context to draw into, but it's really recoding and sending them to the GPU process under the hood
+- If DOM rendering is enabled, you'd get a graphics context to draw into, but it's really recoding and sending them to the GPU process under the hood
 - in order to give us a context class that holds state related to the rendering, we have a proxy in the web content process
-- These can IPC with eachother
+- These can IPC with each other
 - that will manage a collection of image buffers
 - that will interact with some remote image buffers
 - per webpage context
-- holds collectiosn of object key by rendering resouces idenitfier
-- everything is referenced by a resouce identifier
+- holds collections of object key by rendering resources identifier
+- everything is referenced by a resource identifier
 - we may get drawing commands that might reference images or fonts
 - if we get a command to paint an image, the first thing we do, is we decode the image into a buffer, that image buffer is held in the image head, and the GUP process referenced that shared identifier
 - same with fonts,
@@ -660,7 +665,7 @@ GPU Process status and plans for the next year.
 - Do the shaping code once, and then run it each time it's needed
 - the scope of the GPU process, one per UIProcess using WebKit
 - multiple webpages to share a GPU process
-- each remote rendering backend runs seperatly
+- each remote rendering backend runs separately
 - a GPU process pre webpage is too much, so just one per UIProcess
 - We already had remote layer
 - remote rendering is the GPU process
@@ -668,23 +673,23 @@ GPU Process status and plans for the next year.
 - the main class that makes drawing work is in the UIprocess
 - How does the rendering work for that particular platform?
 - part of this work, the mac will start using RemoteLayerTreeDrawingArea, get this working for all the mac bits
-- The page content consists of a set of tiles, we create aditional later for animtions
+- The page content consists of a set of tiles, we create additional later for animations
 - each of those layers has a remote layer backing store
 - one or more buffers that as iOSurface backed
-- incrementatl painting each time the page changes
+- incremental painting each time the page changes
 - the internals are different, but it's our way of hooking up between those two processes
-- important that all updates come atomicaly to the process
-- by changes, I mean any geomentry changes
+- important that all updates come atomically to the process
+- by changes, I mean any geometry changes
 - everything comes in a transation
 - and is applies in the UIprocss all in one go
-- pushe the changes onto core animation layers
+- push the changes onto core animation layers
 - makes the mac code more similar to iOS
 - scrolling is different, on iOS, UIScrollView we use
 - on the mac, we decided we didn't want to use app kit because it doesn't match as well
 - we need support for subscrollers, we have to be able to support everything on the subscrollers,
-- if you try and use an NSScrollView to do all of that it, doesn't really work as wellfor the mac, we will be bringing a lot of the existing code to the UIprocess
+- if you try and use an NSScrollView to do all of that it, doesn't really work as well for the mac, we will be bringing a lot of the existing code to the UIprocess
 - we will need to do some work to have a scrolling thread in the UIProcess
-- we need to implememnt pinch-zoom
+- we need to implement pinch-zoom
 - we can do it better with UI-side compositing
 - this will be smoother in the UIProcess
 - we also need to deal with color spaces
@@ -692,18 +697,18 @@ GPU Process status and plans for the next year.
 - Goal is to use IOKit blocking
 - implication for clients who use injected bundles
 - if you turn on IOKit blocking, all that code is affected
-- trying to reducde and remove injected bundle code
+- trying to reduce and remove injected bundle code
 - pdfs -  we rely on PDF kit now, but might try something else
 - image decoding - risky so run in the webprocess
 - need to make sure that hardware image decoders work
 - but we've turned them off for now, even though they are more performant
-- testing - see if there's an impace on our benchmarks
+- testing - see if there's an impact on our benchmarks
 - don't ship a regression in motion Mark
-- we have to find optimizations to make up for our slowdown becaus eof the IPC
+- we have to find optimizations to make up for our slowdown because of the IPC
 - We also have layout tests
 - with UISide compositing, this can get tricky
 - the mac will tell us if things are getting blocked by IOKit
-- layout test bot, running very early UISide compositiing code
+- layout test bot, running very early UISide compositing code
 - lots of crashes currently
 - all the impacts of turning this on
 - how can you test this
@@ -711,21 +716,21 @@ GPU Process status and plans for the next year.
 - Enable DOM render, enable GPU for WebGL, use UI-Side compositing
 - if you have all these, we will block IOKit, and see how it works
 - basic stuff works, you can load webpages and click on links
-- only main-frame scrollng works, nothing for subscrollers
+- only main-frame scrolling works, nothing for subscrollers
 
 ##### Q&A
 
-- Ujwal: are there any performance numbers on moving surfance between processes
-- Simon: this is not a preformance hit, it's basicaly free.
+- Ujwal: are there any performance numbers on moving surface between processes
+- Simon: this is not a performance hit, it's basically free.
 - Get an put image data is slow
 - content that does a lot of get and put image data can be slower
-- also applies to webGL, getting the curretn error state
+- also applies to webGL, getting the current error state
 - getting images to the GPU process uses shared memory
 - same with fonts
 - a lot of our performance work was to do with throughput and latency
-- you want to optimize througput and reduce latency
+- you want to optimize throughput and reduce latency
 - get enough data to the GPU process to allow it to start rendering
-- you need to get things acress the divide soon so that you can start executing in the GPU process quickly
+- you need to get things across the divide soon so that you can start executing in the GPU process quickly
 - have the drawing commands be as small as possible is important
 - get the data through as soon as you can
 - get and get image data is the only really bottleneck
@@ -733,38 +738,38 @@ GPU Process status and plans for the next year.
 - Nikolas: Wondering about several design decisions: Web rendering backend and remote layers
 - more wondering about starting this on iOS
 - you're not using NSScroll View
-- implications for the furture. what are your visions/plans if you could change all ports
+- implications for the future. what are your visions/plans if you could change all ports
 - The non-UISide Compositing
-- SImon: the goal is for WebCore code to not care what we do.
+- Simon: the goal is for WebCore code to not care what we do.
 - Really the WebKit code is where we care about the differences between platforms
 - What we'd like to do is we'd like to share more code in WKWebView with mac
-- there's a lecagy bit in WKView, but I do't know if we'll have time for that
+- there's a legacy bit in WKView, but I do't know if we'll have time for that
 - you can imaging a world where we can share all the viewport code
 - in terms of legacy, we still have to support UIWebView and WebView, so those still work in the old way, so that won' t change soon
-- the matinance level is up in the UIWe
+- the maintenance level is up in the UIWe
 - we will be able to support both paths
 - SVG doesn't need to care
 - Nikolas: I'm not asking about that, it's equal if not worse in some thing.
 - We often ran into issues for WPE
 - that we couldn't cover with automatic testing
-- something is broken in certian combinations
-- We are in the process of thinking abotu GPU process for WPE
+- something is broken in certain combinations
+- We are in the process of thinking about GPU process for WPE
 - we want to go for a model that has your support
 - that you think it's safe for the future
 - so we can maximize sharing code
-- recuding breakage
+- reducing breakage
 - that's why I'm asking
 - Simon:
 - We did a good thing with Sharing the scrolling tree
 - good position there
 - about testing - with scrolling tree
-- you can only scroll and pretend that the webproces sis unresponsive
+- you can only scroll and pretend that the webprocess sis unresponsive
 - you hav to do the correctly
-- UIScriptController medthos that helps us to do the UIProcess scroll
+- UIScriptController methods that helps us to do the UIProcess scroll
 - you can do that in a way that you can do the UIProcess scroll
 - there are quite a few test that can do this
 - now that I think about that, they live in fast/scrolling/iOS
-- par tof the story here is we should make sure that the test work well
+- part of the story here is we should make sure that the test work well
 - there's more we could do with UIScript controller
 
 #### Improving Contributor Onramps
