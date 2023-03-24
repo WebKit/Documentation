@@ -19,3 +19,5 @@ If you have the upstream WPT repository locally you can skip redownloading it by
 ```
 Tools/Scripts/import-w3c-tests web-platorm-tests/folder_to_import_here -l -s path_to_web_platform_tests
 ```
+
+Important: your checkout of WPT needs to be in a directory named `web-platform-tests` and the path passed to `-s` should not include that directory. I.e., if your checkout is at `~/web-platform-tests` you pass `-s ~`. `import-w3c-tests` will unfortunately not complain if you got this wrong.
