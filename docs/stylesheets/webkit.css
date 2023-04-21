@@ -1930,6 +1930,7 @@ article blockquote {
 ::placeholder {
     font-size: 1em;
     padding: 5px;
+    visibility: hidden;
   }
 
 .md-search__form {
