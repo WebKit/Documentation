@@ -190,6 +190,7 @@ bool JSStyleSheetOwner::isReachableFromOpaqueRoots(JSC::Handle<JSC::Unknown> han
 ```
 
 Generally, using opaque roots as a way of keeping JavaScript wrappers involve two steps:
+
  1. Add opaque roots in `visitAdditionalChildren`.
  2. Return true in `isReachableFromOpaqueRoots` when relevant opaque roots are found.
 
@@ -242,6 +243,7 @@ The second step can be achived by adding `CustomIsReachable` to the IDL file and
 implementing `JS*Owner::isReachableFromOpaqueRoots` in JS*Custom.cpp file.
 Alternatively and more preferably, `GenerateIsReachable` can be added to IDL file to automatically generate this code
 with the following values:
+
  * No value - Adds the result of calling `root(T*)` on the underlying C++ object of type T as the opaque root.
  * `Impl` - Adds the underlying C++ object as the opaque root.
  * `ReachableFromDOMWindow` - Adds a [`DOMWindow`](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/DOMWindow.h)
@@ -323,10 +325,12 @@ There are a few ways to create a pending activity on an [active DOM objects](htt
 
 When the relevant Web standards says to [queue a task](https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task) to do some work,
 one of the following member functions of [`ActiveDOMObject`](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/dom/ActiveDOMObject.h) should be used:
+
  * [`queueTaskKeepingObjectAlive`](https://github.com/WebKit/WebKit/blob/64cdede660d9eaea128fd151281f4715851c4fe2/Source/WebCore/dom/ActiveDOMObject.h#L106)
  * [`queueCancellableTaskKeepingObjectAlive`](https://github.com/WebKit/WebKit/blob/64cdede660d9eaea128fd151281f4715851c4fe2/Source/WebCore/dom/ActiveDOMObject.h#L114)
  * [`queueTaskToDispatchEvent`](https://github.com/WebKit/WebKit/blob/64cdede660d9eaea128fd151281f4715851c4fe2/Source/WebCore/dom/ActiveDOMObject.h#L124)
  * [`queueCancellableTaskToDispatchEvent`](https://github.com/WebKit/WebKit/blob/64cdede660d9eaea128fd151281f4715851c4fe2/Source/WebCore/dom/ActiveDOMObject.h#L130)
+
 These functions will automatically create a pending activity until a newly enqueued task is executed.
 
 Alternatively, [`makePendingActivity`](https://github.com/WebKit/WebKit/blob/64cdede660d9eaea128fd151281f4715851c4fe2/Source/WebCore/dom/ActiveDOMObject.h#L97)
