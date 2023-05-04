@@ -734,7 +734,6 @@ article blockquote {
     font-size: 3rem;
     line-height: 4.2rem;
     text-align: center;
-    color: hsl(240, 2.3%, 56.7%);
     color: var(--text-color-coolgray);
 }
 article blockquote > * {
@@ -1826,8 +1825,41 @@ article blockquote {
     font-size: 1.3rem;
     line-height: 1.6rem;
     text-align: left;
-    color: hsl(240, 2.3%, 56.7%);
-    color: var(--text-color-coolgray);
+    color: hsl(30, 90%, 35%);
+    color: var(--note-text-color);
+    background-color: var(--note-background-color);
+}
+
+[dir=ltr] .md-typeset blockquote {
+    border-left: revert;
+    padding-left: revert;
+
+    margin-left: -30px;
+    margin-right: -30px;
+}
+
+blockquote p {
+    border: 1px solid hsl(40, 100%, 90%);
+    border-radius: 3px;
+
+    border-color: var(--note-border-color);
+
+    width: revert;
+    height: auto;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    left: revert;
+    position: revert;
+    margin-left: revert;
+    box-sizing: border-box;
+    font-weight: 200;
+    font-size: 1.3rem;
+    line-height: 1.6rem;
+    text-align: left;
+    color: var(--note-text-color);
+    background-color: var(--note-background-color);
 }
 
 /** md overrides */
