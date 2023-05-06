@@ -8,6 +8,7 @@ theme:
   features:
     - header.autohide
     - search.share
+    - navigation.tabs
     - navigation.tracking
     - content.action.edit
 
@@ -32,5 +33,5 @@ markdown_extensions:
       permalink: true
 
 extra_css:
-  - stylesheets/webkit.css    
+  - stylesheets/webkit.css
 
