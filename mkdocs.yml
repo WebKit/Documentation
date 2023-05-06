@@ -8,6 +8,7 @@ theme:
   features:
     - header.autohide
     - search.share
+    - navigation.tabs
     - navigation.tracking
     - content.action.edit
 
@@ -16,12 +17,21 @@ theme:
 
 plugins:
   - search
+  - offline
 
 repo_url: https://github.com/webkit/Documentation
 edit_uri: blob/main/docs/
 
 extra:
   social:
+    - icon: fontawesome/brands/mastodon 
+      link: https://front-end.social/@webkit
+
+    - icon: fontawesome/brands/slack
+      link: https://webkit.slack.com
+
+    - icon: fontawesome/brands/github 
+      link: https://github.com/webkit/webkit
 
   generator: false
 
@@ -32,5 +42,5 @@ markdown_extensions:
       permalink: true
 
 extra_css:
-  - stylesheets/webkit.css    
+  - stylesheets/webkit.css
 
