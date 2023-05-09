@@ -6,7 +6,7 @@ The WebKit project outlines a simplified recommended setup. This section outline
 
 ### Forking
 
-Since `git` is a decentralized version control system, a local copy can work with any remote that has the same set of shas. GitHub pull requests take advantage of this. After running [`git-webkit setup`](/WebKit/WebKit/wiki/Contributing#setup), the `.git/config` in the local WebKit repository should look something like this:
+Since `git` is a decentralized version control system, a local copy can work with any remote that has the same set of shas. GitHub pull requests take advantage of this. After running [`git-webkit setup`](/Getting Started/ContributingCode#getting-setup-to-contribute), the `.git/config` in the local WebKit repository should look something like this:
 
 ```
 [remote "origin"]
@@ -22,7 +22,7 @@ Since `git` is a decentralized version control system, a local copy can work wit
 
 Now, if a contributor runs `git push fork eng/some-branch`, `eng/some-branch` will be pushed to the remote `fork`, which should correspond to that contributor's personal fork of the WebKit project on GitHub. Likewise, running `git checkout remotes/fork/eng/some-branch` will checkout `eng/some-branch` according to that contributor's `fork` remote.
 
-[`git-webkit setup`](/WebKit/WebKit/wiki/Contributing#setup) also configures a remote with a contributors GitHub username. This is because if other contributors would like to checkout code from a pull request which they do not own, contributors will need to add this:
+[`git-webkit setup`](/Getting Started/ContributingCode#getting-setup-to-contribute) also configures a remote with a contributors GitHub username. This is because if other contributors would like to checkout code from a pull request which they do not own, contributors will need to add this:
 
 ```
 [remote "<username>"]
@@ -34,7 +34,7 @@ to their `.git/config` and run `git checkout remotes/<username>/eng/some-branch`
 
 ## Configuration Options
 
-[`git-webkit setup`](/WebKit/WebKit/wiki/Contributing#setup) automatically sets or prompts the contributor to define a number of `git` configuration options. Most contributors  should use the defaults recommended by [`git-webkit setup`](/WebKit/WebKit/wiki/Contributing#setup). This section defines, in detail, what an option does and why the WebKit project recommends a certain setting.
+[`git-webkit setup`](/Getting Started/ContributingCode#getting-setup-to-contribute) automatically sets or prompts the contributor to define a number of `git` configuration options. Most contributors  should use the defaults recommended by [`git-webkit setup`](/Getting Started/ContributingCode#getting-setup-to-contribute). This section defines, in detail, what an option does and why the WebKit project recommends a certain setting.
 
 ### user.email
 
@@ -46,7 +46,7 @@ Enter git user email for this repository:
 
 The `user.email` option is usually configured globally, and will become the contact information in `git` when authoring or committing a change. This is also the part of a commit that GitHub uses when attributing commits to specific users. The email a contributor defines here should be one of that contributor's emails in GitHub so that changes are correctly attributed to the contributor.
 
-The WebKit project asks contributors to define this value for their WebKit repository specifically because a contributor's reported email may change over time, and may even differ between machines. [`git-webkit setup`'s](/WebKit/WebKit/wiki/Contributing#setup) prompt is an effort to make contributors think about what their reported contact information for this specific checkout should be.
+The WebKit project asks contributors to define this value for their WebKit repository specifically because a contributor's reported email may change over time, and may even differ between machines. [`git-webkit setup`'s](/Getting Started/ContributingCode#getting-setup-to-contribute) prompt is an effort to make contributors think about what their reported contact information for this specific checkout should be.
 
 Note that the author and committer listed in a `git` commit can easily be spoofed, so `user.email` plays no part in authentication. It is strictly for communication to other contributors.
 
@@ -104,7 +104,7 @@ When creating or editing commit messages, `git` will invoke an external editor. 
 
 ## WebKit Options
 
-[`git-webkit`] respects a few options that are specific to the `webkitscmpy` library. [`git-webkit setup`](/WebKit/WebKit/wiki/Contributing#setup) does automatically configure some of these, [`metadata/project_config`](/WebKit/WebKit/blob/main/metadata/project_config) also contains a few default values for the project.
+[`git-webkit`] respects a few options that are specific to the `webkitscmpy` library. [`git-webkit setup`](/Getting Started/ContributingCode#getting-setup-to-contribute) does automatically configure some of these, [`metadata/project_config`](/WebKit/WebKit/blob/main/metadata/project_config) also contains a few default values for the project.
 
 ### webkitscmpy.pull-request
 

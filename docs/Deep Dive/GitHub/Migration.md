@@ -11,7 +11,7 @@ If you see something like:
 fatal: not a git repository (or any parent up to mount point /Volumes)
 Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
 ```
-you have a [Subversion checkout](/WebKit/WebKit/wiki/Migration#subversion) and need to migrate to a GitHub checkout.
+you have a [Subversion checkout](#subversion) and need to migrate to a GitHub checkout.
 
 If you see something like:
 ```
@@ -23,28 +23,28 @@ or:
 origin    https://git.webkit.org/git/WebKit (fetch)
 origin    https://git.webkit.org/git/WebKit (push)
 ```
-you have an [obsolete git mirror](/WebKit/WebKit/wiki/Migration#obsolete-mirror) for how to deal with patches uploaded to bugzilla.) and need to migrate to a GitHub checkout.
+you have an [obsolete git mirror](#obsolete-mirror) for how to deal with patches uploaded to bugzilla.) and need to migrate to a GitHub checkout.
 
 If you see something like:
 ```
 origin    git@github.com:WebKit/WebKit.git (fetch)
 origin    git@github.com:WebKit/WebKit.git (push)
 ```
-you already have a GitHub checkout, and can skip to [setting up your checkout](/WebKit/WebKit/wiki/Contributing#setup).
+you already have a GitHub checkout, and can skip to [setting up your checkout](/Getting Started/ContributingCode#getting-setup-to-contribute).
 
 ## Subversion
 
 Migrating from a Subversion checkout involves first cloning the WebKit repository with `git clone https://github.com/WebKit/WebKit.git <local path>`. A SSH based clone will work as well, but will require an [SSH key to be uploaded](https://github.com/settings/keys).
 
-After your clone completes, [set up your checkout](/WebKit/WebKit/wiki/Contributing#setup). If you don't have local changes in your Subversion checkout, no more migration work is required. If you do have local changes, use `Tools/Scripts/svn-create-patch` to save those changes in a local `.patch` file and then run `Tools/Scripts/svn-apply` to apply that patch to your new GitHub clone. See [below](/WebKit/WebKit/wiki/Migration#webkit-patch) for how to deal with patches uploaded to bugzilla.
+After your clone completes, [set up your checkout](/Getting Started/ContributingCode#getting-setup-to-contribute). If you don't have local changes in your Subversion checkout, no more migration work is required. If you do have local changes, use `Tools/Scripts/svn-create-patch` to save those changes in a local `.patch` file and then run `Tools/Scripts/svn-apply` to apply that patch to your new GitHub clone. See [below](#webkit-patch) for how to deal with patches uploaded to bugzilla.
 
 ## Obsolete Mirror
 
 The repository hosted via [github.com/WebKit/WebKit](https://github.com/WebKit/WebKit) has different commits from the ones hosted on [git.webkit.org](https://git.webkit.org). While it is possible convert an existing checkout, the WebKit team recomends that you freshly clone the WebKit repository with `git clone https://github.com/WebKit/WebKit.git <local path>`. A SSH based clone will work as well, but will require an [SSH key to be uploaded](https://github.com/settings/keys).
 
-After your clone completes, [set up your checkout](/WebKit/WebKit/wiki/Contributing#setup). The WebKit team has not built automation to assist in migrating branches from [git.webkit.org](https://git.webkit.org) checkouts to [github.com/WebKit/WebKit](https://github.com/WebKit/WebKit) ones. However, the content on disk in both repositories is identical. That means that something like `git -C <oldpath> diff HEAD~1 | git -C <newpath> apply` will apply a commit from one checkout to the other, assuming the diff of the commit you're moving applies to commit you have checked out.
+After your clone completes, [set up your checkout](/Getting Started/ContributingCode#getting-setup-to-contribute). The WebKit team has not built automation to assist in migrating branches from [git.webkit.org](https://git.webkit.org) checkouts to [github.com/WebKit/WebKit](https://github.com/WebKit/WebKit) ones. However, the content on disk in both repositories is identical. That means that something like `git -C <oldpath> diff HEAD~1 | git -C <newpath> apply` will apply a commit from one checkout to the other, assuming the diff of the commit you're moving applies to commit you have checked out.
 
-See [below](/WebKit/WebKit/wiki/Migration#webkit-patch) for how to deal with patches uploaded to bugzilla.
+See [below](#webkit-patch) for how to deal with patches uploaded to bugzilla.
 
 ## webkit-patch
 
