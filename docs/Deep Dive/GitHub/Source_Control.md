@@ -4,11 +4,11 @@ The information outlined in this section is intended for a future where Git is t
 
 ## Commit Representation
 
-The WebKit project heavily relies on a linear, ordered history on the `main` branch to track regressions in the project. Historically, [Subversion](https://subversion.apache.org)'s revisions were used across our commit messages, bug tracking and services to achieve this goal. Our migration to `git` has required a new solution, because while `git` is capable on enforcing a linear and ordered history (so long as [merge commits](/WebKit/WebKit/wiki/Source-Control#merge-commits) are banned), `git` commits are traditionally represented as hashes, which are not trivially orderable the way [Subversion](https://subversion.apache.org)'s revisions are.
+The WebKit project heavily relies on a linear, ordered history on the `main` branch to track regressions in the project. Historically, [Subversion](https://subversion.apache.org)'s revisions were used across our commit messages, bug tracking and services to achieve this goal. Our migration to `git` has required a new solution, because while `git` is capable on enforcing a linear and ordered history (so long as [merge commits](#merge-commits) are banned), `git` commits are traditionally represented as hashes, which are not trivially orderable the way [Subversion](https://subversion.apache.org)'s revisions are.
 
-The WebKit teams has instead adopted a system where commits are represented based on their relationship to the default branch and number of ancestors they have, we have dubbed this representation the [commit identifier](/WebKit/WebKit/wiki/Source-Control#identifiers). Most tooling accepts `git` hashes, [Subversion](https://subversion.apache.org) revisions and identifiers, although the `Tools/Scripts/git-webkit` script can convert between the three representations locally, if the need arises.
+The WebKit teams has instead adopted a system where commits are represented based on their relationship to the default branch and number of ancestors they have, we have dubbed this representation the [commit identifier](#identifiers). Most tooling accepts `git` hashes, [Subversion](https://subversion.apache.org) revisions and identifiers, although the `Tools/Scripts/git-webkit` script can convert between the three representations locally, if the need arises.
 
-To use this commit representation for local development, `Tools/Scripts/git-webkit` implements a `blame` and `log` sub-command that include [commit identifiers](/WebKit/WebKit/wiki/Source-Control#identifiers) and [Subversion](https://subversion.apache.org) revisions, if available.
+To use this commit representation for local development, `Tools/Scripts/git-webkit` implements a `blame` and `log` sub-command that include [commit identifiers](#identifiers) and [Subversion](https://subversion.apache.org) revisions, if available.
 
 ```
 Tools/Scripts/git-webkit blame Makefile
@@ -62,7 +62,7 @@ The timeline bellow shows what identifiers looks like with multiple branches:
  100@main   101@main   102@main  103@main  104@main
 ```
 
-It is worth noting that commits, especially those on branches, have multiple valid identifiers. In the above example, `101.1@branch-a` could also be referred to as `101.1@branch-b` and `101@main` could be referred to as `101.0@branch-a`. The WebKit team has defined the [canonical](/WebKit/WebKit/wiki/Source-Control#canonicalization) identifier for a given commit to be that commit's identifier on the least specific branch that commit is on. The metric for branch specificity is outlined in `Tools/Scripts/libraries/webkitscmpy/webkitscmpy/scm_base.py`, but can essentially be thought of like this:
+It is worth noting that commits, especially those on branches, have multiple valid identifiers. In the above example, `101.1@branch-a` could also be referred to as `101.1@branch-b` and `101@main` could be referred to as `101.0@branch-a`. The WebKit team has defined the [canonical](#canonicalization) identifier for a given commit to be that commit's identifier on the least specific branch that commit is on. The metric for branch specificity is outlined in `Tools/Scripts/libraries/webkitscmpy/webkitscmpy/scm_base.py`, but can essentially be thought of like this:
 ```
 default branch                               (least specific)
 production branches
@@ -124,7 +124,7 @@ The WebKit project aims to keep branches clean, development should be primarily 
 
 ### Production Branches
 
-Most WebKit development should be done on `main`, which is our default branch. Note that [Subversion](https://subversion.apache.org)'s `trunk` branch tracked the same set of commits that the modern `main` branch does. `main` is protected by Commit Queue, as outlined in the [Permissions](/WebKit/WebKit/wiki/Source-Control#permissions) heading.
+Most WebKit development should be done on `main`, which is our default branch. Note that [Subversion](https://subversion.apache.org)'s `trunk` branch tracked the same set of commits that the modern `main` branch does. `main` is protected by Commit Queue, as outlined in the [Permissions](#permissions) heading.
 
 Other production branches are managed by specific platforms as part of their release cycle. Most notably, the `safari-*-branch` set of branches correspond to versions of WebKit released by Apple.
 
@@ -148,13 +148,13 @@ Merge-commits make bisection difficult, and make it hard for humans to reason ab
 
 ## Permissions
 
-Only [administers](https://github.com/orgs/WebKit/teams/administers) and [Commit Queue](https://github.com/webkit-commit-queue) have direct access to `main`. Instead, committers are granted access to push branches named `commit-queue/*` and `fast-commit-queue`, which are then checked before being rebased and landed on `main` (NB, work in progress).
+Only [administers](https://github.com/orgs/WebKit/teams/administrators) and [Commit Queue](https://github.com/webkit-commit-queue) have direct access to `main`. Instead, committers are granted access to push branches named `commit-queue/*` and `fast-commit-queue`, which are then checked before being rebased and landed on `main` (NB, work in progress).
 
 Branches matching `safari-*-branch` are managed by [Apple's Integrators](https://github.com/orgs/WebKit/teams/apple-integrators).
 
 ## Canonicalization
 
-To make [identifiers](/WebKit/WebKit/wiki/Source-Control#identifiers) easier to user, Commit Queue adds those identifiers to commit messages via a link to [commits.webkit.org](https://commits.webkit.org). We call this process "canonicalization." In addition to adding identifiers to commit messages, canonicalization attempts to parse the commit message to correctly attribute changes which may be authored and committed by different contributors.
+To make [identifiers](#identifiers) easier to user, Commit Queue adds those identifiers to commit messages via a link to [commits.webkit.org](https://commits.webkit.org). We call this process "canonicalization." In addition to adding identifiers to commit messages, canonicalization attempts to parse the commit message to correctly attribute changes which may be authored and committed by different contributors.
 
 The task of canonicalization is owned by Commit Queue and is done immediately before pushing changes to a production branch. Canonicalization should not be preformed on non-production branches.
 
