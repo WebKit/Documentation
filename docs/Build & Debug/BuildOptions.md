@@ -64,8 +64,6 @@ Tools/Scripts/update-webkitgtk-libs
 Tools/Scripts/build-webkit --gtk --debug
 ```
 
-For more information on building WebKitGTK, see the [wiki page](https://trac.webkit.org/wiki/BuildingGtk).
-
 ## Building the WPE Port
 
 For production builds:
