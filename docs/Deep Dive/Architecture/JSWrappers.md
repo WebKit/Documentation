@@ -32,7 +32,7 @@ Each `DOMWrapperWorld` has its own JS wrapper for each C++ object.
 As a result, a single C++ object may have multiple JS wrappers in distinct `DOMWrapperWorld`s.
 The most important `DOMWrapperWorld` is the main `DOMWrapperWorld` which runs the scripts of web pages WebKit loaded
 while other `DOMWrapperWorld`s are typically used to run code for browser extensions and other code injected by applications that embed WebKit.
-![Diagram of JS wrappers](../../assets/js-wrapper.png)
+![Diagram of JS wrappers](/assets/JSWrapper.png)
 JSX.h provides `toJS` functions which creates a JS wrapper for X
 in a given [global object](https://developer.mozilla.org/en-US/docs/Glossary/Global_object)’s `DOMWrapperWorld`,
 and toWrapped function which returns the underlying C++ object.

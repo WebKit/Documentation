@@ -5,8 +5,8 @@ You can use Xcode to build & debug WebKit. Open `WebKit.xcworkspace` at the top 
 In order to make Xcode use build files built by `make` command above,
 go to File > Workspace Settings... > Advanced... > Custom > Relative to Workspace
 and adjust the relative paths of Products and Intermediates to point to `WebKitBuild` directory.
-![Screenshot of Xcode Workspace Settings](../assets/xcode-workspace-settings.png)
-![Screenshot of Xcode Workspace Settings - Advanced Build Location](../assets/xcode-workspace-build-location.png)
+![Screenshot of Xcode Workspace Settings](/assets/XcodeWorkspaceSettings.png)
+![Screenshot of Xcode Workspace Settings - Advanced Build Location](/assets/XcodeWorkspaceBuildLocation.png)
 Note that debugging WebCore code typically requires attaching to the relevant WebContent process,
 not the application process, which is mostly running code in [Source/WebKit/UIProcess](https://github.com/WebKit/WebKit/tree/main/Source/WebKit/UIProcess).
 Depending on what you’re debugging, you’d have to attach & debug different processes in the coalition.
@@ -35,10 +35,10 @@ In Product > Scheme, select “All Source”.
 In Product > Scheme > Edit Scheme, open “Run” tab.
 Pick WebKitTestRunner or DumpRenderTree, whichever is desired in “Executable”.
 
-![Screenshot of specifying DumpRenderTree as the target of "Run" scheme](../assets/xcode-scheme-dumprendertree.png)
+![Screenshot of specifying DumpRenderTree as the target of "Run" scheme](/assets/XcodeSchemeDumpRenderTree.png)
 Go to Arguments and specify the path to the layout tests being debugged relative to where the build directory is located.
 e.g. `../../LayoutTests/fast/dom/Element/element-traversal.html` if `WebKitBuild/Debug` is the build directory.
-![Screenshot of Xcode specifying a layout test in an argument to DumpRenderTree](../assets/xcode-scheme-layout-test.png)
+![Screenshot of Xcode specifying a layout test in an argument to DumpRenderTree](/assets/XcodeSchemeLayoutTest.png)
 You may want to specify OS_ACTIVITY_MODE environmental variable to “disable”
 in order to suppress all the system logging that happens during the debugging session.
 
@@ -49,7 +49,7 @@ Once this is done, you can run WebKitTestRunner or DumpRenderTree by going to Pr
 
 Clicking on “Run” button may be significantly slower due to Xcode re-building every project and framework each time.
 You can disable this behavior by going to “Build” tab and unchecking boxes for all the frameworks involved for “Run”:
-![Screenshot of Xcode unchecking build options for all but DumpRenderTree for "Run" scheme](../assets/xcode-build-settings-for-run.png)
+![Screenshot of Xcode unchecking build options for all but DumpRenderTree for "Run" scheme](/assets/XcodeBuildSettingsForRun.png)
 
 ### Attaching to WebContent Process
 
