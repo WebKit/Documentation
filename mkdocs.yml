@@ -3,8 +3,8 @@ site_name: WebKit Documentation
 theme:
   name: material
   font: false
-  logo: assets/webkit.svg
-  favicon: assets/webkit.svg
+  logo: assets/WebKit.svg
+  favicon: assets/WebKit.svg
   features:
     - header.autohide
     - search.share

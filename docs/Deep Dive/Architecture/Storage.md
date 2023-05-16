@@ -19,7 +19,7 @@ StorageAreaBases)
 * MemoryStorageArea / SQLiteStorageArea (inherits StorageAreaBases; manage one local or session storage, like
 Webkit::StorageArea)
 
-![Storage Manager](../../assets/Storage%20Manager.svg)
+![Storage Manager](/assets/StorageManager.svg)
 
 
 ### Notes
