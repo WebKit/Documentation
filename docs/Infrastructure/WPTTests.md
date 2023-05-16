@@ -1,4 +1,4 @@
-# Import Web Platform Tests
+# Web Platform Tests Integration
 
 WebKit maintains a separate fork of the Web Platform Tests living in `‌LayoutTests/imported/w3c/web-platform-tests`. When changes are made upstream we need to import them to stay up to date.
 
