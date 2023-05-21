@@ -12,13 +12,13 @@ git webkit setup
 
 The `setup` sub-command of [git-webkit](https://github.com/WebKit/WebKit/tree/main/Tools/Scripts/git-webkit) configures your local WebKit checkout for contributing code to the WebKit project. This script will occasionally prompt the user for input. The script does the following:
 
-* Set your [name](/WebKit/WebKit/wiki/Git-Config#username) and [email address](/WebKit/WebKit/wiki/Git-Config#useremail) for the WebKit repository
-* [Make Objective-C diffs easier to digest](/WebKit/WebKit/wiki/Git-Config#diff)
+* Set your [name](/Deep Dive/GitHub/GitConfig.html#username) and [email address](/Deep Dive/GitHub/GitConfig.html#useremail) for the WebKit repository
+* [Make Objective-C diffs easier to digest](/Deep Dive/GitHub/GitConfig.html#diff)
 * Setup a commit message generator
-* Set an [editor for commit messages](/WebKit/WebKit/wiki/Git-Config#coreeditor)
+* Set an [editor for commit messages](/Deep Dive/GitHub/GitConfig.html#coreeditor)
 * Store a [GitHub API token](https://github.com/settings/tokens) in your system credential store
 * Configure `git` to use the [GitHub API token](https://github.com/settings/tokens) when prompted for credentials, if using the HTTPS remote
-* Create a [user owned fork](/WebKit/WebKit/wiki/Git-Config#Forking) of the WebKit repository
+* Create a [user owned fork](/Deep Dive/GitHub/GitConfig.html#Forking) of the WebKit repository
 
 ## Submitting a pull request
 
@@ -71,7 +71,7 @@ To land a change, run `git-webkit land` from the branch to be landed. Note that 
 * Check to ensure a pull-request is approved and not blocked
 * Insert reviewer names into the commit message
 * Rebase the pull-request against its parent branch
-* [Canonicalize](https://github.com/WebKit/WebKit/wiki/Source-Control#canonicalization) the commits to be landed
+* [Canonicalize](/Deep Dive/GitHub/Source Control#canonicalization) the commits to be landed
 * Update the pull-request with the landed commit
 
 ## Coding style
