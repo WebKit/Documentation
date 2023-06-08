@@ -108,3 +108,9 @@ Set the `WebCoreLogging` environment variable.
 ## Adding a new log channel
 
 Simply add a line to your framework's `Logging.h` header. Depending on how the accompanying `Logging.cpp` file is set up, you may need to add a parallel line there. That should be all you need. It is acceptable to have log channels in different frameworks with the same name - this is what `LOG_CHANNEL_PREFIX` is for.
+
+## JavaScriptCore and dataLog
+
+WebKit has another logging infrastructure `dataLog`. JavaScriptCore is mainly using it. To enable the JSC logging, set a environment variable or give a command switch to `jsc`. For example, `JSC_logGC=2` or `run-jsc --logGC=2`. Give `--debug` switch to `run-jsc` script if you build a debug build.
+
+Invoking `run-jsc --options` lists all options and possible values. On Windows, invoke `perl Tools/Scripts/run-jsc --options` or `WebKitBuild/Release/bin64/jsc.exe --options`.
