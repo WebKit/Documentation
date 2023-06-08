@@ -103,7 +103,9 @@ Tools/Scripts/run-minibrowser --debug -WebCoreLogging Scrolling
 
 ### Windows
 
-Set the `WebCoreLogging` environment variable.
+Set the `WTFLogging`, `WebCoreLogging` or `WebKit2Logging` environment variables.
+
+It outputs logs both to stderr and `OutputDebugString` on Windows. Console applications (jsc.exe, WebKitTestRunner.exe, etc) can use stderr, but GUI applications (MiniBrowser.exe). Attach a debugger to see the message of `OutputDebugString`. Use ​[Child Process Debugging Power Tool](https://devblogs.microsoft.com/devops/introducing-the-child-process-debugging-power-tool/) to automatically attach child processes.
 
 ## Adding a new log channel
 
