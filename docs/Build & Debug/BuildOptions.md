@@ -84,7 +84,7 @@ Tools/Scripts/build-webkit --wpe --debug
 
 ## Building Windows Port
 
-For building WebKit on Windows, see [Windows Port](../Ports/Windows port/Introduction.html).
+For building WebKit on Windows, see [Windows Port](../Ports/WindowsPort.md).
 
 ## Running WebKit
 
