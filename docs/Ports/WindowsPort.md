@@ -109,7 +109,7 @@ The build succeeded if you got `WebKit is now built` message. Run your `MiniBrow
 WebKitBuild/Release/bin64/MiniBrowser.exe
 ```
 
-You can run programs under a debugger with [this instruction](../../Build & Debug/DebuggingWithVS.html).
+You can run programs under a debugger with [this instruction](../Build & Debug/DebuggingWithVS.md).
 
 ### Building from within Visual Studio
 
