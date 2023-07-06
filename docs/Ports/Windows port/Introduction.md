@@ -60,7 +60,8 @@ path %ProgramFiles%\CMake\bin;%path%
 path %ProgramFiles(x86)%\Microsoft Visual Studio\Installer;%path%
 for /F "usebackq delims=" %%I in (`vswhere.exe -latest -property installationPath`) do set VSPATH=%%I
 
-set WEBKIT_LIBRARIES=%~dp0WebKitLibraries\win
+rem set WEBKIT_LIBRARIES=%~dp0WebKitLibraries\win
+path %~dp0WebKitLibraries\win\bin64;%path%
 set WEBKIT_TESTFONTS=%~dp0Tools\WebKitTestRunner\fonts
 set DUMPRENDERTREE_TEMP=%TEMP%
 
