@@ -50,3 +50,9 @@ such as [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/po
 
 
 # Inserting and Removing DOM Nodes
+
+Document Object Model (DOM) manipulation is a crucial aspect of web development, allowing you to dynamically modify the structure and content of your web page. This documentation will guide you through the process of inserting and removing DOM nodes using JavaScript.
+
+### Prerequisites
+
+Before you start manipulating DOM nodes, you should have a basic undertanding of HTML,CSS and Javascript.
