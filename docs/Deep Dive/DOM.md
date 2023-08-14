@@ -59,7 +59,7 @@ Before you start manipulating DOM nodes, you should have a basic undertanding of
 
 ## Inserting DOM Nodes
 
-#### createElement
+### createElement
 
 To insert a new DOM element, first create the element using `document.createElement` method. This method will create a new HTML element with 
 a specific tag name. Once the element is created, you can further modify its attributes and content.
@@ -67,6 +67,18 @@ a specific tag name. Once the element is created, you can further modify its att
 <h4>Example: </h4>
 
 ```
-    const newElement = document.createElement('div');
-    newElement.textContent = 'test text';
+const newElement = document.createElement('div');
+newElement.textContent = 'test text';
+```
+
+### appendChild
+
+The `appendChild` method is used to add a child node to parent node. It appends the specified child node as the last child 
+of the parent node.
+
+<h4>Example: </h4>
+
+```
+const parentElement = document.getElementById('parent');
+parentElement.appendChild(newElement);
 ```
