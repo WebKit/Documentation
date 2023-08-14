@@ -53,13 +53,11 @@ such as [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/po
 
 Document Object Model (DOM) manipulation is a crucial aspect of web development, allowing you to dynamically modify the structure and content of your web page. This documentation will guide you through the process of inserting and removing DOM nodes using JavaScript.
 
-### Prerequisites
 
-Before you start manipulating DOM nodes, you should have a basic undertanding of HTML,CSS and Javascript.
 
 ## Inserting DOM Nodes
 
-### createElement
+### Creating New Nodes
 
 To insert a new DOM element, first create the element using `document.createElement` method. This method will create a new HTML element with 
 a specific tag name. Once the element is created, you can further modify its attributes and content.
@@ -68,11 +66,24 @@ a specific tag name. Once the element is created, you can further modify its att
 
 ```
 const newElement = document.createElement('div');
-newElement.textContent = 'test text';
 
 ```
+### Specifying Node Properties
 
-### appendChild
+Once the new node is created,you can set properties and attributes
+```
+newParagraph.textContent = 'This is a new paragraph.';
+newParagraph.setAttribute('class', 'highlight');
+
+```
+### Locating the Parent Node
+Next, you'll need to locate the parent node where the new node will be inserted:
+
+```
+const parent = document.getElementById('parent');
+```
+
+### Inserting New Node
 
 The `appendChild` method is used to add a child node to parent node. It appends the specified child node as the last child 
 of the parent node.
@@ -80,7 +91,6 @@ of the parent node.
 <h4>Example: </h4>
 
 ```
-const parentElement = document.getElementById('parent');
 parentElement.appendChild(newElement);
 
 ```
@@ -97,30 +107,81 @@ parentElement.insertBefore(newElement, siblingElement);
 
 ```
 
-## Removing DOM Nodes
+### Updating Layout and Rendering 
 
-### removeChild
+After insertion, the Webkit engine recalculates the layout and rendes the updated page.This involves reflowing the affected parts of the page to accommondate the new node.
 
-The `removeChild` method is used to remove a specified child node from its parent node.
+## Removal of Nodes
 
-<h4>Example: </h4>
+### Locating the Node to Remove
 
-```
-parentElement.removeChild(childElement);
-
-```
-
-### replaceChild
-
-The `replaceChild` method replaces an existing child node with a new node. It takes two arguments, the new node and the node to be replaced.
-
-<h4>Example: </h4>
+To remove an existing node from the DOM, locate the node using methods like `document.querySelector()`:
 
 ```
-parentElement.replaceChild(newElement, oldElement);
+const nodeToRemove = document.querySelector('.remove-me');
+```
 
+### Removing the Node
+
+Remove the node using `.removeChild()` on its parent node:
+
+```
+const parent = nodeToRemove.parentNode;
+parent.removeChild(nodeToRemove);
+```
+
+### Updating Layout and Rendering 
+
+Similar to insertion, removing a node triggers layout recalculations and updates in the rendering engine.
+
+### Performance Considerations
+
+Efficient DOM manipulation is crucial for optimal user experience.Consider the following steps:
+
+### Batch Operations
+
+Group multiple insertions/removals together to minimize layout recalculations:
+
+```
+const fragment = document.createDocumentFragment();
+//this will append nodes to the fragment
+parent.appendChild(fragment); //Single layout recalculation
+```
+
+### Using DocumentFragment
+
+`DocumentFragment` helps with batch operations by allowing you to create node off-DOM before insertion:
+
+```
+const fragment = document.createDocumentFragment();
+// Append nodes to the fragment
+parent.appendChild(fragment); // Single layout recalculation
+```
+
+### CSS Classes and Styling
+
+Apply CSS classes for styling changes instead of modifying properties individually:
+
+```
+newParagraph.classList.add('highlight');
+```
+
+### Debouncing and Throttling 
+
+For performance sensitive DOM updates triggered by events, use techniques like debouncing or throttling to control frequency:
+
+```
+function debounce(callback, delay) {
+  let timeoutId;
+  return function () {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(callback, delay);
+  };
+}
 ```
 
 ### References 
- * [Insertion and Removal](https://javascript.info/modifying-document)
+ * [WebKit Official Documentation](https://webkit.org/t)
+ *[MDN Web Docs - DOM Manipulation](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+
  
