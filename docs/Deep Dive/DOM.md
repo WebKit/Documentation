@@ -56,3 +56,17 @@ Document Object Model (DOM) manipulation is a crucial aspect of web development,
 ### Prerequisites
 
 Before you start manipulating DOM nodes, you should have a basic undertanding of HTML,CSS and Javascript.
+
+## Inserting DOM Nodes
+
+`createElement`
+
+To insert a new DOM element, first create the element using `document.createElement` method. This method will create a new HTML element with 
+a specific tag name. Once the element is created, you can further modify its attributes and content.
+
+<h4>Example: </h4>
+
+```
+    const newElement = document.createElement('div');
+    newElement.textContent = 'test text';
+```
