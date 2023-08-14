@@ -47,3 +47,6 @@ Because JavaScript can [open a new window](https://developer.mozilla.org/en-US/d
 under user gestures and have [access back to its opener](https://developer.mozilla.org/en-US/docs/Web/API/Window/opener),
 multiple web pages across multiple tabs might be able to communicate with one another via JavaScript API
 such as [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage).
+
+
+# Inserting and Removing DOM Nodes
