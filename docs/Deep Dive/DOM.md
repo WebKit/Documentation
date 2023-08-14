@@ -59,7 +59,7 @@ Before you start manipulating DOM nodes, you should have a basic undertanding of
 
 ## Inserting DOM Nodes
 
-`createElement`
+#### createElement
 
 To insert a new DOM element, first create the element using `document.createElement` method. This method will create a new HTML element with 
 a specific tag name. Once the element is created, you can further modify its attributes and content.
