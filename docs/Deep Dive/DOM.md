@@ -69,6 +69,7 @@ a specific tag name. Once the element is created, you can further modify its att
 ```
 const newElement = document.createElement('div');
 newElement.textContent = 'test text';
+
 ```
 
 ### appendChild
@@ -81,4 +82,45 @@ of the parent node.
 ```
 const parentElement = document.getElementById('parent');
 parentElement.appendChild(newElement);
+
 ```
+
+### insertBefore
+
+The `insertBefore` method allows you to insert a new node before an existing child node within a parent node.
+
+<h4>Example: </h4>
+
+```
+const siblingElement = document.getElementById('sibling');
+parentElement.insertBefore(newElement, siblingElement);
+
+```
+
+## Removing DOM Nodes
+
+### removeChild
+
+The `removeChild` method is used to remove a specified child node from its parent node.
+
+<h4>Example: </h4>
+
+```
+parentElement.removeChild(childElement);
+
+```
+
+### replaceChild
+
+The `replaceChild` method replaces an existing child node with a new node. It takes two arguments, the new node and the node to be replaced.
+
+<h4>Example: </h4>
+
+```
+parentElement.replaceChild(newElement, oldElement);
+
+```
+
+### References 
+ * [Insertion and Removal](https://javascript.info/modifying-document)
+ 
