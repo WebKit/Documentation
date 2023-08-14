@@ -182,6 +182,6 @@ function debounce(callback, delay) {
 
 ### References 
  * [WebKit Official Documentation](https://webkit.org/t)
- *[MDN Web Docs - DOM Manipulation](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
+ * [MDN Web Docs - DOM Manipulation](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)
 
  
