@@ -79,7 +79,6 @@
     --header-menu-shadow: 0px 5px 5px hsla(0, 0%, 0%, 0.1);
     --header-menu-background-color: hsla(0, 0%, 100%, 0.8);
 
-    --tile-background-color-amber: hsl(48, 100%, 50%);
     --tile-background-color-twitter: hsl(197.9, 70.6%, 53.3%);
     --gray-tile-text-color: hsl(232.8, 100%, 37.5%);
 
@@ -199,7 +198,6 @@
         --header-menu-shadow: 0px 5px 5px hsla(0, 0%, 0%, 0.1);
         --header-menu-background-color: hsla(0, 0%, 0%, 0.8);
 
-        --tile-background-color-amber: hsl(48, 100%, 50%);
         --tile-background-color-twitter: hsl(197.9, 70.6%, 53.3%);
         --gray-tile-text-color: hsl(232.8, 100%, 37.5%);
 
@@ -233,7 +231,7 @@
         --syntax-color-xml-meta: hsl(180, 50%, 40%);
         --syntax-color-css-property: hsl(299.17, 70.59%, 80%);
         --syntax-color-css-selector: hsl(240, 1.3%, 84.5%);
-        --syntax-color-css-number: hsl(275.53, 100%, 85.1%)
+        --syntax-color-css-number: hsl(275.53, 100%, 85.1%);
 
         --code-selection-background-color: hsl(214.2, 42.9%, 32.9%);
     }
@@ -361,8 +359,8 @@ body {
     font-weight: 400;
     font-feature-settings: normal;
     letter-spacing: -0.0105rem;
-    margin-top: 0.75px;
-    margin-bottom: 0.75rem;
+    margin-top: 0;
+    margin-bottom: 1.50rem;
 }
 
 .md-content pre {
