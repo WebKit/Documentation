@@ -41,10 +41,6 @@ export PATH=$PATH:`pwd`/Tools/Scripts
 Congratulations! You’re up and running. Now you can begin coding in WebKit and contribute your fixes and new features to the project. 
 For details on submitting your code to the project, read [Contributing Code](Getting Started/ContributingCode.md).
 
-## Feature Status
-
-Visit [WebKit Feature Status](https://webkit.org/status/) page to see which Web API has been implemented, in development, or under consideration.
-
 ## Trying the Latest
 
 On macOS, [download Safari Technology Preview](https://webkit.org/downloads/) to test the latest version of WebKit. 
