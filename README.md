@@ -7,7 +7,7 @@ This repository contains the documentation for the WebKit Project.
 ### Install Dependencies
 
 ```python
-pip3 install mkdocs-material
+pip3 install -r requirements.txt
 ```
 
 ### Preview Documentation Locally
@@ -15,7 +15,7 @@ pip3 install mkdocs-material
 This will bring up a local web server, so you can see the documentation locally. Any updates you make will be automatically visible.
 
 ```
-mkdocs serve
+python3 -m mkdocs serve
 ```
 
 ### Release Build
