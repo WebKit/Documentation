@@ -7,27 +7,22 @@ It supports only 64 bit Windows.
 
 ## Installing Development Tools
 
-You need CMake, Perl, Python, Ruby, gperf, the latest Windows SDK, and Visual Studio 2022 to build Windows port.
+Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
+
+Install CMake, Perl, Python, Ruby, gperf, LLVM, and Ninja.
 You can use [Chocolatey](https://chocolatey.org/) to install the tools.
 
 [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
 XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
 
 ```
-choco install -y xampp-81 python ruby git cmake gperf
-```
-
-It supports both CMake Ninja generator and CMake Visual Studio generator.
-Ninja is optional.
-
-```
-choco install -y ninja
+choco install -y xampp-81 python ruby git cmake gperf llvm ninja
 ```
 
 Windows Git enables `autocrlf` by default. But, some layout tests files have to be checked out as LF line end style. See [Bug 240158](https://bugs.webkit.org/show_bug.cgi?id=240158).
 
 ```
- git config --global core.autocrlf input
+git config --global core.autocrlf input
 ```
 
 ### Using winget
@@ -36,7 +31,7 @@ If you prefer [winget](https://learn.microsoft.com/en-us/windows/package-manager
 Here is the one-liner to install all tools:
 
 ```
-"Git.Git Kitware.CMake Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.1 ApacheFriends.Xampp.8.2 GnuWin32.Gperf" -split " " |% { winget install --scope=machine --id $_ }
+"Git.Git Kitware.CMake Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.1 ApacheFriends.Xampp.8.2 GnuWin32.Gperf LLVM.LLVM" -split " " |% { winget install --scope=machine --id $_ }
 ```
 
 If `--scope=machine` isn't specified, Python is installed under your user profile directory.
@@ -64,6 +59,9 @@ rem set WEBKIT_LIBRARIES=%~dp0WebKitLibraries\win
 path %~dp0WebKitLibraries\win\bin64;%path%
 set WEBKIT_TESTFONTS=%~dp0Tools\WebKitTestRunner\fonts
 set DUMPRENDERTREE_TEMP=%TEMP%
+
+set CC=clang-cl
+set CXX=clang-cl
 
 rem set http_proxy=http://your-proxy:8080
 rem set https_proxy=%http_proxy%
@@ -112,6 +110,9 @@ WebKitBuild/Release/bin64/MiniBrowser.exe
 You can run programs under a debugger with [this instruction](../Build & Debug/DebuggingWithVS.md).
 
 ### Building from within Visual Studio
+
+You can use CMake Visual Studio generator instead of Ninja generator.
+Install [the LLVM extension](https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild) of MSBuild.
 
 In the WinKit command prompt,
 
@@ -213,24 +214,3 @@ OK
 Due to the useless error message, this is a Windows port FAQ.
 The error message actually means MiniBrowserLib.dll can't load required DLL of WebKitRequirements.
 You have to set the env var WEBKIT_LIBRARIES. Or, copy all DLL of WebKitRequirements to the directory of MiniBrowser.exe as explained in the above section.
-
-
-## Compiling with Clang
-
-[clang-cl has a problem for /MP support.](https://reviews.llvm.org/D52193)
-It's recommended to use Ninja with clang-cl.
-Install clang-cl and Ninja.
-
-```
-choco install -y llvm ninja
-```
-
-Open Visual Studio Command Prompt, and invoke the following commands.
-
-```
-set CC=clang-cl
-set CXX=clang-cl
-perl Tools\Scripts\build-webkit --release --ninja
-```
-
-clang-cl builds are experimental, see [Bug 171618](https://bugs.webkit.org/show_bug.cgi?id=171618) for the current status.
