@@ -96,8 +96,6 @@ In the WinKit command prompt, invoke `build-webkit` to start building.
 perl Tools/Scripts/build-webkit --release
 ```
 
-Ensure you don't have GCC in your PATH, otherwise CMake is going to use GCC and builds will fail.
-
 You will get required libraries [WebKitRequirements](https://github.com/WebKitForWindows/WebKitRequirements) downloaded automatically when you perform a `build-webkit`.
 It checks the latest WebKitRequirements every time.
 I'd like to recommend to use `--skip-library-update` for incremental build to speed up for the next time.
