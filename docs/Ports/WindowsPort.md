@@ -19,6 +19,12 @@ XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead
 choco install -y xampp-81 python ruby git cmake gperf llvm ninja
 ```
 
+Install pywin32 Python module for run-webkit-tests and git-webkit.
+
+```
+python -m pip install pywin32
+```
+
 Windows Git enables `autocrlf` by default. But, some layout tests files have to be checked out as LF line end style. See [Bug 240158](https://bugs.webkit.org/show_bug.cgi?id=240158).
 
 ```
@@ -146,7 +152,7 @@ Install XAMPP as described above.
 Install required Python and Ruby modules.
 
 ```
-pip install pywin32
+python -m pip install pywin32
 gem install webrick
 ```
 
