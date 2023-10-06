@@ -203,24 +203,3 @@ docker run -it --rm --cpu-count=8 --memory=16g -v %cd%:c:\repo -w c:\repo webkit
  * Download the corresponding release of [WebKitRequirements](https://github.com/WebKitForWindows/WebKitRequirements/releases).
  * Unpack them, copy all DLL of WebKitRequirements to the directory of MiniBrowser.exe
  * Install the latest [vc_redist.x64.exe](https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist) of Microsoft Visual C++ Redistributable for Visual Studio
-
-### The specified module could not be found
-
-If you simply double-click MiniBrowser.exe to execute, you'd get the following error message.
-
-```
----------------------------
-MiniBrowser can't open.
----------------------------
-::LoadLibraryW failed:
-path=C:\path\to\bin64\MiniBrowserLib.dll
-The specified module could not be found.
-
----------------------------
-OK
----------------------------
-```
-
-Due to the useless error message, this is a Windows port FAQ.
-The error message actually means MiniBrowserLib.dll can't load required DLL of WebKitRequirements.
-You have to set the env var WEBKIT_LIBRARIES. Or, copy all DLL of WebKitRequirements to the directory of MiniBrowser.exe as explained in the above section.
