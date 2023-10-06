@@ -131,6 +131,16 @@ Build "MiniBrowser" project.
 
 ## Running the tests
 
+WebKit test runner run-webkit-tests is using a command line debugger [NTSD](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/debugging-using-cdb-and-ntsd) to get crash logs.
+However, Windows SDK installer doesn't install it by default.
+
+1. Right-click the Windows start menu
+2. Select "Apps and Features" menu item
+3. Click "Windows Software Development Kit" from the apps list
+4. Click "Modify" button
+5. Select "Change" and push "Next" button
+6. Select "Debugging Tools for Windows" and proceed the installation
+
 Install XAMPP as described above.
 
 Install required Python and Ruby modules.
