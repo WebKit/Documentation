@@ -77,6 +77,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### Igalia and WebKit: status update and plans
 
+##### [Slides](https://teams.pages.igalia.com/webkit/contributors-meeting-presentations/2023/igalia-slides/igalia-and-webkit-2023.html)
+
 ##### Notes
 
 - Mario is the coordinator of the Igalia WebKit team
@@ -212,6 +214,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### Current Status of Cloud Gaming
 
+##### [Slides](./Slides2023/Current%20status%20of%20Cloud%20Gaming.pdf)
+
 ##### Notes
 
 - Agenda:
@@ -246,6 +250,8 @@ WebKit Contributors Meeting October 24-25, 2023
     - Yes. internally considering.
 
 #### Contributing to Web Inspector
+
+##### [Slides](./Slides2023/Contributing%20to%20Web%20Inspector.pdf)
 
 ##### Notes
 
@@ -351,6 +357,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### WPE platform API
 
+##### [Slides](https://teams.pages.igalia.com/webkit/contributors-meeting-presentations/2023/igalia-slides/the-new-WPE-API.html)
+
 ##### Notes
 
 - we are working in the new WPE API
@@ -437,6 +445,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### Gstreamer WebRTC Status
 
+##### [Slides](https://teams.pages.igalia.com/webkit/contributors-meeting-presentations/2023/igalia-slides/webrtc-in-wpe-and-gtk.html)
+
 ##### Notes
 
 - Brief summary of the timeline (libwebrtc, …)
@@ -495,6 +505,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### WebKitGTK and WPE ports SDK
 
+##### [Slides](https://teams.pages.igalia.com/webkit/contributors-meeting-presentations/2023/igalia-slides/wpe-and-webkitgtk-SDK.html)
+
 ##### Notes
 
 - flatpak was our previous attempt
@@ -520,6 +532,8 @@ WebKit Contributors Meeting October 24-25, 2023
 - N/A
 
 #### Status of LBSE
+
+##### [Slides](https://teams.pages.igalia.com/webkit/contributors-meeting-presentations/2023/igalia-slides/integrating-the-new-LBSE.html)
 
 ##### Notes
 
@@ -613,6 +627,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### Vertical Form Controls
 
+##### [Slides](./Slides2023/Vertical%20Form%20Controls%20%E2%80%93%20WebKit%20Contributors%20Meeting.pdf)
+
 ##### Notes
 
 - Form controls where writing mode is specified as vertical-rl or vertical-lr
@@ -639,6 +655,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### Masonry Layout
 
+##### [Slides](./Slides2023/CSS%20Masonry.pdf)
+
 ##### Notes
 
 - Jen Simmons gave an overview of Masonry layout at WWDC.
@@ -654,6 +672,8 @@ WebKit Contributors Meeting October 24-25, 2023
 - N/A
 
 #### Speedometer 3
+
+##### [Slides](./Slides2023/Speedometer%203.pdf)
 
 ##### Notes
 
@@ -694,6 +714,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### All Fonts Feature (Proposal) 
 
+##### [Slides](./Slides2023/All%20Fonts%20Feature.pdf)
+
 ##### Notes
 
 - recent contributor to web inspector. I have a lot experience as a front end engineer
@@ -719,6 +741,8 @@ WebKit Contributors Meeting October 24-25, 2023
 - Right now I would just present all the fonts computed for an element on a web page
 
 #### Playwright and the state of modern e2e testing
+
+##### [Slides](./Slides2023/Playwright%20and%20the%20State%20of%20Modern%20E2E%20Testing.pdf)
 
 ##### Notes
 
@@ -773,6 +797,8 @@ WebKit Contributors Meeting October 24-25, 2023
 
 #### Standards Positions Page and Contributing
 
+##### [Slides](./Slides2023/standards-positions-2023.pdf)
+
 ##### Notes
 
 - there is a repo on GitHub that WebKit uses to be asked and provide feedback for web standards
@@ -794,6 +820,8 @@ WebKit Contributors Meeting October 24-25, 2023
 - A: there are a few issues with disagreement from the wider web, but not often from within WebKit.  possibly the mailing list used to have more "internal" disagreement.  there is the #standards/#standards-github slack channels for less public discussion if you'd prefer to "poll the room" or verify opinions or etc. before posting publicly
 
 #### Implementing the WebAssembly GC proposal in JSC
+
+##### [Slides](./Slides2023/wasm-gc-webkit-contrib-meeting.pdf)
 
 ##### Notes
 
@@ -823,6 +851,8 @@ WebKit Contributors Meeting October 24-25, 2023
 - N/A
 
 #### Enabling WebAssembly and FTL JIT on Windows Port
+
+##### [Slides](./Slides2023/Windows%20Port%20WebAssembly%20and%20FTL%20JIT.pdf)
 
 ##### Notes
 
@@ -864,6 +894,8 @@ WebKit Contributors Meeting October 24-25, 2023
 - N/A
 
 #### Shipping Web APIs to Customers
+
+##### [Slides](./Slides2023/shipping-web-apis-to-customers.pdf)
 
 ##### Notes
 
@@ -914,6 +946,8 @@ WebKit Contributors Meeting October 24-25, 2023
 - Different implementors might interpret specs differently, which can help expose ambiguity, ultimately creating a stronger web platform for everyone (edited)
 
 #### Quirks: Kintsugi for the Web
+
+##### [Slides](./Slides2023/quirks-webkit-contributors-oct-2023-dubost.pdf)
 
 ##### Notes
 
