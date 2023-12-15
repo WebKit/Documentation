@@ -10,13 +10,14 @@ It supports only 64 bit Windows.
 Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
 
 Install CMake, Perl, Python, Ruby, gperf, LLVM, and Ninja.
-You can use [Chocolatey](https://chocolatey.org/) to install the tools.
+Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
 
+You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
 [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
 XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
 
 ```
-choco install -y xampp-81 python ruby git cmake gperf llvm ninja
+choco install -y xampp-81 python311 ruby git cmake gperf llvm ninja
 ```
 
 Install pywin32 Python module for run-webkit-tests and git-webkit.
@@ -34,10 +35,10 @@ git config --global core.autocrlf input
 ### Using winget
 
 If you prefer [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to Chocolatey, you can use it.
-Here is the one-liner to install all tools:
+Invoke the following command in an elevated PowerShell or cmd prompt.
 
 ```
-"Git.Git Kitware.CMake Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.1 ApacheFriends.Xampp.8.2 GnuWin32.Gperf LLVM.LLVM" -split " " |% { winget install --scope=machine --id $_ }
+winget install --scope=machine --id Git.Git Kitware.CMake Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.2 ApacheFriends.Xampp.8.2 GnuWin32.Gperf LLVM.LLVM
 ```
 
 If `--scope=machine` isn't specified, Python is installed under your user profile directory.
