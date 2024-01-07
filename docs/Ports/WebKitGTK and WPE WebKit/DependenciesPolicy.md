@@ -16,8 +16,8 @@ For more information on compiler requirements, see [GCC Requirement](GCCRequirem
 
 | Operating System               | Release Date | WebKit Support End |
 |--------------------------------|--------------|--------------------|
-| Debian 10 (Buster)             | 2019-07-06   | 2022-08-14         |
 | Ubuntu 20.04 (Focal Fossa)     | 2020-04-23   | 2023-04-21         |
-| Debian 11 (Bullseye)	         | 2021-08-14   | 2024-06-10         |
-| Ubuntu 22.04 (Jammy Jellyfish) | 2022-04-21   | April 2025         |
-| Debian 12 (Bookworm)           | 2023-06-10   |                    |
+| Debian 11 (Bullseye)           | 2021-08-14   | 2024-06-10         |
+| Ubuntu 22.04 (Jammy Jellyfish) | 2022-04-21   | 2025-04-25         |
+| Debian 12 (Bookworm)           | 2023-06-10   | June 2026          |
+| Ubuntu 24.04 (Noble Numbat)    | 2024-04-25   | April 2027         |
