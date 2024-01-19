@@ -82,6 +82,15 @@ You can run `Tools/Scripts/check-webkit-style` to check whether your code follow
 If you use `Tools/Scripts/webkit-patch upload` to upload your patch,
 it automatically runs the style checker against the code you changed so there is no need to run `check-webkit-style` separately.
 
+The style checker cannot automatically fix the code style issues it finds. Supposing your patch was already commited as HEAD of your PR branch, you can re-format the code and amend your patch, as shown below:
+
+```shell
+Tools/Scripts/webkit-patch format -g HEAD
+git commit -a --amend --no-edit
+```
+
+Then you can try `Tools/Scripts/webkit-patch upload` again.
+
 Some older parts of the codebase do not follow these guidelines.
 If you are modifying such code, it is generally best to clean it up to comply with the current guidelines.
 
