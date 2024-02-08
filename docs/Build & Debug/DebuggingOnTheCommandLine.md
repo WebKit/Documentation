@@ -27,16 +27,6 @@ sys.path.insert(0, "{Path to WebKit}/Tools/gdb/")
 import webkit
 ```
 
-## Debug Launch Scripts
-
-WebKit comes with several helper scripts to make launching a debug session quicker.
-
-| Script | Description |
-| ------ | ----------- |
-| debug-minibrowser | Debug the Minibrowser application |
-| debug-safari      | Debug the Safari browser          |
-| debug-test-runner | Debug WebKitTestRunner            |
-
 ## Manually Debugging WebKit
 
 The helper scripts above provide an easy way to start debugging, but a user can choose to manually launch WebKit
