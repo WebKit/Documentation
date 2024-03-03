@@ -200,7 +200,7 @@ docker run -it --rm --cpu-count=8 --memory=16g -v %cd%:c:\repo -w c:\repo webkit
 
 ## Downloading build artifacts from Buildbot
 
- * Go to [WinCairo-64-bit-WKL-Release-Build Buildbot builder page](https://build.webkit.org/#/builders/27).
+ * Go to [WinCairo-64-bit-Release-Build Buildbot builder page](https://build.webkit.org/#/builders/731).
  * Click any "Build #" which is green.
  * Click "> stdio" of "transfer-to-s3".
  * You can find "S3 URL" in the console log.
