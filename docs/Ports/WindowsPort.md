@@ -202,9 +202,7 @@ docker run -it --rm --cpu-count=8 --memory=16g -v %cd%:c:\repo -w c:\repo webkit
 
  * Go to [WinCairo-64-bit-Release-Build Buildbot builder page](https://build.webkit.org/#/builders/731).
  * Click any "Build #" which is green.
- * Click "> stdio" of "transfer-to-s3".
- * You can find "S3 URL" in the console log.
- * Download the zip.
+ * Click the "Archive" link under "compile-webkit" to download the zip
  * Download the corresponding release of [WebKitRequirements](https://github.com/WebKitForWindows/WebKitRequirements/releases).
  * Unpack them, copy all DLL of WebKitRequirements to the directory of MiniBrowser.exe
  * Install the latest [vc_redist.x64.exe](https://docs.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist) of Microsoft Visual C++ Redistributable for Visual Studio
