@@ -1,0 +1,3 @@
+[submodule "docs/Guides"]
+	path = docs/Guides
+	url = git@github.com:WebKit/WebKit.wiki.git
