@@ -2,7 +2,7 @@
 
 ## Configuring Debugger 
 
-Copy ​WebKit.natvis to the appropriate directory, which contains custom views for WebKit fundamental types.
+Copy [​WebKit.natvis](https://github.com/WebKit/WebKit/blob/main/Tools/VisualStudio/WebKit.natvis) to the appropriate directory, which contains custom views for WebKit fundamental types.
 
 ## Debugging WebKit
 
