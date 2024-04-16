@@ -43,6 +43,11 @@ winget install --scope=machine --id Git.Git Kitware.CMake Ninja-build.Ninja Pyth
 
 If `--scope=machine` isn't specified, Python is installed under your user profile directory.
 
+If you failed to install or find `GnuWin32.Gperf`, you can install manually to execute installation executable file.
+https://gnuwin32.sourceforge.net/packages/gperf.htm
+ 
+winget may not append the path into your PC.
+If an error occered, please check your path settings, including LLVM and GnuWin32(Gperf).
 
 ## WebKit command prompt
 
