@@ -60,7 +60,7 @@ Note that you usually won't be able to pass a variable name as the parameter to 
 
 You can attach a single debugger to more than one process. To do this, launch or attach to the first process, then use Tools > Attach to Process… or Ctrl+Alt+P to attach to the second process. Your breakpoints will apply to both processes.
 
-There is a Visual Studio Extension to attach child processes automatically. ​Introducing the Child Process Debugging Power Tool
+There is a Visual Studio Extension to attach child processes automatically. [​Introducing the Child Process Debugging Power Tool](https://devblogs.microsoft.com/devops/introducing-the-child-process-debugging-power-tool/)
 
 There are two ways to see which process the debugger is currently operating on, and to switch the current process: the Processes window and the Debug Location toolbar. 
 You can open the Processes window using `Debug > Windows > Processes` or `Ctrl+Shift+Alt+P`. You can show the Debug Location toolbar using View > Toolbars > Debug Location.
