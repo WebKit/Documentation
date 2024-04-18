@@ -32,9 +32,9 @@ Windows Git enables `autocrlf` by default. But, some layout tests files have to 
 git config --global core.autocrlf input
 ```
 
-### Using winget
+### Using WinGet
 
-If you prefer [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to Chocolatey, you can use it.
+If you prefer [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to Chocolatey, you can use it.
 Invoke the following command in an elevated PowerShell or cmd prompt.
 
 ```
@@ -45,7 +45,7 @@ If `--scope=machine` isn't specified, Python is installed under your user profil
 
 If you failed to install or find `GnuWin32.Gperf`, you can install manually to execute installation executable file.
  
-winget may not append the path into your PC.
+WinGet may not append the path into your PC.
 If an error occered, please check your path settings, including LLVM and GnuWin32(Gperf).
 
 ## WebKit command prompt
