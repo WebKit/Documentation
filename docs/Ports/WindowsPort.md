@@ -9,7 +9,7 @@ It supports only 64 bit Windows.
 
 Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
 
-Install CMake, Perl, Python, Ruby, gperf, LLVM, and Ninja.
+Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
 Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
 
 You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
@@ -44,7 +44,6 @@ winget install --scope=machine --id Git.Git Kitware.CMake Ninja-build.Ninja Pyth
 If `--scope=machine` isn't specified, Python is installed under your user profile directory.
 
 If you failed to install or find `GnuWin32.Gperf`, you can install manually to execute installation executable file.
-https://gnuwin32.sourceforge.net/packages/gperf.htm
  
 winget may not append the path into your PC.
 If an error occered, please check your path settings, including LLVM and GnuWin32(Gperf).
@@ -175,7 +174,7 @@ reg add HKEY_CLASSES_ROOT\.cgi\Shell\ExecCGI\Command /ve /d "c:\xampp\perl\bin\p
 reg add HKEY_CLASSES_ROOT\.py\Shell\ExecCGI\Command /ve /d "c:\Python311\python.exe -X utf8"
 ```
 
-An example using **Winget**
+An example using **WinGet**
 ```
 reg add HKEY_CLASSES_ROOT\.pl\Shell\ExecCGI\Command /ve /d "c:\xampp\perl\bin\perl.exe -T"
 reg add HKEY_CLASSES_ROOT\.cgi\Shell\ExecCGI\Command /ve /d "c:\xampp\perl\bin\perl.exe -T"
