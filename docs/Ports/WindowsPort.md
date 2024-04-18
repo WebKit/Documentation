@@ -9,7 +9,7 @@ It supports only 64 bit Windows.
 
 Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
 
-Install CMake, Perl, Python, Ruby, gperf, LLVM, and Ninja.
+Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
 Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
 
 You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
@@ -43,6 +43,10 @@ winget install --scope=machine --id Git.Git Kitware.CMake Ninja-build.Ninja Pyth
 
 If `--scope=machine` isn't specified, Python is installed under your user profile directory.
 
+If you failed to install or find `GnuWin32.Gperf`, you can install manually to execute installation executable file.
+ 
+winget may not append the path into your PC.
+If an error occered, please check your path settings, including LLVM and GnuWin32(Gperf).
 
 ## WebKit command prompt
 
@@ -163,10 +167,18 @@ net stop apache2.4
 
 Some extensions need to be registered as CGI. Modify the following commands for your Perl and Python paths, and run them as administrator.
 
+An example using **Chocolatey**
 ```
 reg add HKEY_CLASSES_ROOT\.pl\Shell\ExecCGI\Command /ve /d "c:\xampp\perl\bin\perl.exe -T"
 reg add HKEY_CLASSES_ROOT\.cgi\Shell\ExecCGI\Command /ve /d "c:\xampp\perl\bin\perl.exe -T"
 reg add HKEY_CLASSES_ROOT\.py\Shell\ExecCGI\Command /ve /d "c:\Python311\python.exe -X utf8"
+```
+
+An example using **WinGet**
+```
+reg add HKEY_CLASSES_ROOT\.pl\Shell\ExecCGI\Command /ve /d "c:\xampp\perl\bin\perl.exe -T"
+reg add HKEY_CLASSES_ROOT\.cgi\Shell\ExecCGI\Command /ve /d "c:\xampp\perl\bin\perl.exe -T"
+reg add HKEY_CLASSES_ROOT\.py\Shell\ExecCGI\Command /ve /d "\`"C:\Program Files\Python311\python.exe\`" -X utf8"
 ```
 
 You need openssl.exe in your PATH to run wpt server.
