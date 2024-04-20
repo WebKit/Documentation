@@ -6,7 +6,7 @@ Copy [​WebKit.natvis](https://github.com/WebKit/WebKit/blob/main/Tools/VisualS
 
 ## Debugging WebKit
 
-There are three ways to debugging WebKit with Visual Studio. Openning the generated WebKit.sln, openning an exe file directly, and attaching running WebKit.
+There are three ways to debugging WebKit with Visual Studio. Opening the generated WebKit.sln, opening an exe file directly, and attaching running WebKit.
 
 Invoke build-webkit, and open `WebKitBuild\Release\WebKit.sln` using Visual Studio.
 If you get errors about not being able to find .props files, run Tools/Scripts/update-webkit, then close and relaunch Cygwin and Visual Studio.
