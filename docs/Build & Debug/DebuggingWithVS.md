@@ -24,7 +24,7 @@ devenv -debugexe .\WebKitBuild\Debug\bin64\MiniBrowser.exe
 
 ## Miscellaneous Tips
 
-Follow the ​instructions for using the Microsoft and Safari symbol servers so that Visual Studio can show you backtraces that involve closed-source components.
+Follow the ​instructions for using [the Microsoft symbol server](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/microsoft-public-symbols) so that Visual Studio can show you backtraces that involve closed-source components.
 
 ## Using Watch Window
 
