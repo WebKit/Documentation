@@ -8,8 +8,7 @@ Copy [​WebKit.natvis](https://github.com/WebKit/WebKit/blob/main/Tools/VisualS
 
 There are three ways to debugging WebKit with Visual Studio. Opening the generated WebKit.sln, opening an exe file directly, and attaching running WebKit.
 
-Invoke build-webkit, and open `WebKitBuild\Release\WebKit.sln` using Visual Studio.
-If you get errors about not being able to find .props files, run Tools/Scripts/update-webkit, then close and relaunch Cygwin and Visual Studio.
+[Invoke build-webkit with `--no-ninja --generate-project-only` options](../Ports/WindowsPort.html#building-from-within-visual-studio), and open by `devenv WebKitBuild\Release\WebKit.sln` or `devenv WebKitBuild\Debug\WebKit.sln` on [WebKit command prompt](../Ports/WindowsPort.html#webkit-command-prompt).
 
 Set MiniBrowser as the solution's StartUp project.
 Select the MiniBrowser project in the Solution Explorer, then choose `Project > Set as StartUp Project`. This will cause the project to turn bold in the Solution Explorer.
