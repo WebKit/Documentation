@@ -22,19 +22,6 @@ In Ninja builds, there is no solution files. In such case, open the exe file dir
 devenv -debugexe .\WebKitBuild\Debug\bin64\MiniBrowser.exe
 ```
 
-## Debugging DumpRenderTree
-
-Set DumpRenderTree as your startup project.
-Configure the arguments and environment variables for the test runner.
-In the DumpRenderTree project in the Solution Explorer window, right-click and select Properties....
-
-In the Command Arguments section, enter the absolute paths for the tests you want to run, separated by spaces.
-In the Environment section, put `PATH=$(ProgramFiles)\Common Files\Apple\Apple Application Support;$(PATH)`
-Click OK to close the Project Properties window.
-
-Launch the debugger.
-Right-click on the DumpRenderTree project, and choose `Debug > Start New Instance`.
-
 ## Miscellaneous Tips
 
 Follow the ​instructions for using the Microsoft and Safari symbol servers so that Visual Studio can show you backtraces that involve closed-source components.
