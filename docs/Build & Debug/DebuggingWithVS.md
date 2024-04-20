@@ -26,13 +26,8 @@ devenv -debugexe .\WebKitBuild\Debug\bin64\MiniBrowser.exe
 
 Follow the ​instructions for using [the Microsoft symbol server](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/microsoft-public-symbols) so that Visual Studio can show you backtraces that involve closed-source components.
 
-## Using Watch Window
+Adding $err,hr to [the Watch Window](https://learn.microsoft.com/en-us/visualstudio/debugger/watch-and-quickwatch-windows?view=vs-2022) will show you what ::GetLastError() would return at this moment, and will show you both the numerical error value and the error string associated with it.
 
-You can open any of the Watch windows using the `Debug > Windows > Watch` submenu.
-
-​MSDN Magazine published a very useful ​article about Watch window pseudo-variables and format specifiers. Those of particular interest to WebKit developers are mentioned explicitly below, but the whole article is worth a read.
-
-Adding $err,hr to the Watch Window will show you what ::GetLastError() would return at this moment, and will show you both the numerical error value and the error string associated with it.
 Calling CFShow
 
 When debugging code that uses CF types, you can invoke the ​CFShow function in the Immediate window (Debug > Windows > Immediate or Ctrl+Alt+I) to print a debug description of a CF object to the Output window like so:
