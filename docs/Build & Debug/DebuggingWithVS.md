@@ -28,15 +28,6 @@ Follow the ​instructions for using [the Microsoft symbol server](https://learn
 
 Adding $err,hr to [the Watch Window](https://learn.microsoft.com/en-us/visualstudio/debugger/watch-and-quickwatch-windows?view=vs-2022) will show you what ::GetLastError() would return at this moment, and will show you both the numerical error value and the error string associated with it.
 
-Calling CFShow
-
-When debugging code that uses CF types, you can invoke the ​CFShow function in the Immediate window (Debug > Windows > Immediate or Ctrl+Alt+I) to print a debug description of a CF object to the Output window like so:
-
-```
-{,,CoreFoundation}CFShow((void*)0x12345678)
-```
-Note that you usually won't be able to pass a variable name as the parameter to CFShow, as the Immediate window will get confused and think you're specifying a symbol in CoreFoundation.dll rather than whatever code you're debugging. It's usually easiest just to pass the address of the object directly as above.
-
 ## Debugging Multiple Processes
 
 You can attach a single debugger to more than one process. To do this, launch or attach to the first process, then use Tools > Attach to Process… or Ctrl+Alt+P to attach to the second process. Your breakpoints will apply to both processes.
