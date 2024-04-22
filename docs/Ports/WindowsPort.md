@@ -54,7 +54,7 @@ To compile, run programs and run tests, you need to set some environment variabl
 For ease of development, it's recommended to create a batch file to set environment variables and open PowerShell.
 Create a batch file with the following content with adjusting it to your PC.
 And put it in the top WebKit source directory.
-And double-click it to open PowerShell.
+And double-click it to open PowerShell, we call this opend shell as "WebKit command prompt" hereafter.
 
 ```
 @echo off
@@ -95,7 +95,7 @@ You can replace `powershell` with `cmd` or `wt` (Windows Terminal) if you like.
 
 ## Building
 
-In the WinKit command prompt, invoke `build-webkit` to start building.
+In the WebKit command prompt, invoke `build-webkit` to start building.
 
 ```
 perl Tools/Scripts/build-webkit --release
@@ -123,7 +123,7 @@ You can run programs under a debugger with [this instruction](../Build & Debug/D
 You can use CMake Visual Studio generator instead of Ninja generator.
 Install [the LLVM extension](https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild) of MSBuild.
 
-In the WinKit command prompt,
+In the WebKit command prompt,
 
 ```
 perl Tools/Scripts/build-webkit --release --no-ninja --generate-project-only
@@ -184,7 +184,7 @@ reg add HKEY_CLASSES_ROOT\.py\Shell\ExecCGI\Command /ve /d "\`"C:\Program Files\
 You need openssl.exe in your PATH to run wpt server.
 XAMPP contains openssl.exe in C:\xampp\apache\bin directory. Append the directory to your PATH.
 
-Open the WinKit command prompt as administrator because http tests need to run Apache service.
+Open the WebKit command prompt as administrator because http tests need to run Apache service.
 
 Invoke `run-webkit-tests`.
 
