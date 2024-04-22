@@ -22,12 +22,6 @@ In Ninja builds, there is no solution files. In such case, open the exe file dir
 devenv -debugexe .\WebKitBuild\Debug\bin64\MiniBrowser.exe
 ```
 
-## Miscellaneous Tips
-
-Follow the ​instructions for using [the Microsoft symbol server](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/microsoft-public-symbols) so that Visual Studio can show you backtraces that involve closed-source components.
-
-Adding $err,hr to [the Watch Window](https://learn.microsoft.com/en-us/visualstudio/debugger/watch-and-quickwatch-windows?view=vs-2022) will show you what ::GetLastError() would return at this moment, and will show you both the numerical error value and the error string associated with it.
-
 ## Debugging Multiple Processes
 
 You can attach a single debugger to more than one process. To do this, launch or attach to the first process, then use Tools > Attach to Process… or Ctrl+Alt+P to attach to the second process. Your breakpoints will apply to both processes.
@@ -47,3 +41,9 @@ You can inspect WebKit2 API types in Visual Studio by casting them to their unde
 {,,WebKit}(WebKit::MutableDictionary*)0x12345678
 ```
 The same technique will work for other WebKit2 API types as long as you substitute the appropriate type for MutableDictionary above.
+
+## Miscellaneous Tips
+
+Follow the ​instructions for using [the Microsoft symbol server](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/microsoft-public-symbols) so that Visual Studio can show you backtraces that involve closed-source components.
+
+Adding $err,hr to [the Watch Window](https://learn.microsoft.com/en-us/visualstudio/debugger/watch-and-quickwatch-windows?view=vs-2022) will show you what ::GetLastError() would return at this moment, and will show you both the numerical error value and the error string associated with it.
