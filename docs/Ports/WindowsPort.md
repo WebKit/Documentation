@@ -77,12 +77,14 @@ set CXX=clang-cl
 rem set http_proxy=http://your-proxy:8080
 rem set https_proxy=%http_proxy%
 
+:: You can pass necessary JSC options https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/runtime/OptionsList.h#L83-L607.
 rem set JSC_dumpOptions=1
 rem set JSC_useJIT=0
 rem set JSC_useDFGJIT=0
 rem set JSC_useRegExpJIT=0
 rem set JSC_useDOMJIT=0
 
+:: You can show check TextureMapper FPS via .
 rem set WEBKIT_SHOW_FPS=1
 
 call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat"
