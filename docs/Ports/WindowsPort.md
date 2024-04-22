@@ -198,6 +198,7 @@ If you are using Japanese Windows, some layout tests fail due to form control si
 `GetStockObject(DEFAULT_GUI_FONT)` returns `MS UI Gothic` on it.
 Remove `GUIFont.Facename` of `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\GRE_Initialize`.
 And, replace `MS UI Gothic` with `Microsoft Sans Serif` in `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\FontSubstitutes\MS Shell Dlg`.
+Also, change system locale to English, because Python script crashes non-English system locale. See [Bug 273060](https://bugs.webkit.org/show_bug.cgi?id=273060).
 
 If http tests fail as flaky failures due to the socket count limit, increase the user port range. See [Bug 224523](https://bugs.webkit.org/show_bug.cgi?id=224523)
 ```
