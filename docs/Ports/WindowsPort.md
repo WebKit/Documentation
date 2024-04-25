@@ -38,15 +38,16 @@ If you prefer [WinGet](https://learn.microsoft.com/en-us/windows/package-manager
 Invoke the following command in an elevated PowerShell or cmd prompt.
 
 ```
-winget install --scope=machine --id Git.Git Kitware.CMake Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.2 ApacheFriends.Xampp.8.2 GnuWin32.Gperf LLVM.LLVM
+winget install --scope=machine --id Git.Git Kitware.CMake Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.2 ApacheFriends.Xampp.8.2 LLVM.LLVM
+winget install --id GnuWin32.Gperf
 ```
 
 If `--scope=machine` isn't specified, Python is installed under your user profile directory.
 
-If you failed to install or find `GnuWin32.Gperf`, you can install manually to execute installation executable file.
- 
+If you failed to install programs (excluding Python), please use `winget install --id (the name of failed to install programs. (eg, LLVM.LLVM))` command.
+
 WinGet may not append the path into your PC.
-If an error occered, please check your path settings, including LLVM and GnuWin32(Gperf).
+If some errors occered, please check your path settings, including LLVM and GnuWin32(Gperf).
 
 ## WebKit command prompt
 
