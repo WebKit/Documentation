@@ -44,8 +44,6 @@ winget install --id GnuWin32.Gperf
 
 If `--scope=machine` isn't specified, Python is installed under your user profile directory.
 
-If you failed to install programs (excluding Python), please use `winget install --id (the name of failed to install programs. (eg, LLVM.LLVM))` command.
-
 WinGet may not append the path into your PC.
 If some errors occered, please check your path settings, including LLVM and GnuWin32(Gperf).
 
@@ -55,7 +53,7 @@ To compile, run programs and run tests, you need to set some environment variabl
 For ease of development, it's recommended to create a batch file to set environment variables and open PowerShell.
 Create a batch file with the following content with adjusting it to your PC.
 And put it in the top WebKit source directory.
-And double-click it to open PowerShell, we call this opend shell as "WebKit command prompt" hereafter.
+And double-click it to open PowerShell, we call this opened shell as "WebKit command prompt" hereafter.
 
 ```
 @echo off
