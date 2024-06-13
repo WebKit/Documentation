@@ -33,6 +33,9 @@ extra:
     - icon: fontawesome/brands/github 
       link: https://github.com/webkit/webkit
 
+    - icon: fontawesome/brands/safari
+      link: https://webkit.org
+
   generator: false
 
 copyright: WebKit and the WebKit logo are trademarks of Apple Inc.
