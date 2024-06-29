@@ -38,7 +38,7 @@ If your patch regresses one of these benchmarks even slightly (less than 1%), it
 
 * **JetStream2** - Measures JavaScript and WASM performance.
 * **MotionMark** - Measures graphics performance.
-* **Speedometer 2** - Measures WebKit’s performance for complex web apps.
+* **Speedometer 3** - Measures WebKit’s performance for complex web apps.
 
 The following are benchmarks maintained by Apple's WebKit team but not available to other open source contributors
 since Apple doesn't have the right to redistribute the content.
