@@ -1215,23 +1215,29 @@ page header tables even for the small bitfit page config.
 
 ### Probabilistic Guard Malloc
 
- Probabilistic Guard Malloc (PGM) is a new allocator designed to catch use after free attempts and out of bounds accesses.
- It behaves similarly to AddressSanitizer (ASAN), but aims to have minimal runtime overhead.
+Probabilistic Guard Malloc (PGM) is a new allocator designed to catch use after free attempts and out of bounds accesses.
+It behaves similarly to AddressSanitizer (ASAN), but aims to have minimal runtime overhead.
 
- The design of PGM is quite simple. Each time an allocation is performed an additional guard page is added above and below the newly
- allocated page(s). An allocation may span multiple pages. When a deallocation is performed, the page(s) allocated will be protected
- using mprotect to ensure that any use after frees will trigger a crash. Virtual memory addresses are never reused, so we will never run
- into a case where object 1 is freed, object 2 is allocated over the same address space, and object 1 then accesses the memory address
- space of now object 2.
+#### Allocation
 
- PGM does add notable memory overhead. Each allocation, no matter the size, adds an additional 2 guard pages (8KB for X86_64 and 32KB
- for ARM64). In addition, there may be free memory left over in the page(s) allocated for the user. This memory may not be used by any
- other allocation.
+Each time an allocation is performed an additional guard page is added above and below the newly
+allocated page(s). An allocation may span multiple pages. Allocations are either left or right aligned at random, which
+ensures the catching of both overflow and underflow errors.
 
- We added limits on virtual memory and wasted memory to help limit the memory impact on the overall system. Virtual memory for this
- allocator is limited to 1GB. Wasted memory, which is the unused memory in the page(s) allocated by the user, is limited to 1MB.
- These overall limits should ensure that the memory impact on the system is minimal, while helping to tackle the problems of catching
- use after frees and out of bounds accesses.
+#### Deallocation
+
+When a deallocation is performed, the page(s) allocated will be protected using `mprotect` to ensure that any use after frees will trigger a crash. Virtual memory addresses are never reused, so we will never run into a case where object 1 is freed, object 2 is allocated over the same address space, and object 1 then accesses the memory address space of now object 2.
+
+#### Memory Usage
+
+PGM does add notable memory overhead. Each allocation, no matter the size, adds an additional 2 guard pages (8KB for X86_64 and 32KB
+for ARM64). In addition, there may be free memory left over in the page(s) allocated for the user. This memory may not be used by any
+other allocation.
+
+We added limits on virtual memory and wasted memory to help limit the memory impact on the overall system. Virtual memory for this
+allocator is limited to 1GB. Wasted memory, which is the unused memory in the page(s) allocated by the user, is limited to 1MB.
+These overall limits should ensure that the memory impact on the system is minimal, while helping to tackle the problems of catching
+use after frees and out of bounds accesses.
 
 ## The Fast Paths
 
