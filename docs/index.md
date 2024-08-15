@@ -5,7 +5,7 @@ hide:
 
 # WebKit Overview
 
-WebKit is a cross-platform web browser engine. On iOS and macOS, it powers Safari, Mail, iBooks, and many other applications.
+WebKit is a cross-platform web browser engine. On iOS and macOS, it powers Safari, Mail, Apple Books, and many other applications.
 
 ## Getting Up and Running
 
