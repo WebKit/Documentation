@@ -9,6 +9,9 @@ It supports only 64 bit Windows.
 
 Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
 
+[Activate Developer Mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development#activate-developer-mode).
+build-webkit script creates a symlink to a generated compile_commands.json.
+
 Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
 Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
 
@@ -66,7 +69,7 @@ path %ProgramFiles(x86)%\Microsoft Visual Studio\Installer;%path%
 for /F "usebackq delims=" %%I in (`vswhere.exe -latest -property installationPath`) do set VSPATH=%%I
 
 rem set WEBKIT_LIBRARIES=%~dp0WebKitLibraries\win
-path %~dp0WebKitLibraries\win\bin64;%path%
+path %~dp0WebKitLibraries\win\bin;%path%
 set WEBKIT_TESTFONTS=%~dp0Tools\WebKitTestRunner\fonts
 set DUMPRENDERTREE_TEMP=%TEMP%
 
@@ -123,6 +126,9 @@ You can run programs under a debugger with [this instruction](../Build & Debug/D
 
 You can use CMake Visual Studio generator instead of Ninja generator.
 Install [the LLVM extension](https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild) of MSBuild.
+It bundles a Clang compiler.
+But, if the bundled compiler is too old, you might need to [set a custom LLVM location and toolset](https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild?view=msvc-170#custom_llvm_location).
+Instead of creating a Directory.build.props file, you can [set LLVMInstallDir and LLVMToolsVersion environment variables](https://marketplace.visualstudio.com/items?itemName=MarekAniola.mangh-llvm2019).
 
 In the WebKit command prompt,
 
