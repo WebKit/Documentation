@@ -1,7 +1,5 @@
 # Windows port
 
-WebKit had two Windows ports, Apple Windows port and WinCairo port.
-WinCairo port is called Windows port after the Apple Windows port was deprecated.
 It is using [cairo](https://www.cairographics.org/) for the graphics backend, [libcurl](https://curl.se/libcurl/) for the network backend.
 It supports only 64 bit Windows.
 
@@ -110,7 +108,7 @@ It checks the latest WebKitRequirements every time.
 I'd like to recommend to use `--skip-library-update` for incremental build to speed up for the next time.
 
 ```
-python Tools\Scripts\update-webkit-wincairo-libs.py
+python Tools\Scripts\update-webkit-win-libs.py
 perl Tools\Scripts\build-webkit --release --skip-library-update
 ```
 
@@ -220,7 +218,7 @@ docker run -it --rm --cpu-count=8 --memory=16g -v %cd%:c:\repo -w c:\repo webkit
 
 ## Downloading build artifacts from Buildbot
 
- * Go to [WinCairo-64-bit-Release-Build Buildbot builder page](https://build.webkit.org/#/builders/731).
+ * Go to [Windows-64-bit-Release-Build Buildbot builder page](https://build.webkit.org/#/builders/1192).
  * Click any "Build #" which is green.
  * Click the "Archive" link under "compile-webkit" to download the zip
  * Download the corresponding release of [WebKitRequirements](https://github.com/WebKitForWindows/WebKitRequirements/releases).
