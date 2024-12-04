@@ -28,12 +28,12 @@ In addition to pull request commits having verbose commit messages, the WebKit p
 
 ## Reviewing
 
-Commits generally require the approval of a [reviewer](https://webkit.org/team/#reviewers), although there are narrow exceptions for test expectation gardening and build fixes. Reviewers will approve pull requests through the GitHub UI by marking pull requests as "Approved." Note that approval from someone who is not a reviewer will not be recognized by [Merge-Queue](/Getting Started/ContributingCode#merge-queue).
+Commits generally require the approval of a [reviewer](https://webkit.org/team/#reviewers), although there are narrow exceptions for test expectation gardening and build fixes. Reviewers will approve pull requests through the GitHub UI by marking pull requests as "Approved." Note that approval from someone who is not a reviewer will not be recognized by the [Merge-Queues](/Getting Started/ContributingCode#merge-queues).
 
 ## Landing
 
-Only repository administers have direct commit access, and this is reserved for repairing infrastructure issues. Pull requests should be landed through [Merge-Queue](/Getting Started/ContributingCode#merge-queue), which is achieved by applying [`merge-queue`](https://github.com/WebKit/WebKit/labels?q=merge-queue) or [`unsafe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=unfsafe-merge-queue) label to your pull request.
+Only repository administrators have direct commit access, and this is reserved for repairing infrastructure issues. Pull requests should be landed through the [Merge-Queues](/Getting Started/ContributingCode#merge-queues), which is achieved by applying [`safe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=safe-merge-queue), [`merge-queue`](https://github.com/WebKit/WebKit/labels?q=merge-queue), or [`unsafe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=unfsafe-merge-queue) label to your pull request.
 
-[Merge-Queue](/Getting Started/ContributingCode#merge-queue) will check to make sure a change is reviewed by adding the name of all [reviewers](https://webkit.org/team/#reviewers) who have approved a pull request to the commit message. [Merge-Queue](/Getting Started/ContributingCode#merge-queue) will then check the commit message for `Reviewed by`.
+Each queue makes sure a change is reviewed by adding the name of all [reviewers](https://webkit.org/team/#reviewers) who have approved a pull request to the commit message. It will then check the commit message for `Reviewed by`.
 
-Note that [Merge-Queue](/Getting Started/ContributingCode#merge-queue) will reject pull requests that are labeled by contributors who are not [committers](https://webkit.org/team/#committers).
+Note that the Merge-Queues will reject pull requests labeled by contributors who are not [committers](https://webkit.org/team/#committers).
