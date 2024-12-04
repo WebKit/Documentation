@@ -54,13 +54,17 @@ git webkit pr
 
 ## Landing Changes
 
-### Merge-Queue
+### Merge Queues
 
-To land a pull request, add the [`merge-queue`](https://github.com/WebKit/WebKit/labels?q=merge-queue) or [`unsafe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=unfsafe-merge-queue) label to your pull request. These labels will put your pull request into the [Merge-Queue](https://ews-build.webkit.org/#/builders/74) and [Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75), respectively, which will commit your pull request to the WebKit repository
+To land a pull request, add the [`safe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=safe-merge-queue), [`merge-queue`](https://github.com/WebKit/WebKit/labels?q=merge-queue), or [`unsafe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=unsafe-merge-queue) label to your pull request. These labels will put your pull request into [Safe-Merge-Queue](https://ews-build.webkit.org/#/builders/Safe-Merge-Queue), [Merge-Queue](https://ews-build.webkit.org/#/builders/Merge-Queue), and [Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/Unsafe-Merge-Queue), respectively, which will commit your pull request to the WebKit repository.
 
-[Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75) inserts reviewer information into a commit's message and modified change logs. We then check to ensure that a pull request has been reviewed by checking the commit message before landing the change. [Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75) _does not_ validate that a pull request builds.
+Each queue runs a style-check and inserts reviewer information into the commit message and modified change logs. They check that a pull request has been reviewed by checking the commit message before landing the change.
 
-Along with the actions performed by [Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/75), [Merge-Queue](https://ews-build.webkit.org/#/builders/74) will validate that a pull request builds and run layout tests before landing the change.
+[Safe-Merge-Queue](https://ews-build.webkit.org/#/builders/Safe-Merge-Queue) checks the status of pull requests with the label every 15 minutes. Once all EWS tests pass, the pull request is automatically landed. If a test fails, the pull request is labelled with merging-blocked.
+
+[Merge-Queue](https://ews-build.webkit.org/#/builders/Merge-Queue) validates that a pull request builds on macOS and runs WK2 layout tests before landing the change.
+
+[Unsafe-Merge-Queue](https://ews-build.webkit.org/#/builders/Unsafe-Merge-Queue) does not perform any additional validation and should only be used for changes that have minimal impact (e.g. setting test expectations, adding to contributors.json) or changes that need to be landed quickly (e.g. build fix or revert).
 
 ### git-webkit land
 
