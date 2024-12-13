@@ -24,7 +24,7 @@ The `setup` sub-command of [git-webkit](https://github.com/WebKit/WebKit/tree/ma
 
 Firstly, please make sure you [file a bug](https://bugs.webkit.org) for the thing you are adding or fixing! Or, find a bug that you think is relevant to the fix you are making.
 
-Assuming you are working off "main" branch, once your patch is working and [tests are passing](#correctness-testing-in-webkit), simply run:
+Assuming you are working off "main" branch, once your patch is working and [tests are passing](/Build & Debug/Tests.html#correctness-testing-in-webkit), simply run:
 
 ```Bash
 git webkit pr --issue <your bug number here>
@@ -75,7 +75,7 @@ To land a change, run `git-webkit land` from the branch to be landed. Note that 
 * Check to ensure a pull-request is approved and not blocked
 * Insert reviewer names into the commit message
 * Rebase the pull-request against its parent branch
-* [Canonicalize](/Deep Dive/GitHub/Source Control#canonicalization) the commits to be landed
+* [Canonicalize](/Deep Dive/GitHub/SourceControl.html#canonicalization) the commits to be landed
 * Update the pull-request with the landed commit
 
 ## Coding style
