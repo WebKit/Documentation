@@ -6,11 +6,11 @@ Layout Formatting Context display tree and related functionality (aka "LFC Displ
 
 The **display tree** is intended to be a fully-resolved, isolated tree that is suitable for painting and hit-testing.
 
-*Fully-resolved* means that all style values have been resolved to the values use for painting. For example, colors in the display tree are those which result from the application of visited link rules, and from the application of `-apple-color-filter`.
+*Fully-resolved* means that all style values have been resolved to the values used for painting. For example, colors in the display tree are those which result from the application of visited link rules, and from the application of `-apple-color-filter`.
 
-*Isolated* means that a display tree is a stand-alone data structure that can be painted without reference to data structures share with layout. For example, the display tree does not use `RenderStyle` once built, but constructs its own display styles at tree-building time.
+*Isolated* means that a display tree is a stand-alone data structure that can be painted without reference to data structures shared with layout. For example, the display tree does not use `RenderStyle` once built, but constructs its own display styles at tree-building time.
 
-All the geometry in the display tree is already in painting coordinates: pixel snapping happens at tree building time.
+All the geometry in the display tree is already in painting coordinates: pixel snapping happens at tree-building time.
 
 In general the tree has been designed to push as much of the complexity to tree-building time as possible, so that painting is fast.
 
@@ -98,7 +98,7 @@ Clipping is a source of complexity in the display tree because CSS clipping does
 
 At tree-building time `Display::TreeBuilder` keeps track of containing blocks, so for boxes which initiate out-of-order painting (i.e. those which are the root box of a `Display::StackingItem`) `Display::BoxFactory` can ask the containing block for the clip that should be applied.
 
-Clips are store in `Display::BoxClip` which tracks an intersection rect, and, if necessary, a set of rounded rects needed to apply border-radius clips from ancestors. `Display::BoxClip` objects are shared between parent/child `Display::BoxModelObject` objects that share the same clip (i.e. have no overflow of their own).
+Clips are stored in `Display::BoxClip` which tracks an intersection rect, and, if necessary, a set of rounded rects needed to apply border-radius clips from ancestors. `Display::BoxClip` objects are shared between parent/child `Display::BoxModelObject` objects that share the same clip (i.e. have no overflow of their own).
 
 
 ## Scrolling
