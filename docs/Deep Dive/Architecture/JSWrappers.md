@@ -50,7 +50,7 @@ which has an inline pointer to the JS wrapper for the main world if one was alre
 ## JS Wrapper Lifecycle Management
 
 As a general rule, a JS wrapper keeps its underlying C++ object alive by means of reference counting
-in [JSDOMWrapper](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/bindings/js/JSDOMWrapper.h) temple class
+in [JSDOMWrapper](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/bindings/js/JSDOMWrapper.h) template class
 from which all JS wrappers in WebCore inherits.
 However, **C++ objects do not keep their corresponding JS wrapper in each world alive** by the virtue of them staying alive
 as such a circular dependency will result in a memory leak.
