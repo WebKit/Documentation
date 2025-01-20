@@ -36,4 +36,4 @@ Only repository administrators have direct commit access, and this is reserved f
 
 Each queue makes sure a change is reviewed by adding the name of all [reviewers](https://webkit.org/team/#reviewers) who have approved a pull request to the commit message. It will then check the commit message for `Reviewed by`.
 
-Note that the Merge-Queues will reject pull requests labeled by contributors who are not [committers](https://webkit.org/team/#committers).
+Note that the Merge-Queues will reject pull requests labeled by contributors who are not [committers](https://webkit.org/team/#committers). Non-committers can use the [`request-merge-queue`](https://github.com/WebKit/WebKit/labels?q=request-merge-queue) label to get reviewers to add the change to the queue.
