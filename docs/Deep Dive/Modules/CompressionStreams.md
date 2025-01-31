@@ -25,9 +25,9 @@ Compression Streams work by passing a chunk of data (uint8 array) in and then re
 
 Speed is of paramount importance when trying to compress/decompress data.
 
-In Compression Streams, we try to allocate enough memory up front, so we only have to perform the compression once. For Decompression Streams, we employee a 2x increase in memory allocated each pass we attempt to decompress a chunk (with a cap of 1GB). This design was done to ensure minimal amounts of allocations being required, and to limit the number of times we needed to call inflate/deflate.
+In Compression Streams, we try to allocate enough memory up front, so we only have to perform the compression once. For Decompression Streams, we employ a 2x increase in memory allocated each pass we attempt to decompress a chunk (with a cap of 1GB). This design was done to ensure minimal amounts of allocations being required, and to limit the number of times we needed to call inflate/deflate.
 
-Of course with the increase in memory usage, on smaller memory devices we may hit a cap. To handle this, we employee a back off algorithm that will quickly scale back memory allocation size if they start to fail.
+Of course with the increase in memory usage, on smaller memory devices we may hit a cap. To handle this, we implemented a back off algorithm that will quickly scale back memory allocation size if they start to fail.
 
 We currently buffer all the compression/decompression output per chunk, and return them to the user all at once. We could also consider the possibility of returning the chunk output to the user after every call to inflate/deflate.
 
