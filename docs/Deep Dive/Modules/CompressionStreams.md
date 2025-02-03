@@ -1,18 +1,17 @@
 # Compression Streams
 
-Compression Streams Module
-
 ## Overview
 
 Compression Streams offer a built in way to compress and decompress data based on several common file formats.
 
 ## Supported Formats
 
-| Format | Specification |
-| ------ | ------------- |
-| gzip   | [RFC1952](https://www.rfc-editor.org/rfc/rfc1952) |
-| deflate (also known as ZLIB) | [RFC1950](https://www.rfc-editor.org/rfc/rfc1950) |
-| deflate-raw | [RFC1951](https://www.rfc-editor.org/rfc/rfc1951) |
+| Format                        | Specification                                     |
+| ----------------------------- | ------------------------------------------------- |
+| brotli                        | [RFC7932](https://www.rfc-editor.org/rfc/rfc7932) |
+| gzip                          | [RFC1952](https://www.rfc-editor.org/rfc/rfc1952) |
+| deflate (also known as ZLIB)  | [RFC1950](https://www.rfc-editor.org/rfc/rfc1950) |
+| deflate-raw                   | [RFC1951](https://www.rfc-editor.org/rfc/rfc1951) |
 
 ## Specification
 
@@ -33,9 +32,9 @@ We currently buffer all the compression/decompression output per chunk, and retu
 
 ## Libraries
 
-On Windows and Linux we exclusively use zlib to perform the heavy lifting for all compression and decompression algorithms. 
+On Windows and Linux we exclusively use zlib to perform the heavy lifting for all compression and decompression algorithms. Brotli is currently not available on these platforms.
 
-On Apple platforms we leverage the Compression Framework for the deflate-raw decompression to achieve extra performance. The rest of the operations use zlib. Compression Framework only supports deflate-raw for our use case, and there are currently no performance benefits for using this framework to handle compression over zlib.
+On Apple platforms we leverage the Compression Framework for the brotli format. The other formats use the zlib library directly.
 
 
 ## Notes
