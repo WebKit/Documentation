@@ -22,7 +22,7 @@ Parser carries out the ​syntactic analysis, i.e. consuming the tokens from the
 
 #### LLInt
 
-LLInt, short for Low Level Interpreter, executes the bytecodes produced by the parser. The bulk of the Low Level Interpreter is in ​llint/. The LLInt is written in a portable assembly called offlineasm (see ​offlineasm/, which can compile to x86, ARMv7, and C. The LLInt is intended to have zero start-up cost besides lexing and parsing, while obeying the calling, stack, and register conventions used by the just-in-time compilers. For example, calling a LLInt function works "as if" the function was compiled to native code, except that the machine code entrypoint is actually a shared LLInt prologue. The LLInt includes optimizations such as inline caching to ensure fast property access.
+LLInt, short for Low Level Interpreter, executes the bytecodes produced by the parser. The bulk of the Low Level Interpreter is in ​llint/. The LLInt is written in a portable assembly called offlineasm (see ​offlineasm/), which can compile to x86, ARMv7, and C. The LLInt is intended to have zero start-up cost besides lexing and parsing, while obeying the calling, stack, and register conventions used by the just-in-time compilers. For example, calling a LLInt function works "as if" the function was compiled to native code, except that the machine code entrypoint is actually a shared LLInt prologue. The LLInt includes optimizations such as inline caching to ensure fast property access.
 
 #### Baseline
 
