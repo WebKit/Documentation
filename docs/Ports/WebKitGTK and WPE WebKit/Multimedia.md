@@ -27,19 +27,18 @@ be present in the `$HOME/dots` folder.
 In this section we take the example of the [GNOME
 Web](https://flathub.org/apps/org.gnome.Epiphany) app, a.k.a. Epiphany.
 
-Epiphany runs with its Web content process sandboxed, meaning that filesystem
-access is restricted, so you need to make sure the GStreamer log file will be
-located in a folder accessible in read-write mode by the Web content process,
-using the `WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS` environment variable and
-the `--filesystem=home` flatpak option.
-
-
 ```shell
 mkdir -p $HOME/dots
-flatpak run --filesystem=home --env="WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1" \
+flatpak run --filesystem=home \
     --env="GST_DEBUG=3,webkit*:6" --env="GST_DEBUG_FILE=$HOME/gst.log" \
     --env="GST_DEBUG_DUMP_DOT_DIR=$HOME/dots" org.gnome.Epiphany -p "https://..."
 ```
+
+Note: If this command does not produce files as expected and you are using a
+WebKitGTK version below 2.50, you will need to add
+`--env="WEBKIT_DISABLE_SANDBOX_THIS_IS_DANGEROUS=1"` to the
+command-line. See also this [pull request scheduled to ship in
+2.50](https://github.com/WebKit/WebKit/pull/43116)
 
 GNOME Web has [three different
 flavours](https://gitlab.gnome.org/GNOME/epiphany#download-and-install). The
