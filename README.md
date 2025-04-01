@@ -12,6 +12,12 @@ pip3 install mkdocs-material
 
 ### Preview Documentation Locally
 
+This will pull the **Guides** submodule from the contents of the WebKit wiki, and copy the `Guides/Home.md` file to `Guides/index.md`:
+
+```
+git pull --recurse-submodules && make
+```
+
 This will bring up a local web server, so you can see the documentation locally. Any updates you make will be automatically visible.
 
 ```
