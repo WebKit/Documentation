@@ -32,7 +32,7 @@ Commits generally require the approval of a [reviewer](https://webkit.org/team/#
 
 ## Landing
 
-Only repository administrators have direct commit access, and this is reserved for repairing infrastructure issues. Pull requests should be landed through the [Merge-Queues](/Getting Started/ContributingCode#merge-queues), which is achieved by applying the [`safe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=safe-merge-queue), [`merge-queue`](https://github.com/WebKit/WebKit/labels?q=merge-queue), or [`unsafe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=unfsafe-merge-queue) label to your pull request.
+Only repository administrators have direct commit access, and this is reserved for repairing infrastructure issues. Pull requests should be landed through the [Merge-Queues](/Getting Started/ContributingCode#merge-queues), which is achieved by applying the [`safe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=safe-merge-queue), [`merge-queue`](https://github.com/WebKit/WebKit/labels?q=merge-queue), or [`unsafe-merge-queue`](https://github.com/WebKit/WebKit/labels?q=unfsafe-merge-queue) label to your pull request. You need to add yourself in the contributors.json file so you can set the label.
 
 Each queue makes sure a change is reviewed by adding the name of all [reviewers](https://webkit.org/team/#reviewers) who have approved a pull request to the commit message. It will then check the commit message for `Reviewed by`.
 
