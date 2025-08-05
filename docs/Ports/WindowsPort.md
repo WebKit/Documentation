@@ -11,14 +11,16 @@ Install [the latest Visual Studio with "Desktop development with C++" workload](
 build-webkit script creates a symlink to a generated compile_commands.json.
 
 Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
-Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
+- Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
+- Cmake 4+ has [a dowstream problem for vcpkg woff2 at the moment](https://github.com/WebKit/Documentation/issues/129). Use Cmake 3.31.8.
 
 You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
 [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
 XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
 
 ```
-choco install -y xampp-81 python311 ruby git cmake gperf llvm ninja
+choco install -y xampp-81 python311 ruby git gperf llvm ninja
+choco install -y cmake --version=3.31.8
 ```
 
 Install pywin32 Python module for run-webkit-tests and git-webkit.
