@@ -3,9 +3,14 @@
 It is using [cairo](https://www.cairographics.org/) for the graphics backend, [libcurl](https://curl.se/libcurl/) for the network backend.
 It supports only 64 bit Windows.
 
+## Cloning Webkit
+A full clone of the [Webkit repository](https://github.com/WebKit/WebKit) is required. Shallow cloning will not work.
+
 ## Installing Development Tools
 
 Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
+
+If you have *"C++ Clang Tools for Windows"* installed for the workload, this will take precedence and the build will fail. Explicitilty provide the full path to a alternative llvm `clang-cl.exe` in the Webkit Command Prompt script for this case.
 
 [Activate Developer Mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development#activate-developer-mode).
 build-webkit script creates a symlink to a generated compile_commands.json.
@@ -75,6 +80,8 @@ set DUMPRENDERTREE_TEMP=%TEMP%
 
 set CC=clang-cl
 set CXX=clang-cl
+rem set CC=<path-to-llvm>\clang-cl.exe
+rem set CXX=<path-to-llvm>\clang-cl.exe
 
 rem set http_proxy=http://your-proxy:8080
 rem set https_proxy=%http_proxy%
@@ -88,6 +95,9 @@ rem set JSC_useDOMJIT=0
 
 rem You can show check TextureMapper FPS via WEBKIT_SHOW_FPS.
 rem set WEBKIT_SHOW_FPS=1
+
+rem You can use ccache with pre-compiled headers enabled
+rem set CCACHE_SLOPPINESS=pch_defines,time_macros
 
 call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat"
 cd %~dp0
