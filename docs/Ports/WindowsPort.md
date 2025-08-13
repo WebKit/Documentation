@@ -17,27 +17,29 @@ If have included *C++ Clang Tools for Windows* for the workload, it's Llvm will 
 `build-webkit` script creates a symlink to a generated compile_commands.json.
 
 Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
-- Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
-- Cmake 4+ has [a dowstream problem for vcpkg woff2 at the moment](https://github.com/WebKit/Documentation/issues/129). Use Cmake 3.31.8.
+- Python 3.12+ potentially has [a problem for WebKit in some contexts](https://webkit.org/b/261113). Use Python 3.11.x if you experience issues.
+- Cmake 4+ has [a dowstream problem for vcpkg woff2 at the moment](https://github.com/WebKit/Documentation/issues/129). Use Cmake 3.x.
 
 You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
 [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
 XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
 
-```
-choco install -y xampp-81 python311 ruby git gperf llvm ninja
-choco install -y cmake --version=3.31.8
+```powershell
+choco install -y xampp-81 python ruby git gperf llvm ninja
+# Use the latest 3.x version of cmake available
+choco search -e cmake -a
+choco install -y cmake --version=3.??.?
 ```
 
 Install pywin32 Python module for run-webkit-tests and git-webkit.
 
-```
+```powershell
 python -m pip install pywin32
 ```
 
 Windows Git enables `autocrlf` by default. But, some layout tests files have to be checked out as LF line end style. See [Bug 240158](https://bugs.webkit.org/show_bug.cgi?id=240158).
 
-```
+```powershell
 git config --global core.autocrlf input
 ```
 
