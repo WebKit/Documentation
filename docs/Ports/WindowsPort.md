@@ -18,7 +18,7 @@ If have included *C++ Clang Tools for Windows* for the workload, it's Llvm will 
 
 Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
 - Python 3.12+ potentially has [a problem for WebKit in some contexts](https://webkit.org/b/261113). Use Python 3.11.x if you experience issues.
-- CMake 4+ has [a dowstream problem for vcpkg woff2 at the moment](https://github.com/WebKit/Documentation/issues/129). Use CMake 3.x.
+- CMake 4+ has [a downstream problem for vcpkg woff2 at the moment](https://github.com/WebKit/Documentation/issues/129). Use CMake 3.x.
 
 You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
 [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
