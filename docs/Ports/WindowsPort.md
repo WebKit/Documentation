@@ -5,7 +5,7 @@ It supports only 64 bit Windows.
 
 ## Cloning Webkit
 Ensure that you are NOT cloning under an ancestor directory that is a git repository. This may confuse `build-webkit` script and result in failure.<br>
-A shallow clone of the WebKit repository at a hash or tag may work if you are just building a release and not intending to develop WebKit.
+A shallow clone of the WebKit repository at a detached hash may work if you are just building and not intending to develop WebKit. Official Apple release tags are unlikely to work.
 
 ## Installing Development Tools
 
