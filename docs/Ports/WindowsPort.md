@@ -4,16 +4,17 @@ It is using [cairo](https://www.cairographics.org/) for the graphics backend, [l
 It supports only 64 bit Windows.
 
 ## Cloning Webkit
-A full clone of the [Webkit repository](https://github.com/WebKit/WebKit) is required. Shallow cloning will not work.
+Ensure that you are NOT cloning under an ancestor directory that is a git repository. This may confuse `build-webkit` script and result in failure.<br>
+A shallow clone of the WebKit repository at a hash or tag may work if you are just building a release and not intending to develop WebKit.
 
 ## Installing Development Tools
 
 Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
 
-If you have *"C++ Clang Tools for Windows"* installed for the workload, this will take precedence and the build will fail. Explicitilty provide the full path to a alternative llvm `clang-cl.exe` in the Webkit Command Prompt script for this case.
+If have included *C++ Clang Tools for Windows* for the workload, it's Llvm will take precedence and the build may fail. For this scenario, explicitilty provide the full path to an alternative Windows Llvm's `clang-cl.exe` in the Webkit Command Prompt script.
 
 [Activate Developer Mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development#activate-developer-mode).
-build-webkit script creates a symlink to a generated compile_commands.json.
+`build-webkit` script creates a symlink to a generated compile_commands.json.
 
 Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
 - Python 3.12 has [a problem for WebKit at the moment](https://webkit.org/b/261113). Use Python 3.11.
@@ -96,8 +97,8 @@ rem set JSC_useDOMJIT=0
 rem You can show check TextureMapper FPS via WEBKIT_SHOW_FPS.
 rem set WEBKIT_SHOW_FPS=1
 
-rem You can use ccache with pre-compiled headers enabled
-rem set CCACHE_SLOPPINESS=pch_defines,time_macros
+rem You can use ccache with pre-compiled headers @see https://ccache.dev/manual/latest.html#_precompiled_headers
+rem set CCACHE_SLOPPINESS=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
 call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat"
 cd %~dp0
