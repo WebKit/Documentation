@@ -4,7 +4,7 @@ It is using [cairo](https://www.cairographics.org/) for the graphics backend, [l
 It supports only 64 bit Windows.
 
 ## Cloning Webkit
-Ensure that you are NOT cloning under an ancestor directory that is a git repository. This may confuse `build-webkit` script and result in failure.<br>
+Ensure that you are NOT cloning under an ancestor directory that is a git repository. This may confuse the `build-webkit` script and result in failure.
 A shallow clone of the WebKit repository at a detached hash may work if you are just building and not intending to develop WebKit. Official Apple release tags are unlikely to work.
 
 ## Installing Development Tools
