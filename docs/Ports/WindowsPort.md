@@ -29,7 +29,7 @@ choco install -y xampp-81 python ruby git gperf llvm ninja
 # Use the latest 3.x version of CMake available
 choco search -e cmake -a
 choco install -y cmake --version=3.x.x
-choco pin add -n=cmake
+choco pin add --name="'cmake'" --version="'3.x.x'" --reason="'WebKit downstream issue building woff2 with vcpkg requires CMake < 4'"
 ```
 
 Install pywin32 Python module for run-webkit-tests and git-webkit.
