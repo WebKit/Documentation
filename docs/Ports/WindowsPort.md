@@ -28,7 +28,8 @@ XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead
 choco install -y xampp-81 python ruby git gperf llvm ninja
 # Use the latest 3.x version of cmake available
 choco search -e cmake -a
-choco install -y cmake --version=3.??.?
+choco install -y cmake --version=3.x.x
+choco pin add -n=cmake
 ```
 
 Install pywin32 Python module for run-webkit-tests and git-webkit.
