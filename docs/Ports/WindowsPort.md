@@ -9,7 +9,7 @@ A shallow clone of the WebKit repository at a detached hash may work if you are 
 
 ## Installing Development Tools
 
-Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation).
+Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation). Ensure that "vcpkg" has been included. 
 
 If have included *C++ Clang Tools for Windows* for the workload, it's Llvm will take precedence and the build may fail. For this scenario, explicitilty provide the full path to an alternative Windows Llvm's `clang-cl.exe` in the Webkit Command Prompt script.
 
@@ -18,18 +18,13 @@ If have included *C++ Clang Tools for Windows* for the workload, it's Llvm will 
 
 Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
 - Python 3.12+ potentially has [a problem for WebKit in some contexts](https://webkit.org/b/261113). Use Python 3.11.x if you experience issues.
-- CMake 4+ has [a downstream problem for vcpkg woff2 at the moment](https://github.com/WebKit/Documentation/issues/129). Use CMake 3.x.
-
+- 
 You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
 [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
 XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
 
 ```powershell
-choco install -y xampp-81 python ruby git gperf llvm ninja
-# Use the latest 3.x version of CMake available
-choco search -e cmake -a
-choco install -y cmake --version=3.x.x
-choco pin add --name="'cmake'" --version="'3.x.x'" --reason="'WebKit downstream issue building woff2 with vcpkg requires CMake < 4'"
+choco install -y xampp-81 python ruby git gperf cmake llvm ninja
 ```
 
 Install pywin32 Python module for run-webkit-tests and git-webkit.
@@ -105,6 +100,25 @@ rem set CCACHE_SLOPPINESS=pch_defines,time_macros,include_file_mtime,include_fil
 
 call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat"
 cd %~dp0
+
+rem Vcpkg cannot install woff2 with CMake 4+
+rem Apply the patch below to force vcpkg to the VS toolchain bundled version of CMake 3
+rem The WebKit build will still use the CMake on your PATH
+rem (
+rem echo diff --git a/WebKitLibraries/triplets/x64-windows-webkit.cmake b/WebKitLibraries/triplets/x64-windows-webkit.cmake
+rem echo index 502577b9fe..b06fdcdbda 100644
+rem echo --- a/WebKitLibraries/triplets/x64-windows-webkit.cmake
+rem echo +++ b/WebKitLibraries/triplets/x64-windows-webkit.cmake
+rem echo @@ -1,3 +1,5 @@
+rem echo +set^(VCPKG_ENV_PASSTHROUGH DevEnvDir^)
+rem echo +set^(CMAKE_COMMAND "$ENV{DevEnvDir}CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"^)
+rem echo  set^(VCPKG_TARGET_ARCHITECTURE x64^)
+rem echo  set^(VCPKG_CRT_LINKAGE dynamic^)
+rem echo  set^(VCPKG_LIBRARY_LINKAGE dynamic^)
+rem ) > triplet.patch
+rem git apply --whitespace=nowarn triplet.patch 2>nul
+rem del triplet.patch
+
 start powershell
 ```
 
