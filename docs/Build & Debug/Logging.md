@@ -81,6 +81,34 @@ Set the `WEBKIT_DEBUG` environment variable.
 WEBKIT_DEBUG=Scrolling Tools/Scripts/run-minibrowser --gtk --debug
 ```
 
+### Android
+
+The WPE port can be built for Android, where it integrates with the system
+`logd` service. The log channel configuration is read from the
+`debug.log.WPEWebKit` system property, which can be set using the `setprop`
+command line tool:
+
+```sh
+adb shell setprop debug.log.WPEWebKit 'WebGL,Media=error'
+```
+
+Additionally, the `log.tag.WPEWebKit` property is used to configure a global
+filter for all the messages produced by WebKit:
+
+```sh
+adb shell setprop log.tag.WPEWebKit VERBOSE
+```
+
+The `persist.` prefix may be added to either system property to store the
+setting across device reboots.
+
+Android logs can then read with `logcat`:
+
+```sh
+adb logcat -s WPEWebKit
+```
+
+
 ### macOS
 
 On macOS, you can, for example, enable the `Language` log channel with these terminal commands:
