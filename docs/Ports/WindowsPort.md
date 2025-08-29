@@ -1,6 +1,6 @@
 # Windows port
 
-It is using [cairo](https://www.cairographics.org/) for the graphics backend, [libcurl](https://curl.se/libcurl/) for the network backend.
+It is using [skia](https://skia.org/) for the graphics backend, [libcurl](https://curl.se/libcurl/) for the network backend.
 It supports only 64 bit Windows.
 
 ## Cloning Webkit
@@ -11,20 +11,21 @@ A shallow clone of the WebKit repository at a detached hash may work if you are 
 
 Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation). Ensure that "vcpkg" has been included. 
 
-If have included *C++ Clang Tools for Windows* for the workload, it's Llvm will take precedence and the build may fail. For this scenario, explicitilty provide the full path to an alternative Windows Llvm's `clang-cl.exe` in the Webkit Command Prompt script.
+If you have included *C++ Clang Tools for Windows* for the workload, it's Llvm will take precedence and the build may fail. For this scenario, explicitilty provide the full path to an alternative Windows Llvm's `clang-cl.exe` in the Webkit Command Prompt script.
 
 [Activate Developer Mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development#activate-developer-mode).
 `build-webkit` script creates a symlink to a generated compile_commands.json.
 
-Install CMake, Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
+Install Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
 - Python 3.12+ potentially has [a problem for WebKit in some contexts](https://webkit.org/b/261113). Use Python 3.11.x if you experience issues.
-- 
+- We use CMake 3.x that is bundled with the "Desktop development with C++" workload. Downstream vcpkg Woff2 has problems compiling with CMake 4+.
+ 
 You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
 [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
 XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
 
 ```powershell
-choco install -y xampp-81 python ruby git gperf cmake llvm ninja
+choco install -y xampp-81 python ruby git gperf llvm ninja
 ```
 
 Install pywin32 Python module for run-webkit-tests and git-webkit.
@@ -45,7 +46,7 @@ If you prefer [WinGet](https://learn.microsoft.com/en-us/windows/package-manager
 Invoke the following command in an elevated PowerShell or cmd prompt.
 
 ```
-winget install --scope=machine --id Git.Git Kitware.CMake Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.2 ApacheFriends.Xampp.8.2 LLVM.LLVM
+winget install --scope=machine --id Git.Git Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.2 ApacheFriends.Xampp.8.2 LLVM.LLVM
 winget install --id GnuWin32.Gperf
 ```
 
@@ -68,7 +69,6 @@ cd %~dp0
 
 path C:\xampp\apache\bin;%path%
 path C:\xampp\perl\bin;%path%
-path %ProgramFiles%\CMake\bin;%path%
 path %ProgramFiles(x86)%\Microsoft Visual Studio\Installer;%path%
 for /F "usebackq delims=" %%I in (`vswhere.exe -latest -property installationPath`) do set VSPATH=%%I
 
@@ -99,26 +99,10 @@ rem You can use ccache with pre-compiled headers @see https://ccache.dev/manual/
 rem set CCACHE_SLOPPINESS=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
 call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat"
+rem Set PATH to use the VS toolchain bundled CMake 3.x. This ensures that downstream vcpkg builds will succeed.
+path %DevEnvDir%CommonExtensions\\Microsoft\\CMake\\CMake\\bin;%path%
+
 cd %~dp0
-
-rem Vcpkg cannot install woff2 with CMake 4+
-rem Apply the patch below to force vcpkg to the VS toolchain bundled version of CMake 3
-rem The WebKit build will still use the CMake on your PATH
-rem (
-rem echo diff --git a/WebKitLibraries/triplets/x64-windows-webkit.cmake b/WebKitLibraries/triplets/x64-windows-webkit.cmake
-rem echo index 502577b9fe..b06fdcdbda 100644
-rem echo --- a/WebKitLibraries/triplets/x64-windows-webkit.cmake
-rem echo +++ b/WebKitLibraries/triplets/x64-windows-webkit.cmake
-rem echo @@ -1,3 +1,5 @@
-rem echo +set^(VCPKG_ENV_PASSTHROUGH DevEnvDir^)
-rem echo +set^(CMAKE_COMMAND "$ENV{DevEnvDir}CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe"^)
-rem echo  set^(VCPKG_TARGET_ARCHITECTURE x64^)
-rem echo  set^(VCPKG_CRT_LINKAGE dynamic^)
-rem echo  set^(VCPKG_LIBRARY_LINKAGE dynamic^)
-rem ) > triplet.patch
-rem git apply --whitespace=nowarn triplet.patch 2>nul
-rem del triplet.patch
-
 start powershell
 ```
 
