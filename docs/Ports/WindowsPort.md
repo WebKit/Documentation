@@ -1,5 +1,4 @@
 # Windows port
-
 It is using [skia](https://skia.org/) for the graphics backend, [libcurl](https://curl.se/libcurl/) for the network backend.
 It supports only 64 bit Windows.
 
@@ -7,44 +6,48 @@ It supports only 64 bit Windows.
 Ensure that you are NOT cloning under an ancestor directory that is a git repository. This may confuse the `build-webkit` script and result in failure.
 A shallow clone of the WebKit repository at a detached hash may work if you are just building and not intending to develop WebKit. Official Apple release tags are unlikely to work.
 
-## Installing Development Tools
+You may need to [enable Windows long paths](https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry) to fully clone the repo sucessfully.
 
-Install [the latest Visual Studio with "Desktop development with C++" workload](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation). Ensure that "vcpkg" has been included. 
-
-If you have included *C++ Clang Tools for Windows* for the workload, it's Llvm will take precedence and the build may fail. For this scenario, explicitilty provide the full path to an alternative Windows Llvm's `clang-cl.exe` in the Webkit Command Prompt script.
-
-[Activate Developer Mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development#activate-developer-mode).
-`build-webkit` script creates a symlink to a generated compile_commands.json.
-
-Install Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
-- Python 3.12+ potentially has [a problem for WebKit in some contexts](https://webkit.org/b/261113). Use Python 3.11.x if you experience issues.
-- We use CMake 3.x that is bundled with the "Desktop development with C++" workload. Downstream vcpkg Woff2 has problems compiling with CMake 4+.
- 
-You can use [Chocolatey](https://community.chocolatey.org/) to install the tools.
-[ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer now.
-XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
-
-```powershell
-choco install -y xampp-81 python ruby git gperf llvm ninja
+Windows Git enables `autocrlf` by default, but some layout tests files have to be checked out as LF line end style. See [Bug 240158](https://bugs.webkit.org/show_bug.cgi?id=240158).
 ```
-
-Install pywin32 Python module for run-webkit-tests and git-webkit.
-
-```powershell
-python -m pip install pywin32
-```
-
-Windows Git enables `autocrlf` by default. But, some layout tests files have to be checked out as LF line end style. See [Bug 240158](https://bugs.webkit.org/show_bug.cgi?id=240158).
-
-```powershell
 git config --global core.autocrlf input
 ```
 
+## Installing VS Development Tools and configuring Windows
+[Install](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation) VS 2022 and it's "Desktop development with C++" workload. Ensure that "VCPKG" has been enabled for the workload. 
+
+If you have enabled "C++ Clang Tools for Windows" for the workload, it's LLVM will take precedence and the build may fail.
+For this scenario, explicitilty provide the full path to an alternative Windows native LLVM's `clang-cl.exe` in the "Webkit command prompt" script described below.
+
+The `build-webkit` script creates a symlink to a generated `compile_commands.json`,
+so [activate Windows developer mode](https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development#activate-developer-mode) to allow for scripted symlinks.
+
+## Installing Development Dependencies
+Install Windows native Perl, Python, Ruby, gperf \([GnuWin32 Gperf](https://gnuwin32.sourceforge.net/packages/gperf.htm)\), LLVM, and Ninja.
+
+**Notes:**
+- Python 3.12+ potentially has [a problem for WebKit in some contexts](https://webkit.org/b/261113).
+  Use Python 3.11.x if you experience issues.
+- Downstream `vcpkg` Woff2 has problems compiling with CMake 4+.
+  We thus use CMake 3.x that is bundled in the VS 2022 "Desktop development with C++" workload.
+  
+### Using Chocolatey
+**Notes:**
+- [ActivePerl chocolatey package](https://community.chocolatey.org/packages/ActivePerl) has a problem and no package maintainer at the time of writing.
+- XAMPP includes Perl, and running layout tests needs XAMPP. Install XAMPP instead.
+
+You can use [Chocolatey](https://community.chocolatey.org/) from an elevated prompt to install the tools.
+```
+choco install -y xampp-81 python ruby git gperf llvm ninja
+```
+
+From an elevated prompt, install the `pywin32` Python module if you intend to use the `run-webkit-tests` and `git-webkit` scripts.
+```
+python -m pip install pywin32
+```
+
 ### Using WinGet
-
-If you prefer [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to Chocolatey, you can use it.
-Invoke the following command in an elevated PowerShell or cmd prompt.
-
+If you prefer [WinGet](https://learn.microsoft.com/en-us/windows/package-manager/winget/) to Chocolatey, invoke the following command in an elevated PowerShell or cmd prompt:
 ```
 winget install --scope=machine --id Git.Git Ninja-build.Ninja Python.Python.3.11 RubyInstallerTeam.Ruby.3.2 ApacheFriends.Xampp.8.2 LLVM.LLVM
 winget install --id GnuWin32.Gperf
@@ -56,14 +59,14 @@ WinGet may not append the path into your PC.
 If some errors occered, please check your path settings, including LLVM and GnuWin32(Gperf).
 
 ## WebKit command prompt
-
 To compile, run programs and run tests, you need to set some environment variables.
-For ease of development, it's recommended to create a batch file to set environment variables and open PowerShell.
-Create a batch file with the following content with adjusting it to your PC.
-And put it in the top WebKit source directory.
-And double-click it to open PowerShell, we call this opened shell as "WebKit command prompt" hereafter.
+For ease of development, it's recommended to create a batch file to set environment variables and open PowerShell:
+- Create a `.bat` file with the following content while adjusting it for your PC,
+- put it in the top WebKit source directory,
+- double-click it to open PowerShell.
 
-```
+We call this opened shell "WebKit command prompt" hereafter.
+```.bat
 @echo off
 cd %~dp0
 
@@ -72,20 +75,24 @@ path C:\xampp\perl\bin;%path%
 path %ProgramFiles(x86)%\Microsoft Visual Studio\Installer;%path%
 for /F "usebackq delims=" %%I in (`vswhere.exe -latest -property installationPath`) do set VSPATH=%%I
 
+rem Set these for older versions that do not use VCPKG for library building
 rem set WEBKIT_LIBRARIES=%~dp0WebKitLibraries\win
-path %~dp0WebKitLibraries\win\bin;%path%
+rem path %~dp0WebKitLibraries\win\bin;%path%
+
 set WEBKIT_TESTFONTS=%~dp0Tools\WebKitTestRunner\fonts
 set DUMPRENDERTREE_TEMP=%TEMP%
 
 set CC=clang-cl
 set CXX=clang-cl
-rem set CC=<path-to-llvm>\clang-cl.exe
-rem set CXX=<path-to-llvm>\clang-cl.exe
+rem Set full paths if you have "C++ Clang Tools for Windows" enabled in workload.
+rem set CC=path-to-native-LLVM\clang-cl.exe
+rem set CXX=path-to-native-LLVM\clang-cl.exe
 
 rem set http_proxy=http://your-proxy:8080
 rem set https_proxy=%http_proxy%
 
-rem You can pass necessary JSC options https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/runtime/OptionsList.h#L83-L607.
+rem You can pass necessary JSC options;
+rem https://github.com/WebKit/WebKit/blob/main/Source/JavaScriptCore/runtime/OptionsList.h#L83-L607
 rem set JSC_dumpOptions=1
 rem set JSC_useJIT=0
 rem set JSC_useDFGJIT=0
@@ -98,36 +105,34 @@ rem set WEBKIT_SHOW_FPS=1
 rem You can use ccache with pre-compiled headers @see https://ccache.dev/manual/latest.html#_precompiled_headers
 rem set CCACHE_SLOPPINESS=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
+rem Set the VC environment variables
 call "%VSPATH%\VC\Auxiliary\Build\vcvars64.bat"
+
 rem Set PATH to use the VS toolchain bundled CMake 3.x. This ensures that downstream vcpkg builds will succeed.
 path %DevEnvDir%CommonExtensions\\Microsoft\\CMake\\CMake\\bin;%path%
 
 cd %~dp0
 start powershell
 ```
-
 You can replace `powershell` with `cmd` or `wt` (Windows Terminal) if you like.
 
 
 ## Building
-
-In the WebKit command prompt, invoke `build-webkit` to start building.
-
+In the WebKit command prompt, invoke `build-webkit` to start building:
 ```
 perl Tools/Scripts/build-webkit --release
 ```
 
-You will get required libraries [WebKitRequirements](https://github.com/WebKitForWindows/WebKitRequirements) downloaded automatically when you perform a `build-webkit`.
-It checks the latest WebKitRequirements every time.
-I'd like to recommend to use `--skip-library-update` for incremental build to speed up for the next time.
+Recent WebKit versions will use [VCPKG](https://vcpkg.io) to build the required libraries.
 
+Older versions will automatically download required libraries from [WebKitRequirements](https://github.com/WebKitForWindows/WebKitRequirements) when you perform a `build-webkit`.
+It checks the latest WebKitRequirements every time, so it is recommended to use `--skip-library-update` for incremental builds to speed up the next time.
 ```
 python Tools\Scripts\update-webkit-win-libs.py
 perl Tools\Scripts\build-webkit --release --skip-library-update
 ```
 
 The build succeeded if you got `WebKit is now built` message. Run your `MiniBrowser`.
-
 ```
 WebKitBuild/Release/bin64/MiniBrowser.exe
 ```
@@ -135,7 +140,6 @@ WebKitBuild/Release/bin64/MiniBrowser.exe
 You can run programs under a debugger with [this instruction](../Build & Debug/DebuggingWithVS.md).
 
 ### Building from within Visual Studio
-
 You can use CMake Visual Studio generator instead of Ninja generator.
 Install [the LLVM extension](https://learn.microsoft.com/en-us/cpp/build/clang-support-msbuild) of MSBuild.
 It bundles a Clang compiler.
@@ -143,22 +147,18 @@ But, if the bundled compiler is too old, you might need to [set a custom LLVM lo
 Instead of creating a Directory.build.props file, you can [set LLVMInstallDir and LLVMToolsVersion environment variables](https://marketplace.visualstudio.com/items?itemName=MarekAniola.mangh-llvm2019).
 
 In the WebKit command prompt,
-
 ```
 perl Tools/Scripts/build-webkit --release --no-ninja --generate-project-only
 ```
 
 Open the generated solution file by invoking devenv command from a WebKit command prompt.
-
 ```
 devenv WebKitBuild\Release\WebKit.sln
 ```
 
 Build "MiniBrowser" project.
 
-
 ## Running the tests
-
 WebKit test runner run-webkit-tests is using a command line debugger [NTSD](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/debugging-using-cdb-and-ntsd) to get crash logs.
 However, Windows SDK installer doesn't install it by default.
 
@@ -172,14 +172,12 @@ However, Windows SDK installer doesn't install it by default.
 Install XAMPP as described above.
 
 Install required Python and Ruby modules.
-
 ```
 python -m pip install pywin32
 gem install webrick
 ```
 
 If Apache service is running, stop it.
-
 ```
 net stop apache2.4
 ```
@@ -206,7 +204,6 @@ XAMPP contains openssl.exe in C:\xampp\apache\bin directory. Append the director
 Open the WebKit command prompt as administrator because http tests need to run Apache service.
 
 Invoke `run-webkit-tests`.
-
 ```
 python Tools/Scripts/run-webkit-tests --release
 ```
@@ -223,15 +220,12 @@ netsh int ipv4 set dynamicport tcp start=1025 num=64511
 ```
 
 ### Running the tests in Docker
-
 You can use Docker to run LayoutTests by mounting the host directory.
-
 ```
 docker run -it --rm --cpu-count=8 --memory=16g -v %cd%:c:\repo -w c:\repo webkitdev/msbuild
 ```
 
 ## Downloading build artifacts from Buildbot
-
  * Go to [Windows-64-bit-Release-Build Buildbot builder page](https://build.webkit.org/#/builders/1192).
  * Click any "Build #" which is green.
  * Click the "Archive" link under "compile-webkit" to download the zip
