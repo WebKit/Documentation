@@ -123,7 +123,7 @@ In the WebKit command prompt, invoke `build-webkit` to start building:
 perl Tools/Scripts/build-webkit --release
 ```
 
-Recent WebKit versions will use [VCPKG](https://vcpkg.io) to build the required libraries.
+[Recent WebKit versions](https://commits.webkit.org/295042@main) will use [VCPKG](https://vcpkg.io) to build the required libraries.
 
 Older versions will automatically download required libraries from [WebKitRequirements](https://github.com/WebKitForWindows/WebKitRequirements) when you perform a `build-webkit`.
 It checks the latest WebKitRequirements every time, so it is recommended to use `--skip-library-update` for incremental builds to speed up the next time.
