@@ -16,8 +16,13 @@ For more information on compiler requirements, see [GCC Requirement](GCCRequirem
 
 | Operating System               | Release Date | WebKit Support End |
 |--------------------------------|--------------|--------------------|
-| Ubuntu 20.04 (Focal Fossa)     | 2020-04-23   | 2023-04-21         |
-| Debian 11 (Bullseye)           | 2021-08-14   | 2024-06-10         |
 | Ubuntu 22.04 (Jammy Jellyfish) | 2022-04-21   | 2025-04-25         |
 | Debian 12 (Bookworm)           | 2023-06-10   | June 2026          |
 | Ubuntu 24.04 (Noble Numbat)    | 2024-04-25   | April 2027         |
+
+## Feature support
+
+| Feature      | Description          | WebKit Support End              |
+|--------------|----------------------|---------------------------------|
+| USE_SOUP2=ON | Build with libsoup2  | April 2027 (Ubuntu 24.04)       |
+| USE_GTK4=OFF | Build with GTK3      | April 2027 (Ubuntu 24.04)       |
