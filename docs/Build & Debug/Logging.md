@@ -85,11 +85,11 @@ WEBKIT_DEBUG=Scrolling Tools/Scripts/run-minibrowser --gtk --debug
 
 The WPE port can be built for Android, where it integrates with the system
 `logd` service. The log channel configuration is read from the
-`debug.log.WPEWebKit` system property, which can be set using the `setprop`
+`debug.WPEWebKit.log` system property, which can be set using the `setprop`
 command line tool:
 
 ```sh
-adb shell setprop debug.log.WPEWebKit 'WebGL,Media=error'
+adb shell setprop debug.WPEWebKit.log 'WebGL,Media=error'
 ```
 
 Additionally, the `log.tag.WPEWebKit` property is used to configure a global
