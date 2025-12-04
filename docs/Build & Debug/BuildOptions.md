@@ -62,7 +62,6 @@ For development builds:
 
 ```
 Tools/gtk/install-dependencies
-Tools/Scripts/update-webkitgtk-libs
 Tools/Scripts/build-webkit --gtk --debug
 ```
 
@@ -80,7 +79,6 @@ For development builds:
 
 ```
 Tools/wpe/install-dependencies
-Tools/Scripts/update-webkitwpe-libs
 Tools/Scripts/build-webkit --wpe --debug
 ```
 
