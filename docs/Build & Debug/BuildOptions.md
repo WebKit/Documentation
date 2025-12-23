@@ -48,7 +48,16 @@ choose File > Workspace Settings, then click the Advanced button, select
 "Custom", "Relative to Workspace", and enter `WebKitBuild` for both Products
 and Intermediates.
 
-## Building the GTK Port
+## Building the Linux Ports
+
+Using the
+[webkit-container-sdk](https://github.com/Igalia/webkit-container-sdk)
+is the recommended way to set up a development environment for the
+GTK or WPE ports, as it takes care of all the project dependencies
+and provides a configuration that closely matches the CI/CD testing
+setup (see https://build.webkit.org).
+
+### Building the GTK Port
 
 For production builds:
 
@@ -61,11 +70,12 @@ sudo ninja install
 For development builds:
 
 ```
+# If you are using the SDK, you can skip the dependency installation
 Tools/gtk/install-dependencies
 Tools/Scripts/build-webkit --gtk --debug
 ```
 
-## Building the WPE Port
+### Building the WPE Port
 
 For production builds:
 
@@ -78,6 +88,7 @@ sudo ninja install
 For development builds:
 
 ```
+# If you are using the SDK, you can skip the dependency installation
 Tools/wpe/install-dependencies
 Tools/Scripts/build-webkit --wpe --debug
 ```
