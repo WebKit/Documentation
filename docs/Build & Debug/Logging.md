@@ -75,10 +75,16 @@ On macOS/iOS and Windows, each framework has its own individually supplied strin
 
 ### Linux
 
-Set the `WEBKIT_DEBUG` environment variable.
+Set the `WEBKIT_DEBUG` environment variable. Note than when systemd-journald is available, logs will be available via `journalctl`.
 
 ```
 WEBKIT_DEBUG=Scrolling Tools/Scripts/run-minibrowser --gtk --debug
+```
+
+Log level can be specified per channel:
+
+```
+WEBKIT_DEBUG='all=error,GLContext=debug,-Network' Tools/Scripts/run-minibrowser --wpe --release
 ```
 
 ### Android
