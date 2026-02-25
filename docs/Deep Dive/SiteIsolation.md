@@ -67,5 +67,14 @@ Site isolation was originally planned as a simple 3 step project:
 3. Fix the performance regression from step 2
 As of January 2025 are currently on step 2 and looking forward to step 3.  In order to get there, we need to fix all subtasks of rdar://99665363 which is organized from a code-centric perspective.  QA has also been helping find things to fix from a user-centric perspective, and they are subtasks of rdar://138794978.  Those that don't have access to radar can reach out on the WebKit Slack.
 
+## Web Inspector
+
+Web Inspector's architecture is also affected by site isolation. With content split across
+multiple WebContent Processes, the inspector must observe and aggregate protocol data from each
+process. The approach uses the existing inspector target multiplexing mechanism
+(`InspectorTargetAgent`) to create per-frame inspector targets that each connect to a
+`FrameInspectorController` in their respective WebContent Process. For a detailed explanation of
+this architecture, see [Web Inspector and Site Isolation](Web%20Inspector/SiteIsolationExplainer.md).
+
 ## Strategies for fixing bugs
 Most of the functionality bugs remaining can be described as “we used to follow a pointer to another frame and now we can’t.”  A handful of strategies continue to be quite effective.  The first is maybe we can refactor the code to send a message to the frame via IPC instead of calling a function and operating on the frame directly when we need to do something.  The second is maybe see if we can proactively send state to all processes so when they need to do something they already have the necessary information.  This should only be done with information that is not sensitive because it creates a side channel for speculative execution attacks to read information other sites should not have access to.  The third is maybe we can do something in a privileged process such as the UI process or the GPU process that doesn’t have web content in it but can communicate and know state from multiple sites.  And the fourth is maybe it is correct to do nothing if a frame is in another process.  This last option is rare, but sometimes if access is gated on an origin check it is correct to skip a frame in another process.
