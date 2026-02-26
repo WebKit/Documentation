@@ -1,6 +1,6 @@
 # Web Inspector and Site Isolation
 
-_Last updated 2026-02-25._
+_Last updated 2026-02-26._
 
 This document explains how Site Isolation affects the architecture of Web Inspector in WebKit,
 describes the design changes made to support cross-process inspection, and outlines the work
@@ -34,7 +34,7 @@ _inspector targets_ was introduced. A target is an opaque handle that:
 
 1. Provides a stable `targetId` the frontend can route commands to across process swaps.
 2. Allows the same protocol interfaces to be reused across execution context types (Page,
-   Worker, Frame).
+   Worker, JSContext, Frame).
 3. Lets the frontend reason about the capabilities of each backend independently.
 
 `WebPageInspectorController` in UIProcess manages the set of active targets. The `Target`
@@ -57,11 +57,11 @@ Site Isolation adds a fourth:
 
 ## Two Modes of Operation
 
-### Mode 1: SI-disabled (or WebKitLegacy)
+### Mode 1: SI-disabled and WebKitLegacy
 
 When Site Isolation is off, the architecture is essentially unchanged from the pre-SI model:
 
-- One `WebPageInspectorTargetProxy` (type `WebPage`) is created for the `WebPageProxy`.
+- One `PageInspectorTargetProxy` (type `Page`) is created for the `WebPageProxy`.
 - All agents live in one `PageInspectorController` in one WebContent Process.
 - `didCreateFrame` on `WebPageInspectorController` is a no-op — no frame targets are created.
 - Commands are routed through the page target to `PageInspectorController`.
@@ -70,28 +70,28 @@ When Site Isolation is off, the architecture is essentially unchanged from the p
 
 When Site Isolation is enabled, each `WebFrameProxy` gets its own inspector target:
 
-- One `WebPageInspectorTargetProxy` still exists for page-level agents.
-- Each `WebFrameProxy` creation triggers a `WebFrameInspectorTargetProxy` (type `Frame`).
-- Each frame target connects to a `FrameInspectorController` in the owning WebContent Process.
-- Commands targeted at a frame ID are routed to the correct `WebFrameInspectorTargetProxy`,
+- Each `WebFrameProxy` creation triggers a `FrameInspectorTargetProxy` (type `Frame`) and `WI.FrameTarget` in the frontend. 
+- One `PageInspectorTargetProxy` (type `Page`) still exists per web page.
+- Frames intuitively belong to
+  a page and frames can have subframes, but these relationships are treated as optional data fields that do not factor into the Target lifetime semantics.
+- Each frame target corresponds to a `FrameInspectorController` in the owning WebContent Process.
+- Commands targeted at a frame ID are routed to the correct `FrameInspectorTargetProxy`,
   which sends them over IPC to the `FrameInspectorController` in that process.
 
 The key callsite is in `WebFrameProxy`'s constructor
 (`UIProcess/WebFrameProxy.cpp`):
 
 ```cpp
-page.inspectorController().createWebFrameInspectorTarget(
-    *this, WebFrameInspectorTarget::toTargetID(frameID));
+page.inspectorController().didCreateFrame(*this);
 ```
 
 And in the destructor, the target is torn down symmetrically:
 
 ```cpp
-page->inspectorController().destroyInspectorTarget(
-    WebFrameInspectorTarget::toTargetID(frameID()));
+page->inspectorController().willDestroyFrame(*this);
 ```
 
-This means frame targets are always present when frames exist, regardless of whether a
+This means frame targets are always present in the backend when frames exist, regardless of whether a
 frontend is connected — consistent with how page and worker targets behave.
 
 ---
@@ -102,11 +102,11 @@ frontend is connected — consistent with how page and worker targets behave.
 UIProcess
 ┌─────────────────────────────────────────────────────────┐
 │  WebPageInspectorController                             │
-│  ├── WebPageInspectorTargetProxy  (type: WebPage)       │
+│  ├── PageInspectorTargetProxy  (type: Page)             │
 │  │     └── PageInspectorController  (in WCP-A)          │
-│  ├── WebFrameInspectorTargetProxy  frame-1 (main)       │
+│  ├── FrameInspectorTargetProxy  frame-1 (main)          │
 │  │     └── FrameInspectorController  (in WCP-A)         │
-│  └── WebFrameInspectorTargetProxy  frame-2 (cross-origin)
+│  └── FrameInspectorTargetProxy  frame-2 (cross-origin)  │
 │        └── FrameInspectorController  (in WCP-B)         │
 └─────────────────────────────────────────────────────────┘
          IPC ↕                    IPC ↕
@@ -119,8 +119,8 @@ UIProcess
 glue layer. It receives all incoming commands from the frontend, looks up the target by `targetId`,
 and calls `sendMessageToTarget()` on the appropriate `InspectorTargetProxy`.
 
-For frame targets, `WebFrameInspectorTargetProxy::sendMessageToTarget()` sends the message over
-IPC to `WebFrameInspectorTarget` in the WebContent Process, which calls
+For frame targets, `FrameInspectorTargetProxy::sendMessageToTarget()` sends the message over
+IPC to `FrameInspectorTarget` in the WebContent Process, which calls
 `FrameInspectorController::dispatchMessageFromFrontend()`.
 
 ---
@@ -175,26 +175,26 @@ FrameInspectorController.backendDispatcher
 ### Creation
 
 `WebFrameProxy` is created in UIProcess whenever a new frame is established (both same-process
-and cross-process frames). Its constructor calls `createWebFrameInspectorTarget()`, which calls
+and cross-process frames). Its constructor calls `didCreateFrame()`, which calls
 `addTarget()` in `WebPageInspectorController`. If a frontend is connected, this fires
 `Target.targetCreated` to notify the frontend immediately.
 
 ### Connection (WebProcess side)
 
-When a frontend connects and enumerates targets, `WebFrameInspectorTargetProxy::connect()`
+When a frontend connects and enumerates targets, `FrameInspectorTargetProxy::connect()`
 sends an IPC message to the WebContent Process hosting the frame. On the WebProcess side,
-`WebFrameInspectorTarget::connect()` (`WebProcess/Inspector/WebFrameInspectorTarget.cpp`)
-creates a `WebFrameInspectorTargetFrontendChannel` and connects it to `FrameInspectorController`:
+`FrameInspectorTarget::connect()` (`WebProcess/Inspector/WebFrameInspectorTarget.cpp`)
+creates a `UIProcessForwardingFrontendChannel` and connects it to `FrameInspectorController`:
 
 ```cpp
-void WebFrameInspectorTarget::connect(
+void FrameInspectorTarget::connect(
     Inspector::FrontendChannel::ConnectionType connectionType)
 {
     if (m_channel)
         return;
 
     Ref frame = m_frame.get();
-    m_channel = makeUnique<WebFrameInspectorTargetFrontendChannel>(
+    m_channel = makeUnique<UIProcessForwardingFrontendChannel>(
         frame, identifier(), connectionType);
 
     if (RefPtr coreFrame = frame->coreLocalFrame())
@@ -205,11 +205,11 @@ void WebFrameInspectorTarget::connect(
 ### Events flowing back to UIProcess
 
 When a frame-level agent emits an event (e.g., `Console.messageAdded`),
-`WebFrameInspectorTargetFrontendChannel::sendMessageToFrontend()` sends it over IPC to UIProcess
-(`WebProcess/Inspector/WebFrameInspectorTargetFrontendChannel.cpp`):
+`UIProcessForwardingFrontendChannel::sendMessageToFrontend()` sends it over IPC to UIProcess
+(`WebProcess/Inspector/UIProcessForwardingFrontendChannel.cpp`):
 
 ```cpp
-void WebFrameInspectorTargetFrontendChannel::sendMessageToFrontend(
+void UIProcessForwardingFrontendChannel::sendMessageToFrontend(
     const String& message)
 {
     if (RefPtr page = protectedFrame()->page())
@@ -233,7 +233,7 @@ observable change to the frontend.
 
 ### Destruction
 
-`WebFrameProxy`'s destructor calls `destroyInspectorTarget()`. `WebPageInspectorController`
+`WebFrameProxy`'s destructor calls `willDestroyFrame()`. `WebPageInspectorController`
 removes the target and fires `Target.targetDestroyed` to the frontend.
 
 ---
@@ -281,15 +281,102 @@ Phases:
 
 ---
 
+## Security: Inspector-Only IPC Interfaces
+
+The proxying agent architecture introduces new IPC channels between UIProcess and WebContent
+Processes. These channels do **not** expand the attack surface — they are only active when
+Web Inspector is open and connected, and are scoped to the inspected page.
+
+### Dynamic IPC Receiver Registration
+
+`ProxyingPageAgent` and `ProxyingNetworkAgent` in UIProcess dynamically register and
+deregister themselves as IPC message receivers when the corresponding protocol domain is
+enabled or disabled by the frontend:
+
+**Enable (domain activated by frontend):**
+
+```cpp
+// ProxyingPageAgent::enable()
+protectedInspectedPage()->forEachWebContentProcess([&](auto& webProcess, auto pageID) {
+    webProcess.addMessageReceiver(Messages::ProxyingPageAgent::messageReceiverName(), pageID, *this);
+    webProcess.send(Messages::WebInspectorBackend::EnablePageInstrumentation { }, pageID);
+});
+```
+
+**Disable (domain deactivated or Inspector closes):**
+
+```cpp
+// ProxyingPageAgent::disable()
+protectedInspectedPage()->forEachWebContentProcess([&](auto& webProcess, auto pageID) {
+    webProcess.send(Messages::WebInspectorBackend::DisablePageInstrumentation { }, pageID);
+    webProcess.removeMessageReceiver(Messages::ProxyingPageAgent::messageReceiverName(), pageID);
+});
+```
+
+When Inspector is closed, no handler is registered for these messages. The IPC infrastructure
+rejects any message targeting a non-existent receiver.
+
+### Conditional WebProcess Instrumentation
+
+On the WebProcess side, `PageAgentProxy` and `NetworkAgentProxy` register with
+`InstrumentingAgents` only when enabled:
+
+```cpp
+// PageAgentProxy::enable()
+agents->setEnabledPageAgentInstrumentation(this);
+
+// PageAgentProxy::disable()
+agents->setEnabledPageAgentInstrumentation(nullptr);
+```
+
+When disabled, instrumentation hooks in WebCore (e.g., `willSendRequest`,
+`frameNavigated`) find no registered proxy in the `InstrumentingAgents` registry.
+The hooks become no-ops — no data is collected and no IPC messages are sent.
+
+### Ordering Guarantees
+
+The enable/disable sequences are ordered to prevent race conditions:
+
+1. **Enable:** Register the UIProcess IPC receiver _first_, then tell the WebProcess to
+   start sending. The receiver is ready before any messages arrive.
+2. **Disable:** Tell the WebProcess to stop sending _first_, then remove the UIProcess
+   IPC receiver. No in-flight messages arrive at a deregistered receiver.
+
+### Per-Page Scoping
+
+IPC receivers are registered with the inspected page's identifier as the destination:
+
+```cpp
+webProcess.addMessageReceiver(
+    Messages::ProxyingPageAgent::messageReceiverName(), pageID, *this);
+```
+
+Only WebContent Processes hosting the inspected page can address these handlers.
+Processes for other pages cannot send to them. The `[ExceptionForEnabledBy]` attribute
+in the `.messages.in` definitions provides an additional safeguard.
+
+### Summary
+
+| Condition | UIProcess Receiver | WebProcess Instrumentation | IPC Traffic |
+|-----------|-------------------|---------------------------|-------------|
+| Inspector closed | Not registered | Not registered | None |
+| Inspector open, domain enabled | Registered (inspected page only) | Registered with InstrumentingAgents | Active |
+| Inspector open, domain not enabled | Not registered | Not registered | None |
+
+These IPC channels exist only for the duration of an active Inspector session, are scoped
+to a single inspected page, and are torn down completely when Inspector disconnects.
+
+---
+
 ## Compatibility with Legacy Backends
 
 Web Inspector must continue to work with backends shipping in iOS 13 and later, which have no
 Frame targets. The frontend's target iteration logic handles this:
 
-- If a `WebPage` target has one or more `Frame` sub-targets → send per-frame commands to the
+- If a `WebPage` target has associated `Frame` targets → send per-frame commands to the
   frame targets.
-- If a `WebPage` target has no `Frame` sub-targets (older backend) → treat the page target as
-  the single frame and send all commands there.
+- If a `WebPage` target has no associated `Frame` targets (older backend) → treat the page
+  target as the single frame and send all commands there.
 
 No frontend code needs to know whether it is talking to a single-process backend or a
 Site-Isolated backend — the frame target abstraction provides uniform addressing.
@@ -320,16 +407,21 @@ Site-Isolated backend — the frame target abstraction provides uniform addressi
 | File | Role |
 |------|------|
 | `UIProcess/Inspector/WebPageInspectorController.h/.cpp` | Manages all targets for a `WebPageProxy` |
-| `UIProcess/Inspector/WebFrameInspectorTargetProxy.h/.cpp` | Frame target proxy in UIProcess |
-| `UIProcess/Inspector/WebPageInspectorTargetProxy.h/.cpp` | Page target proxy in UIProcess |
+| `UIProcess/Inspector/FrameInspectorTargetProxy.h/.cpp` | Frame target proxy in UIProcess |
+| `UIProcess/Inspector/PageInspectorTargetProxy.h/.cpp` | Page target proxy in UIProcess |
 | `UIProcess/Inspector/InspectorTargetProxy.h` | Base class for all target proxies |
 | `UIProcess/WebFrameProxy.cpp` | Creates/destroys frame inspector targets on frame lifecycle |
 | `WebProcess/Inspector/WebFrameInspectorTarget.h/.cpp` | Frame target in WebContent Process |
-| `WebProcess/Inspector/WebFrameInspectorTargetFrontendChannel.cpp` | IPC: WebProcess → UIProcess for events |
+| `WebProcess/Inspector/UIProcessForwardingFrontendChannel.cpp` | IPC: WebProcess → UIProcess for events |
 | `WebCore/inspector/FrameInspectorController.h/.cpp` | Per-frame agent controller with fallback chain (frame-targeted domains) |
 | `WebCore/inspector/PageInspectorController.h/.cpp` | Per-page agent controller (legacy + fallback target) |
 | `WebCore/inspector/InstrumentingAgents.h` | Agent registry with fallback to parent controller |
 | `WebKit/UIProcess/Inspector/ProxyingNetworkAgent.h/.cpp` | Network agent in UIProcess; receives events from per-WP `NetworkAgentProxy` |
 | `WebKit/UIProcess/Inspector/ProxyingPageAgent.h/.cpp` | Page agent in UIProcess; handles `getResourceTree` aggregation |
+| `WebProcess/Inspector/PageAgentProxy.cpp` | Page instrumentation proxy; conditionally registers with InstrumentingAgents |
+| `WebProcess/Inspector/NetworkAgentProxy.cpp` | Network instrumentation proxy; conditionally registers with InstrumentingAgents |
+| `WebProcess/Inspector/WebInspectorBackend.messages.in` | Enable/Disable instrumentation IPC messages |
+| `UIProcess/Inspector/Agents/ProxyingPageAgent.messages.in` | Events from WebProcess; guarded by `[ExceptionForEnabledBy]` |
+| `UIProcess/Inspector/Agents/ProxyingNetworkAgent.messages.in` | Events from WebProcess; guarded by `[ExceptionForEnabledBy]` |
 | `JavaScriptCore/inspector/agents/InspectorTargetAgent.cpp` | Target multiplexing and command routing |
 | `JavaScriptCore/inspector/InspectorBackendDispatcher.cpp` | `BackendDispatcher` with fallback dispatcher |
