@@ -7,6 +7,21 @@ describes the design changes made to support cross-process inspection, and outli
 remaining. For a primer on Site Isolation itself — RemoteFrames, BrowsingContextGroups, and
 provisional navigation — see [Site Isolation](../SiteIsolation.md).
 
+**Contents:**
+- [Background: Inspector Agents and the Single-Process Assumption](#background-inspector-agents-and-the-single-process-assumption)
+- [Background: The Inspector Target System](#background-the-inspector-target-system)
+- [Two Modes of Operation](#two-modes-of-operation)
+- [Architecture: Target-Based Multiplexing](#architecture-target-based-multiplexing)
+- [The BackendDispatcher Fallback Chain](#the-backenddispatcher-fallback-chain)
+- [Frame Target Lifecycle](#frame-target-lifecycle)
+- [Domain Implementation: Console](#domain-implementation-console)
+- [Domain Implementation: Network (In Progress)](#domain-implementation-network-in-progress)
+- [Domain Implementation: Page (In Progress)](#domain-implementation-page-in-progress)
+- [Security: Inspector-Only IPC Interfaces](#security-inspector-only-ipc-interfaces)
+- [Compatibility with Legacy Backends](#compatibility-with-legacy-backends)
+- [Open Questions](#open-questions)
+- [Key Source Files](#key-source-files)
+
 ---
 
 ## Background: Inspector Agents and the Single-Process Assumption
