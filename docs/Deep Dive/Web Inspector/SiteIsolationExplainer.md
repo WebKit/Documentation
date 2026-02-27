@@ -1,6 +1,6 @@
 # Web Inspector and Site Isolation
 
-_Last updated 2026-02-26._
+_Last updated 2026-02-27._
 
 This document explains how Site Isolation affects the architecture of Web Inspector in WebKit,
 describes the design changes made to support cross-process inspection, and outlines the work
@@ -19,7 +19,8 @@ provisional navigation — see [Site Isolation](../SiteIsolation.md).
 - [Domain Implementation: Page (In Progress)](#domain-implementation-page-in-progress)
 - [Security: Inspector-Only IPC Interfaces](#security-inspector-only-ipc-interfaces)
 - [Compatibility with Legacy Backends](#compatibility-with-legacy-backends)
-- [Open Questions](#open-questions)
+- [Remaining Work: Agent Migration Plan](#remaining-work-agent-migration-plan)
+- [Key Risks and Architectural Challenges](#key-risks-and-architectural-challenges)
 - [Key Source Files](#key-source-files)
 
 ---
@@ -400,8 +401,7 @@ protectedInspectedPage()->forEachWebContentProcess([&](auto& webProcess, auto pa
 protectedInspectedPage()->forEachWebContentProcess([&](auto& webProcess, auto pageID) {
     webProcess.send(Messages::WebInspectorBackend::DisablePageInstrumentation { }, pageID);
     webProcess.removeMessageReceiver(Messages::ProxyingPageAgent::messageReceiverName(), pageID);
-});
-```
+});```
 
 When Inspector is closed, no handler is registered for these messages. The IPC infrastructure
 rejects any message targeting a non-existent receiver.
@@ -473,12 +473,99 @@ Site-Isolated backend — the frame target abstraction provides uniform addressi
 
 ---
 
-## Open Questions
+## Remaining Work: Agent Migration Plan
 
-1. **DOM domain across process boundaries** — DOM `nodeId` values are process-local integers.
-   Under Site Isolation, nodes from different processes may have colliding IDs. A global
-   identifier scheme (possibly an extension of `InspectorIdentifierRegistry`) is needed before
-   DOM can be migrated to per-frame agents.
+Every inspector protocol domain must be adapted to work under Site Isolation. Each domain
+falls into one of two migration patterns — **per-frame** or **octopus** — based on whether
+its data is inherently scoped to a single frame or presents a unified page-level view.
+
+### Per-Frame Domains
+
+Per-frame domains get a new `Frame*Agent` subclass registered in
+`FrameInspectorController::createLazyAgents()`. Commands route via the target system; events
+flow through `FrontendRouter`. No new IPC is needed. IDs (`NodeId`, `StyleSheetId`, `ScriptId`,
+etc.) are scoped per-target — the wire format doesn't change, but the frontend must pair each
+ID with the target it came from.
+
+| Domain | Status | Notes |
+|--------|--------|-------|
+| **Console** | Done | `FrameConsoleAgent` landed; reference implementation for all per-frame agents |
+| **Runtime** | In progress | `FrameRuntimeAgent` (PR [#59021](https://github.com/WebKit/WebKit/pull/59021)) |
+| **Debugger** | Not started | Blocked on [bug 298909](https://bugs.webkit.org/show_bug.cgi?id=298909); single-debugger-multiple-agents challenge |
+| **DOM** | Not started | Cross-frame traversal must stop at process boundaries |
+| **CSS** | Not started | Must migrate with or after DOM due to tight coupling |
+| **DOMDebugger** | Not started | Depends on DOM + Debugger |
+| **LayerTree** | Not started | Simplest migration; thin agent |
+| **DOMStorage** | Not started | Origin-scoped; self-contained |
+| **Worker** | Not started | Frame-associated; self-contained |
+| **Canvas** | Not started | Has existing base/subclass split |
+| **Animation** | Not started | Requires refactoring before migration |
+
+### Octopus Domains
+
+Octopus domains use a proxy-aggregator architecture: a `*AgentProxy` in each WebContent
+Process captures instrumentation events and forwards them via IPC to a `Proxying*Agent`
+aggregator in the UIProcess. The UIProcess agent handles command dispatch, ID remapping, and
+presents a unified view to the frontend. A `Legacy*Agent` handles the WebKitLegacy
+single-process path.
+
+| Domain | Status | Notes |
+|--------|--------|-------|
+| **Network** | In progress | Core proxy/aggregator exists; commands (`getResponseBody`, etc.) still TODO |
+| **Page** | In progress | Frame lifecycle events wired; `getResourceTree` aggregation still TODO |
+| **Timeline** | Not started | Highest octopus priority; orchestrates sub-instruments |
+| **ScriptProfiler** | Not started | Timeline sub-instrument |
+| **Heap** | Not started | Large snapshot data; heap object ID remapping |
+| **IndexedDB** | Not started | Origin-routed commands |
+| **CPUProfiler** | Not started | `ENABLE(RESOURCE_USAGE)` only |
+| **Memory** | Not started | `ENABLE(RESOURCE_USAGE)` only |
+| **Audit** | Not started | May use target multiplexing instead of full octopus |
+
+### UIProcess-Only
+
+The **Browser** domain already lives entirely in `WebPageInspectorController` and requires
+no migration.
+
+### Migration Priority Order
+
+1. **Foundation** (active): Console (done), Network, Page, Runtime
+2. **Core frame inspection**: Debugger, DOM, CSS
+3. **Dependent frame agents**: DOMDebugger, LayerTree, DOMStorage, Worker
+4. **Remaining frame agents**: Canvas, Animation
+5. **Page-level octopus agents**: Timeline, ScriptProfiler, Heap, IndexedDB, CPUProfiler, Memory, Audit
+
+---
+
+## Key Risks and Architectural Challenges
+
+### Debugger: Single-Debugger-Multiple-Agents
+
+There is one `JSC::Debugger` (specifically, `PageDebugger`) per `Page`, but each frame target
+needs its own `FrameDebuggerAgent`. Multiple agents sharing one debugger creates conflicts:
+breakpoint ID allocation collisions, `didParseSource()` being `final` (cannot be overridden
+to filter scripts per-frame), pause routing to the correct frame agent, and step commands
+potentially crossing frame boundaries.
+
+### DOM: Cross-Frame Traversal at Process Boundaries
+
+`InspectorDOMAgent` currently traverses into iframe `contentDocument` as children of
+`HTMLFrameOwnerElement`. Under SI, this crosses process boundaries. `contentDocument` must be
+omitted for out-of-process frames; the frontend discovers child frame DOM trees via frame
+targets instead. `DOM.performSearch` changes from all-frames to per-frame scope.
+`DOM.moveTo` across frames becomes invalid.
+
+### CSS: Heavy DOM Agent Coupling
+
+`InspectorCSSAgent` depends on `InspectorDOMAgent` for node resolution, document enumeration,
+undo/redo history, and layout flag tracking. This coupling actually *simplifies* when both
+agents are co-located per-frame (one document, one ID namespace, one history), but CSS
+**must** migrate with or after DOM.
+
+### Network: RequestId Collision Across Processes
+
+`ResourceLoaderIdentifier` is generated per-process, so two WebContent Processes could
+produce the same value. The UIProcess `ProxyingNetworkAgent` must qualify request IDs with the
+source process to avoid incorrect resource lookups.
 
 ---
 
