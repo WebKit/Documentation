@@ -42,10 +42,10 @@ domain in `InspectorTargetAgent` exposes target lifecycle events (`Target.target
 `Target.targetDestroyed`) to the frontend, and routes incoming commands to the correct target's
 `BackendDispatcher`.
 
-Before Site Isolation work, there were three target types:
+Before Site Isolation work, there were three target types involved in web browsing:
 
 - **`Page`** — legacy direct-backend target (pre-PSON and WebKitLegacy). No sub-targets.
-- **`WebPage`** — represents a `WebPageProxy`. May have transient worker and frame sub-targets.
+- **`WebPage`** — represents a `WebPageProxy`. May have transient worker sub-targets.
 - **`Worker`** — represents a dedicated Web Worker spawned from a Page.
 
 Site Isolation adds a fourth:
@@ -61,7 +61,10 @@ Site Isolation adds a fourth:
 
 When Site Isolation is off, the architecture is essentially unchanged from the pre-SI model:
 
-- One `PageInspectorTargetProxy` (type `Page`) is created for the `WebPageProxy`.
+- One `WebPageInspectorTargetProxy` (type `WebPage`) is created to manage the lifetime
+  of the underlying `Page`, `Frame`, and `Worker` targets in the inspected webpage.
+- One `PageInspectorTargetProxy` (type `Page`) is created for the one
+  `PageInspectorController`.
 - All agents live in one `PageInspectorController` in one WebContent Process.
 - `didCreateFrame` on `WebPageInspectorController` is a no-op — no frame targets are created.
 - Commands are routed through the page target to `PageInspectorController`.
@@ -111,7 +114,7 @@ UIProcess
 └─────────────────────────────────────────────────────────┘
          IPC ↕                    IPC ↕
   WebContent Process A      WebContent Process B
-  PageInspectorController   (no PageInspectorController)
+  PageInspectorController   PageInspectorController (not exposed)
   FrameInspectorController  FrameInspectorController
 ```
 
@@ -267,11 +270,83 @@ Process when per-frame data is needed (e.g., `Network.getResponseBody`).
 
 ---
 
+### Response Body Retrieval (`getResponseBody`)
+
+Under the single-process model, `Network.getResponseBody` reads directly from
+`NetworkResourcesData` in the same process as the agent. Under SI, the response body
+lives in whichever WebContent Process loaded the resource — the UIProcess proxy agent
+must route the request to the correct process.
+
+The design introduces `BackendResourceDataStore`, a per-page data store in the WebKit
+layer (`WebProcess/Inspector/`) that buffers resource metadata and response content
+independently of the inspector agent lifecycle. `NetworkAgentProxy` writes to the store
+at each instrumentation point (`willSendRequest`, `responseReceived`, `dataReceived`);
+`ProxyingNetworkAgent` reads from it via IPC when the frontend requests a body.
+
+```
+Frontend                UIProcess                    WebProcess(es)
+                        ProxyingNetworkAgent
+Network.getResponseBody ──►  look up requestId
+(requestId: "r-42")          in m_requestIdToResourceKey
+                             ──► {ProcessB, ResourceID-7}
+                                                     ┌──────────────────────┐
+                        QueryResponseBody(ResID-7) ──►│ BackendResourceData  │
+                                                      │ Store                │
+                        ◄── (content, base64Encoded) ──│ entry for ResID-7   │
+                                                      └──────────────────────┘
+respond to frontend ◄──
+```
+
+The UIProcess maintains a `HashMap<String, BackendResourceKey>` mapping each frontend-facing
+`requestId` string to a `BackendResourceKey { WebProcessIdentifier, BackendResourceIdentifier }`.
+This mapping is populated when `requestWillBeSent` IPC arrives from each WebProcess, ensuring
+that `getResponseBody` routes to the process that actually loaded the resource — even when the
+same URL was loaded by multiple processes.
+
 ## Domain Implementation: Page (In Progress)
 
 `Page` domain adaptation mirrors Network. `Page.getResourceTree` must collect and merge frame
 subtrees from each WebContent Process. The merged result presents the frontend with a unified
 frame tree even though resources are distributed across processes.
+
+### `getResourceTree` Aggregation
+
+The legacy implementation in `LegacyPageAgent::getResourceTree()` calls
+`buildObjectForFrameTree(localMainFrame.get())`, which recursively traverses
+`frame->tree().traverseNext()`. This only visits `LocalFrame` children — under SI,
+cross-origin subframes are `RemoteFrame` instances and are invisible to this traversal.
+The same limitation affects `searchInResources`, which has an explicit FIXME:
+
+```cpp
+// LegacyPageAgent.cpp:632
+// FIXME: rework this frame tree traversal as it won't work with Site Isolation enabled.
+for (Frame* frame = &m_inspectedPage->mainFrame(); frame; frame = frame->tree().traverseNext()) {
+    auto* localFrame = dynamicDowncast<LocalFrame>(frame);
+    if (!localFrame)
+        continue;
+    // ...
+}
+```
+
+When Site Isolation is disabled, the Page domain is handled entirely in the WebProcess —
+`LegacyPageAgent` traverses the frame tree directly and there is only one process, so
+`LocalFrame` covers all frames.
+
+When Site Isolation is enabled, `ProxyingPageAgent::getResourceTree()` fans out to every
+WebContent Process hosting frames for the inspected page:
+
+1. `ProxyingPageAgent` creates a ref-counted `ResourceTreeAggregator` with a completion
+   callback (following the `LegacyWebArchiveCallbackAggregator` pattern).
+2. Each WebContent Process's `PageAgentProxy` responds with a flat list of frames and their
+   subresources: `{ frameId, parentFrameId, url, mimeType, securityOrigin, resources[] }`.
+3. As each reply arrives, `ResourceTreeAggregator::addPartialResult()` merges the subtree
+   into the accumulated frame tree, using `WebPageProxy`'s frame hierarchy to determine
+   parent-child relationships.
+4. When all replies have arrived (or a timeout fires), the aggregator's destructor assembles
+   the final `Protocol::Page::FrameResourceTree` and calls the completion handler.
+
+Remote frames — frames that appear as stubs in one process because they are hosted in
+another — are replaced with the real frame data from the owning process during merge.
 
 Phases:
 - **Phase 1** — `getResourceTree` aggregation across frame targets (in progress)
@@ -385,17 +460,7 @@ Site-Isolated backend — the frame target abstraction provides uniform addressi
 
 ## Open Questions
 
-1. **`getResponseBody` routing** — Response body data lives in `NetworkResourcesData` in the
-   process that loaded the resource. When a frontend requests a body for a cross-origin iframe
-   resource, how does the proxy agent locate and fetch it from the correct process? Current
-   thinking: embed process identity in the resource identifier, or introduce a UIProcess-side
-   cache.
-
-2. **Shared `InjectedScriptManager`** — `FrameInspectorController` currently shares the
-   parent page's `InjectedScriptManager`. Is this correct? Injected scripts run in a specific
-   frame's JS context; a shared manager may cause leakage of script handles across origins.
-
-3. **DOM domain across process boundaries** — DOM `nodeId` values are process-local integers.
+1. **DOM domain across process boundaries** — DOM `nodeId` values are process-local integers.
    Under Site Isolation, nodes from different processes may have colliding IDs. A global
    identifier scheme (possibly an extension of `InspectorIdentifierRegistry`) is needed before
    DOM can be migrated to per-frame agents.
