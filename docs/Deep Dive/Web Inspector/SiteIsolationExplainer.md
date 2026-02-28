@@ -21,6 +21,7 @@ provisional navigation — see [Site Isolation](../SiteIsolation.md).
 - [Compatibility with Legacy Backends](#compatibility-with-legacy-backends)
 - [Remaining Work: Agent Migration Plan](#remaining-work-agent-migration-plan)
 - [Key Risks and Architectural Challenges](#key-risks-and-architectural-challenges)
+- [Testing](#testing)
 - [Key Source Files](#key-source-files)
 
 ---
@@ -491,7 +492,7 @@ ID with the target it came from.
 |--------|--------|-------|
 | **Console** | Done | `FrameConsoleAgent` landed; reference implementation for all per-frame agents |
 | **Runtime** | In progress | `FrameRuntimeAgent` (PR [#59021](https://github.com/WebKit/WebKit/pull/59021)) |
-| **Debugger** | Not started | Blocked on [bug 298909](https://bugs.webkit.org/show_bug.cgi?id=298909); single-debugger-multiple-agents challenge |
+| **Debugger** | Not started | Blocked on [bug 298909](https://bugs.webkit.org/show_bug.cgi?id=298909) (not actively being worked; needs design investigation — see [Key Risks](#key-risks-and-architectural-challenges)) |
 | **DOM** | Not started | Cross-frame traversal must stop at process boundaries |
 | **CSS** | Not started | Must migrate with or after DOM due to tight coupling |
 | **DOMDebugger** | Not started | Depends on DOM + Debugger |
@@ -528,6 +529,13 @@ no migration.
 
 ### Migration Priority Order
 
+Priority is determined by a combination of user impact and technical dependency.
+Foundation domains enable basic cross-process inspection and are prerequisites for
+higher-level domains. Core frame inspection follows because most other frame-scoped
+agents depend on DOM and Debugger. The remaining per-frame agents are ordered by
+user-facing importance, and page-level octopus agents come last because they already
+partially function through the page target fallback path.
+
 1. **Foundation** (active): Console (done), Network, Page, Runtime
 2. **Core frame inspection**: Debugger, DOM, CSS
 3. **Dependent frame agents**: DOMDebugger, LayerTree, DOMStorage, Worker
@@ -546,6 +554,11 @@ breakpoint ID allocation collisions, `didParseSource()` being `final` (cannot be
 to filter scripts per-frame), pause routing to the correct frame agent, and step commands
 potentially crossing frame boundaries.
 
+**Status:** Exploratory. Possible approaches: (a) shared `PageDebugger` with per-frame agent
+adapters that filter events by frame, (b) separate `FrameDebugger` per target, or (c) keep
+Debugger as an octopus domain with a UIProcess-side agent. Trade-offs around pause coordination
+and stepping across frames need further investigation.
+
 ### DOM: Cross-Frame Traversal at Process Boundaries
 
 `InspectorDOMAgent` currently traverses into iframe `contentDocument` as children of
@@ -554,6 +567,10 @@ omitted for out-of-process frames; the frontend discovers child frame DOM trees 
 targets instead. `DOM.performSearch` changes from all-frames to per-frame scope.
 `DOM.moveTo` across frames becomes invalid.
 
+**Status:** Design direction clear. Omitting `contentDocument` for out-of-process frames is
+straightforward; the frontend discovers child DOM trees via frame targets. `performSearch`
+scoping per-frame is a bounded change.
+
 ### CSS: Heavy DOM Agent Coupling
 
 `InspectorCSSAgent` depends on `InspectorDOMAgent` for node resolution, document enumeration,
@@ -561,11 +578,92 @@ undo/redo history, and layout flag tracking. This coupling actually *simplifies*
 agents are co-located per-frame (one document, one ID namespace, one history), but CSS
 **must** migrate with or after DOM.
 
+**Status:** Blocked on DOM. Expected to simplify once both agents work within single-frame scope
+(one document, one ID namespace, one undo history).
+
 ### Network: RequestId Collision Across Processes
 
 `ResourceLoaderIdentifier` is generated per-process, so two WebContent Processes could
 produce the same value. The UIProcess `ProxyingNetworkAgent` must qualify request IDs with the
 source process to avoid incorrect resource lookups.
+
+**Status:** Solution designed. `ProxyingNetworkAgent` qualifies each `requestId` with a
+`BackendResourceKey { WebProcessIdentifier, BackendResourceIdentifier }` — see
+[Response Body Retrieval](#response-body-retrieval-getresponsebody) above.
+
+---
+
+## Testing
+
+Web Inspector layout tests live in `LayoutTests/inspector/` and
+`LayoutTests/http/tests/inspector/`. Cross-origin frame tests use the HTTP test
+infrastructure to create multi-origin scenarios. Key test directories for SI work:
+
+- `LayoutTests/inspector/target/` — Target lifecycle and multiplexing
+- `LayoutTests/http/tests/inspector/` — Cross-origin inspection scenarios
+- `LayoutTests/http/tests/site-isolation/inspector/` — SI-specific inspector tests
+
+To run inspector tests with Site Isolation enabled:
+
+    Tools/Scripts/run-webkit-tests --site-isolation LayoutTests/inspector/
+    Tools/Scripts/run-webkit-tests --site-isolation LayoutTests/http/tests/inspector/
+
+Each migrated domain should include:
+1. **Same-origin frame tests** — Verify behavior unchanged from pre-SI.
+2. **Cross-origin frame tests** — Verify correct data attribution across processes.
+3. **Provisional navigation tests** — Clean target teardown/creation during cross-origin nav.
+4. **Legacy compatibility** — Domain still works with SI disabled.
+
+At the time of writing, Console and Runtime domains have been implemented and cross-origin
+frame test cases were added to each domain's test suite. Aside from these agents, test coverage
+for cross-origin frames and various frame tree scenarios is minimal. New tests exercising
+cross-origin iframe behavior will need to be developed alongside the relevant SI-enabled agent.
+
+### Cross-Origin Test Examples
+
+Cross-origin inspector tests create iframes pointing at a different hostname (e.g.,
+`localhost` vs `127.0.0.1`) so that Site Isolation places them in separate WebContent Processes.
+
+**Console domain** (`LayoutTests/http/tests/inspector/console/message-from-iframe.html`) —
+Tests that console messages from same-origin, cross-origin, and nested (grandchild) iframes
+all arrive correctly. The test dynamically appends iframes and listens for
+`ConsoleManager.Event.MessageAdded`:
+
+```js
+function addIFrame(iframeID, url) {
+    let iframe = document.createElement("iframe");
+    iframe.src = url;
+    iframe.onload = () => console.log(`iframe ${iframeID} is loaded in ${location.href}`);
+    document.body.appendChild(iframe);
+}
+
+// Same-origin iframe:
+addIFrame(1, "resources/console-messages.html");
+// Cross-origin iframe (different hostname triggers SI process isolation):
+addIFrame(2, "http://localhost:8000/inspector/console/resources/console-messages.html");
+// Nested: grandchild same-origin iframe inside a cross-origin parent:
+addIFrame(4, "http://localhost:8000/inspector/console/resources/embedded-cross-origin.html");
+```
+
+**Runtime domain** (PR [#59021](https://github.com/WebKit/WebKit/pull/59021),
+`LayoutTests/http/tests/site-isolation/inspector/runtime/evaluate-in-cross-origin-iframe.html`) —
+Tests that `Runtime.evaluate` and `callFunctionOn` work correctly in a cross-origin frame's
+execution context. The test creates a cross-origin iframe, waits for its `FrameTarget` and
+`ExecutionContext`, then evaluates expressions in both the main page and the cross-origin
+frame to verify process isolation:
+
+```js
+// Create cross-origin iframe using the opposite hostname.
+let crossOriginHost = location.hostname === "localhost" ? "127.0.0.1" : "localhost";
+iframe.src = `http://${crossOriginHost}:8000/.../frame-with-passphrase.html`;
+
+// After TargetAdded fires, evaluate in the cross-origin frame's target:
+let passphraseValue = await crossOriginTarget.RuntimeAgent.evaluate.invoke({
+    expression: "window.passphrase", objectGroup: "test", returnByValue: true
+});
+// Verify isolation — the cross-origin frame has "cross-origin-secret",
+// while the main page has "main-page-value".
+```
 
 ---
 
