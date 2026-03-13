@@ -119,9 +119,171 @@ are accessible under HTTP at [http://localhost:8800/](http://localhost:8800/) an
 Note that it's important to use the exact host names such as `127.0.0.1` and `localhost` above verbatim
 since some tests rely on or test same-origin or cross-origin behaviors based on those host names.
 
-## Test Expectations
+## How We Manage Tests That Fail
 
-FIXME: Explain how test expectations work.
+The primary function of the LayoutTests is as a regression test suite.
+This means that, while we care about whether a page is being rendered correctly,
+we care more about whether the page is being rendered the way we expect it to.
+In other words, we look more for changes in behavior than we do for correctness.
+
+All layout tests have "expected results", which may be one of several forms.
+The test may produce a text file containing JavaScript log messages, or a text rendering of the Render Tree.
+It may also produce a screen capture of the rendered page as PNG files (if you are running with `--pixel-tests` enabled).
+For WebAudio tests, we can produce WAV files instead of either text or PNG files.
+For any of these types of tests, there are files checked into the LayoutTests directory named `-expected.{txt,png,wav}`.
+In many cases, the output is expected to be generic and match on any WebKit port.
+Lastly, we also support the concept of "reference tests",
+which check that two pages are rendered identically (pixel-by-pixel).
+As long as the two tests' output match, the tests pass.
+For more on reference tests, see the [Reference Tests](#reference-tests) section above.
+
+When the output doesn't match, there are two potential reasons for it:
+
+1. **The port is performing "correctly"**, but the output simply won't match the generic version.
+   The usual reason for this is for things like form controls,
+   which are rendered differently on each platform.
+2. **The port is performing "incorrectly"** (i.e., the test is failing).
+
+In the first case, the convention is to check in a platform-specific `-expected` file that overrides the generic one.
+In the second case, you have one of two options:
+
+* Check in a new baseline as a platform-specific file and file a bug to track the incorrectness.
+  Some types of failures (like crashes and timeouts) can't be handled this way, of course.
+* Add an entry to the TestExpectations file (see below).
+
+## TestExpectations File
+
+The TestExpectations files are used to suppress known failures.
+They are found in platform-specific directories under LayoutTests.
+Ports may use one or more files which are used in order,
+with later files overriding earlier ones.
+The location of the generic file is `LayoutTests/TestExpectations`.
+
+### Syntax
+
+The syntax of the file is roughly one expectation per line.
+An expectation can apply to either a directory of tests, or a specific test.
+Lines prefixed with `#` are treated as comments, and blank lines are allowed as well.
+
+The syntax of a line is:
+
+```
+[ bugs ] [ "[" modifiers "]" ] test_name [ "[" expectations "]" ]
+```
+
+* Tokens are separated by whitespace.
+* The brackets delimiting the modifiers and expectations from the bugs and the test name are not optional;
+  however, the bugs, modifiers, and expectations components are optional.
+  In other words, if you want to specify modifiers or expectations, you must enclose them in brackets.
+* Lines are expected to have one or more bug identifiers, and the linter will complain about lines missing them.
+  Bug identifiers are of the form `webkit.org/b/12345` or `Bug(username)`.
+* If no modifiers are specified, the test applies to all of the configurations applicable to that file.
+* **Modifiers** can be one or more of the tags listed below. Not all modifiers make sense on all ports or in all lines.
+  For macOS, you can specify an OS name followed by a `+` to indicate that OS version and all later OS versions.
+
+    Platform modifiers:
+
+    * `Mac`, `iOS`, `visionOS`, `watchOS`
+    * Specific macOS versions (e.g. `Sonoma`, `Ventura`, `Monterey`)
+    * `Win`
+    * `Linux`
+    * Architecture: `x86_64`, `x86`, `arm64`
+    * Configuration: `Release`, `Debug`
+
+* **Expectations** can be one or more of:
+  `Crash`, `Failure`, `ImageOnlyFailure`, `Pass`, `Slow`, `Skip`, `Timeout`, `WontFix`, `Missing`.
+  If multiple expectations are listed, the test is considered "flaky"
+  and any of those results will be considered as expected.
+
+For example:
+
+```
+webkit.org/b/12345 [ Win Debug ] fast/html/keygen.html [ Crash ]
+```
+
+This indicates that the `fast/html/keygen.html` test file is expected to crash
+when run in the Debug configuration on Windows,
+and the tracking bug for this crash is bug #12345 in the WebKit bug repository.
+Note that the test will still be run, so that we can notice if it doesn't actually crash.
+
+Assuming you're running a debug build on a specific macOS version,
+the following lines are all equivalent (in terms of whether the test is performed and its expected outcome):
+
+```
+fast/html/keygen.html
+Bug(darin) fast/html/keygen.html
+fast/html/keygen.html [ Skip ]
+fast/html/keygen.html [ WontFix ]
+Bug(darin) fast/html/keygen.html [ Skip ]
+```
+
+### Semantics
+
+* `WontFix` implies `Skip` and also indicates that we don't have any plans to make the test pass.
+* `WontFix` and `Skip` must be used by themselves
+  and cannot be specified alongside `Crash` or another expectation keyword.
+* `Slow` means that we expect the test to run slowly and will use a longer, port-specific timeout.
+  A given line cannot have both `Slow` and `Timeout`.
+* If no expectation keyword is specified, then the `Skip` keyword is implied.
+
+When parsing the file, two rules determine if an expectation line applies to the current run:
+
+1. If the configuration parameters don't match the configuration of the current run, the expectation is ignored.
+2. Expectations that match more of a test name are used before expectations that match less of a test name.
+
+For example, if you had the following lines in your file,
+and you were running a debug build on a specific macOS version:
+
+```
+webkit.org/b/12345 [ Mac ] fast/html [ Failure ]
+webkit.org/b/12345 [ Mac ] fast/html/keygen.html [ Pass ]
+webkit.org/b/12345 [ Win ] fast/forms/submit.html [ ImageOnlyFailure ]
+webkit.org/b/12345 fast/html/section-element.html [ Failure Crash ]
+```
+
+You'd expect:
+
+* `fast/html/article-element.html` to fail with a text diff (since it is in the `fast/html` directory).
+* `fast/html/keygen.html` to pass (since the exact match on the test name takes precedence).
+* `fast/forms/submit.html` to pass (since the `Win` configuration parameters don't match).
+* `fast/html/section-element.html` to either crash or produce a text (or image and text) failure,
+  but not time out or pass.
+
+Duplicate expectations are not allowed within a single file and will generate warnings.
+Ports may use multiple TestExpectations files,
+and entries in a later file override entries in an earlier file.
+The list of files used by a port is determined by the port's implementation of `expectations_files()`
+in `Tools/Scripts/webkitpy/port/{mac,win,gtk,etc.}.py`.
+A generic TestExpectations file always applies, and is applied before port-specific files.
+
+You can determine which expectations files apply (in which order)
+for a given platform/port by running:
+
+```sh
+webkit-patch print-expectations --paths --platform <platform>
+```
+
+You can verify that any changes you've made to an expectations file are correct by running:
+
+```sh
+run-webkit-tests --lint-test-files
+```
+
+This will cycle through all of the possible combinations of configurations looking for problems.
+
+### Rules of Thumb for Suppressing Failures
+
+Here are some rules of thumb to apply when adding new expectations:
+
+* Only use `WontFix` when you know for sure we will never implement the capability tested by the test.
+* Use `Skip` when the test:
+    * Throws a JavaScript exception and makes a text-only test manifest as a pixel test.
+      This usually manifests as a "Missing test expectations" failure.
+    * Disrupts running of the other tests.
+      Please make sure to assign Priority 1 to the associated bug.
+* Try to specify platforms and configurations as accurately as possible.
+  If a test passes on all but one platform, it should only have that platform listed.
+* If a test fails intermittently, use multiple expectations (e.g. `[ Pass Failure ]`).
 
 ## Running Layout Tests
 
