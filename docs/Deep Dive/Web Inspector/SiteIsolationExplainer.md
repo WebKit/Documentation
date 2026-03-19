@@ -1,6 +1,6 @@
 # Web Inspector and Site Isolation
 
-_Last updated 2026-02-27._
+_Last updated 2026-03-18._
 
 This document explains how Site Isolation affects the architecture of Web Inspector in WebKit,
 describes the design changes made to support cross-process inspection, and outlines the work
@@ -250,6 +250,28 @@ During provisional navigation, a frame may briefly exist in two processes simult
 inspector target immediately. If the provisional load commits, the old frame target is destroyed
 and the new one persists. If the load fails, the provisional frame target is destroyed with no
 observable change to the frontend.
+
+Cross-origin iframes undergo a three-step provisional frame commit cycle:
+
+1. Initial frame target created in the main process (`Target.targetCreated`)
+2. Provisional frame target created in the destination process (`Target.targetCreated` again)
+3. `Target.didCommitProvisionalTarget` fires to swap them -- the old target is destroyed, the
+   new one takes its place
+
+The first `Target.targetCreated` event for a cross-origin iframe fires for the provisional
+target, which will be destroyed on commit. Frontend code and tests must not cache a reference
+to this initial target. Instead, listen for `Target.didCommitProvisionalTarget` and update
+the target reference.
+
+**Test pattern:** Use `waitForCommittedFrameTarget()` which races between
+`DidCommitProvisionalTarget` (for cross-process frames) and `ExecutionContextAdded` (for
+same-process frames). This handles both the provisional commit case and the simple case where
+no provisional navigation occurs:
+
+```js
+// Wait for the frame target to be committed (handles both same-process and cross-process)
+let frameTarget = await WI.targetManager.waitForCommittedFrameTarget(frameId);
+```
 
 ### Destruction
 
@@ -509,6 +531,13 @@ Process captures instrumentation events and forwards them via IPC to a `Proxying
 aggregator in the UIProcess. The UIProcess agent handles command dispatch, ID remapping, and
 presents a unified view to the frontend. A `Legacy*Agent` handles the WebKitLegacy
 single-process path.
+
+**MultiplexingBackendTarget registration:** The frontend's `MultiplexingBackendTarget` only
+registers `["Browser", "Target"]` agents by default. To make a UIProcess-level octopus agent
+(like `ProxyingNetworkAgent`) discoverable to the frontend, the domain must be added to the
+`web-page` debuggable type's target types in the protocol JSON, and `MultiplexingBackendTarget`
+must call the relevant manager's `initializeTarget`. Without this step, the frontend will not
+know the domain is available on the page target and will not send commands to it.
 
 | Domain | Status | Notes |
 |--------|--------|-------|
