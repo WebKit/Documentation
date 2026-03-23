@@ -6,8 +6,9 @@ An in depth guide of build options for WebKit.
 
 Install Xcode and its command line tools if you haven't done so already:
 
-1. **Install Xcode** Get Xcode from https://developer.apple.com/downloads. To build WebKit for OS X, Xcode 5.1.1 or later is required. To build WebKit for iOS Simulator, Xcode 7 or later is required.
+1. **Install Xcode** Get Xcode from https://developer.apple.com/downloads.
 2. **Install the Xcode Command Line Tools** In Terminal, run the command: `xcode-select --install`
+3. **Install the Metal toolchain** In Terminal, run the command: `xcodebuild -downloadComponent MetalToolchain`
 
 Run the following command to build a macOS debug build with debugging symbols and assertions:
 
