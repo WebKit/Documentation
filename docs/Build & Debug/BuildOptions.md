@@ -6,7 +6,7 @@ An in depth guide of build options for WebKit.
 
 Install Xcode and its command line tools if you haven't done so already:
 
-1. **Install Xcode** Get Xcode from https://developer.apple.com/downloads.
+1. **Install Xcode**
 2. **Install the Xcode Command Line Tools** In Terminal, run the command: `xcode-select --install`
 3. **Install the Metal toolchain** In Terminal, run the command: `xcodebuild -downloadComponent MetalToolchain`
 
