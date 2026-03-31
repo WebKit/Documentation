@@ -80,7 +80,8 @@ To land a change, run `git-webkit land` from the branch to be landed. Note that 
 
 ## Coding style
 
-Code you write must follow WebKit’s [coding style guideline](https://webkit.org/contributing-code/#code-style-guidelines).
+Code you write must follow WebKit’s [coding style guideline](https://webkit.org/contributing-code/#code-style-guidelines). Some components have additional conventions beyond the project-wide style. For Web Inspector (`Source/WebInspectorUI/`), see the [Web Inspector Style Guide](../Deep Dive/Web Inspector/StyleGuide.md).
+
 You can run `Tools/Scripts/check-webkit-style` to check whether your code follows the coding guidelines or not
 (it can report false positives or false negatives).
 If you use `Tools/Scripts/webkit-patch upload` to upload your patch,
