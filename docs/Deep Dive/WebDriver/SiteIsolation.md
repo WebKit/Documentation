@@ -84,7 +84,8 @@ frame-scoped query.
 
 The five cross-cutting rules — (1) the UI process is the authority; (2) per-frame targets for
 document data, process-level aggregation for page-wide data; (3) commands go to the hosting
-process, and page-wide state fans out and is replayed; (4) asynchronous IPC, with
+process, and page-wide state fans out and is replayed; (4) asynchronous IPC by design (one
+synchronous query remains and is being removed), with
 process-agnostic events; (5) shared primitives built once — are defined in
 [Automation and Inspection Under Site Isolation](../SiteIsolation.md#automation-and-inspection-under-site-isolation).
 Their WebDriver-specific consequences:
@@ -295,9 +296,10 @@ input, independent of how many processes participated.
 
 **Site isolation:** attaching files additionally requires the UI process to grant the frame's
 process read access to the chosen paths (sandbox extension and network-process allow-list),
-exactly as it would for a user-driven file chooser; the grant is bound to the process captured
-when the command started, and the command fails rather than hand files to a process that was
-never granted access if the frame moved in the meantime.
+exactly as it would for a user-driven file chooser. In the design, the grant is bound to the
+process captured when the command started, and the command fails rather than hand files to a
+process that was never granted access if the frame moved in the meantime; that process capture
+is in progress.
 
 ```
  Element Click in a cross-origin iframe (site isolation on)
@@ -332,8 +334,10 @@ consults its record and maps the failure to "stale element reference" or "no suc
 unchanged, is re-keyed when a main-frame swap commits, and is dropped when the frame is
 destroyed. Returning `window` from a script in a cross-origin iframe, or passing another
 frame's reference as an argument, works regardless of which processes host the frames involved.
-No synchronous IPC is used in either direction (the synchronous "is this a known reference"
-query that exists today on the miss path is being removed in favour of the UI-side remap).
+By design, no synchronous IPC is used in either direction. One synchronous query remains today:
+the "is this a known reference" check (`IsKnownNodeReference`) on the miss path, which is being
+removed in favour of the UI-side remap. The window and frame reference markers described in
+this section are in progress and not yet in the tree.
 
 ### Execute script and page source
 
@@ -344,7 +348,8 @@ and the timeout.
 **Routes to:** the process that hosts the current frame, which evaluates the script in the
 frame's main world, waits for the result or the implicit callback, serializes the result with
 the WebDriver internal JSON clone algorithm, and replies asynchronously. Page source is a
-script evaluation in the current frame.
+script evaluation in the current frame; sending the current frame handle with the page-source
+command is in progress.
 
 **Site isolation:** a frame navigation, frame removal, process termination, or a user prompt
 opening while a script is pending resolves the pending reply with the appropriate error or, for
@@ -365,8 +370,9 @@ Cookie, Delete Cookie, and Delete All Cookies operate on the cookie store with t
 first-party and partition.
 
 **Site isolation:** a cookie added while a cross-site iframe is the current browsing context is
-written into that iframe's partition. Deleting a cookie for a cookie-averse document (such as
-the initial `about:blank`) is a no-op that succeeds. One UI-side partitioned cookie reader
+written into that iframe's partition. In the design, deleting a cookie for a cookie-averse
+document (such as the initial `about:blank`) is a no-op that succeeds; that change is in
+progress. One UI-side partitioned cookie reader
 serves classic WebDriver, BiDi `storage.*`, and the Web Inspector Storage domain.
 
 ### Actions
@@ -434,6 +440,9 @@ process. Classic Print and BiDi `browsingContext.print` share this implementatio
 ---
 
 ## WebDriver BiDi: `browsingContext`
+
+The BiDi modules are under active development; the designs in this and the following BiDi
+sections describe the target architecture, not necessarily what is in the tree today.
 
 **Needs from web content:** almost nothing. **Routes:** the UI process answers from its authoritative frame tree and from page proxy load callbacks; frame-targeted work goes to the process hosting the frame. **Latched on the page proxy:** the viewport override. **Caveat:** per-process frame trees are partial.
 

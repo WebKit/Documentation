@@ -728,9 +728,10 @@ The design:
 - **Sink.** In each WebContent process, the sink pauses a matching load at the existing
   request-stage (`WebLoaderStrategy::scheduleLoad`) and response-stage
   (`WebResourceInterceptController`) points and reports a handle up.
-- **Inspector's part.** `FrameNetworkAgentProxy` is to gain interception hooks
-  ([bug 324478](https://bugs.webkit.org/show_bug.cgi?id=324478)) that become the Inspector's entry
-  into the sink; the `ProxyingNetworkAgent` interception verbs become configuration writes and
+- **Inspector's part.** `FrameNetworkAgentProxy` implements the interception hooks
+  ([bug 324478](https://bugs.webkit.org/show_bug.cgi?id=324478)); today they decline every load,
+  and they are to become the Inspector's entry into the sink. The `ProxyingNetworkAgent`
+  interception verbs become configuration writes and
   handle resolutions on the authority. Resolutions travel down as IPC; the paused continuation never
   leaves the WebContent process.
 - **Release matrix.** Process crash purges the handles; frontend disconnect continues the request
@@ -753,11 +754,12 @@ frontend ◄──Network.requestIntercepted── ProxyingNetworkAgent ◄─�
 frontend ──Network.interceptWithRequest─► authority.resolve(handle, Continue{edits}) ──► sink resumes
 ```
 
-The authority and sink are designed but not implemented. Until they land, the interception verbs
-(`setInterceptionEnabled`, `addInterception`, `removeInterception`, `interceptContinue`,
-`interceptWithRequest`, `interceptWithResponse`, `interceptRequestWithResponse`,
-`interceptRequestWithError`) accept configuration without effect under site isolation; they are
-no-ops in `ProxyingNetworkAgent`.
+The authority and sink are designed but not implemented. Until they land, no load is paused under
+site isolation: the configuration verbs (`setInterceptionEnabled`, `addInterception`,
+`removeInterception`) accept and discard their arguments in `ProxyingNetworkAgent`, and the
+resolution verbs (`interceptContinue`, `interceptWithRequest`, `interceptWithResponse`,
+`interceptRequestWithResponse`, `interceptRequestWithError`) report the same missing-intercept
+errors as the single-process agent.
 
 **WebSocket.** WebSocket instrumentation is to join the same per-frame contract: the `webSocket*`
 hooks become part of `NetworkAgentInstrumentation`, forwarded over IPC under the same scoped

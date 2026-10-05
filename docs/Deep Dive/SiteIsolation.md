@@ -136,9 +136,10 @@ isolation. Geometry crosses processes in two steps: the frame's process converts
 local root, and the UI process, which alone knows the whole tree, finishes the conversion to
 main-frame coordinates.
 
-**4. Asynchronous IPC only, and events arrive process-agnostically.** Automation and
-inspector code never makes the UI process block on a WebContent process. Automation and inspector messages are asynchronous, with
-one exception: the WebContent-to-UI known-element-reference check (`IsKnownNodeReference`),
+**4. Asynchronous IPC by design, and events arrive process-agnostically.** The design rule is
+that automation and inspector code never makes the UI process block on a WebContent process, and
+that automation and inspector messages are asynchronous. One synchronous query remains today and
+is being removed: the WebContent-to-UI known-element-reference check (`IsKnownNodeReference`),
 which the design replaces with a UI-side remap (see [WebDriver and Site Isolation](WebDriver/SiteIsolation.md#element-references-shadow-roots-and-window-references)). Events are produced by
 whichever process hosts the frame and reach the page proxy through the same handlers whether
 they come from the main-frame process, a `RemotePageProxy`, or a `ProvisionalPageProxy`, so the
