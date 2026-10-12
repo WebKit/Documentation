@@ -1,6 +1,6 @@
 # Web Inspector and Site Isolation
 
-_Last updated 2026-10-04._
+_Last updated 2026-10-11._
 
 This page explains how site isolation changes the architecture of Web Inspector: where agents
 live, how commands and events reach the frontend across processes, and how frame targets are
@@ -671,13 +671,28 @@ Three properties of the shape as built:
    `WebInspectorBackend::ensureNetworkInstrumentationForFrame` /
    `ensurePageInstrumentationForFrame` create one proxy per `LocalFrame`, registered on that
    frame's own `InstrumentingAgents`.
-2. **The replay seam is `enableInstrumentationForProcess`.** It is reached from
-   `didCreateFrame`, `didCreateProvisionalFrame`, `didCommitProvisionalFrame` and
-   `didCommitProvisionalPage`, is refcounted per (process, page), and is where page-wide
-   configuration is re-sent to processes that join a page later ("late joiners").
+2. **The replay seam is `enableInstrumentationForProcess`.** It is refcounted per (process, page)
+   and is where page-wide configuration is re-sent to processes that join a page later ("late
+   joiners"). The two agents reach it at different points in the frame lifecycle; see the table
+   below.
 3. **Identifiers are process-qualified on the wire.** `Network.RequestId` is a
    `ScopedResourceLoaderIdentifier`; frame protocol ids are qualified by the hosting process;
    `LoaderId` is the document identifier. Two WebContent processes can therefore never collide.
+
+**Where each agent registers.** `WebPageInspectorController` drives the seam from the frame
+lifecycle hooks, but only for an agent that is enabled, and the two agents differ around
+provisional frames. The page agent must have a receiver in the destination process before the
+child frame's first `frameNavigated`, which is sent from that process before the commit reaches
+the UI process; the network agent waits for the commit.
+
+| Hook | `ProxyingNetworkAgent` | `ProxyingPageAgent` |
+|---|---|---|
+| `didCreateFrame` | register the frame's process | register the frame's process |
+| `didCreateProvisionalFrame` | nothing | register the destination process |
+| `willDestroyProvisionalFrame` (no commit) | nothing | release the destination process |
+| `didCommitProvisionalFrame` | release the old process, register the new one | release the old process only; the new one was registered at `didCreateProvisionalFrame` |
+| `didCommitProvisionalPage` | release the old main-frame process, register the new one | release the old main-frame process, register the new one |
+| `willDestroyFrame` | release the frame's process | release the frame's process |
 
 Command routing for Network and Page never traverses the `FrameInspectorController` fallback
 chain. All Network/Page commands arrive at the UI-process agent directly via the multiplexing
@@ -983,16 +998,29 @@ domain: when the first frontend connects, `WebPageInspectorController::connectFr
 each agent's `didCreateFrontendAndBackend`, which calls `enable()` (a no-op unless the site
 isolation preference is on). The receivers then stay registered until `disable()`, which runs
 from `Network.disable` / `Page.disable` or when the frontend is torn down
-(`willDestroyFrontendAndBackend`). The registration is refcounted per (process, page) so that a
-process hosting several frames of the page is registered once, and it is where latched
-configuration is replayed to a process that joins the page later.
+(`willDestroyFrontendAndBackend`). The registration is refcounted per (WebContent process, page
+ID) so that a process hosting several frames of the page is registered once, and it is where
+latched configuration is replayed to a process that joins the page later.
 
-- **Enable (frontend connects):** register the UI-process IPC receiver for each
-  process hosting a frame of the page, then send `WebInspectorBackend::Enable*Instrumentation`
-  to that process.
-- **Disable (domain disabled or Inspector closes):** send
-  `WebInspectorBackend::Disable*Instrumentation` to each process, then remove the UI-process IPC
-  receiver.
+The intended contract for that count is one per frame of the page the process hosts, including a
+provisional frame loading there, plus one for a process that hosts the page but no frame yet.
+The UI-process receiver is added and `WebInspectorBackend::Enable*Instrumentation` is sent only
+when a process's count goes from 0 to 1; `Disable*Instrumentation` is sent and the receiver
+removed only when it drops from 1 to 0. The frame lifecycle hooks
+([table above](#octopus-domains-network-and-page)) already count per frame. `enable()` does not
+yet: on main, both agents' `enable()` add one count per process, so a process whose frames all
+existed before the frontend connected is released as soon as the first of them goes away, while
+its other frames still need instrumentation. A change that makes `ProxyingPageAgent::enable()`
+count per frame is under review ([bug 327026](https://bugs.webkit.org/show_bug.cgi?id=327026));
+`ProxyingNetworkAgent::enable()` still counts per process and needs the same change.
+
+- **Enable (frontend connects):** add a count for each frame's hosting process (and for each
+  process with no frame); on a process's first count, register the UI-process IPC receiver,
+  then send `WebInspectorBackend::Enable*Instrumentation` to that process.
+- **Disable (domain disabled or Inspector closes):** `disable()` tears down every registration
+  regardless of its count: send `WebInspectorBackend::Disable*Instrumentation` to each
+  registered process, then remove the UI-process IPC receivers. A single frame going away drops
+  only one count.
 
 When Inspector is closed, no handler is registered for these messages. The IPC infrastructure
 rejects any message targeting a non-existent receiver.
