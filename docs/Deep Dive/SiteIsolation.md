@@ -65,16 +65,126 @@ Site isolation was originally planned as a simple 3 step project:
 1. Put frames from each Site into their own process
 2. Fix the functionality broken by step 1
 3. Fix the performance regression from step 2
-As of January 2025 are currently on step 2 and looking forward to step 3.  In order to get there, we need to fix all subtasks of rdar://99665363 which is organized from a code-centric perspective.  QA has also been helping find things to fix from a user-centric perspective, and they are subtasks of rdar://138794978.  Those that don't have access to radar can reach out on the WebKit Slack.
+As of October 2026 we are currently on step 2 and looking forward to step 3.  In order to get there, we need to fix all subtasks of rdar://99665363 which is organized from a code-centric perspective.  QA has also been helping find things to fix from a user-centric perspective, and they are subtasks of rdar://138794978.  Those that don't have access to radar can reach out on the WebKit Slack.
 
-## Web Inspector
+## Automation and Inspection Under Site Isolation
 
-Web Inspector's architecture is also affected by site isolation. With content split across
-multiple WebContent Processes, the inspector must observe and aggregate protocol data from each
-process. The approach uses the existing inspector target multiplexing mechanism
-(`InspectorTargetAgent`) to create per-frame inspector targets that each connect to a
-`FrameInspectorController` in their respective WebContent Process. For a detailed explanation of
-this architecture, see [Web Inspector and Site Isolation](Web%20Inspector/SiteIsolationExplainer.md).
+Web Inspector and WebDriver (classic and BiDi) both observe and control a page from outside
+the web content. Before site isolation, each talked to a single WebContent process that held
+the whole page. With content split across processes, both were redesigned around the same five
+rules below. This section is the one shared model; the client-specific designs are in
+[Web Inspector and Site Isolation](Web%20Inspector/SiteIsolationExplainer.md) and
+[WebDriver and Site Isolation](WebDriver/SiteIsolation.md).
+
+**1. The UI process is the authority.** Every identifier a client sees (an inspector target
+id, a WebDriver page or frame handle, a BiDi browsing-context or navigation id) is minted in
+the UI process from an object that outlives any single WebContent process (`WebPageProxy`,
+`WebFrameProxy`, `API::Navigation`). Frame identifiers are process-qualified, so they have the
+same value in every process. A subframe keeps its identifier when it navigates cross-site in
+place; a main-frame swap gives the page a new main-frame identifier, and the clients treat that
+as a new document. Session state (subscriptions, overrides, user contexts, the record of which
+element handles have been issued) lives in the UI process, keyed by UI-process identities.
+
+**2. Per-frame targets for document data; process-level aggregation for page-wide data.** Data
+produced by a document or a JavaScript VM (console messages, execution contexts, DOM, styles,
+breakpoints, realms, element handles) is owned by the process hosting that frame and is
+reported on a per-frame channel: an inspector frame target (`FrameInspectorController`) or a
+frame-routed automation command. Data that only the UI process can assemble (a page-wide frame
+tree, a request-to-process map, a sum over processes) is produced by a UI-process agent that
+fans a scoped request out to each hosting process and merges the replies. The Inspector calls
+these [octopus agents](Web%20Inspector/SiteIsolationExplainer.md#octopus-domains-network-and-page)
+(`ProxyingNetworkAgent`, `ProxyingPageAgent`). Data the UI process can read from an
+authoritative store (cookies, in the network process) is served with no WebContent involvement
+at all.
+
+```
+                                  UI process
+   ┌───────────────────────────────────────────────────────────────────────────┐
+   │ WebPageProxy ── WebFrameProxy tree (authoritative)                        │
+   │ ├ WebPageInspectorController: targets, Proxying agents, Storage, Browser  │
+   │ ├ WebAutomationSession + BiDi agents: handles, realms, overrides,         │
+   │ │   subscriptions, input state                                            │
+   │ └ page-proxy-owned shared state: interception authority,                  │
+   │     emulation override store                                              │
+   └─────────────┬───────────────────────┬───────────────────────┬─────────────┘
+                 │ frame-routed, async   │ cookies, loads
+                 ▼                       ▼                       ▼
+   ┌────────────────────┐    ┌────────────────────┐    ┌────────────────────┐
+   │ WebContent A       │    │ WebContent B       │    │ Network process    │
+   │ main frame         │    │ cross-site frame   │    │ HTTPCookieStore    │
+   │ FrameInspector-    │    │ FrameInspector-    │    │ per-page load      │
+   │  Controller ×n     │    │  Controller ×n     │    │  observation       │
+   │ per-frame proxies  │    │ per-frame proxies  │    │                    │
+   │ WebAutomation-     │    │ WebAutomation-     │    │                    │
+   │  SessionProxy      │    │  SessionProxy      │    │                    │
+   │ emulation sink,    │    │ emulation sink,    │    │                    │
+   │  interception sink │    │  interception sink │    │                    │
+   └────────────────────┘    └────────────────────┘    └────────────────────┘
+```
+
+**3. Commands go to the process that hosts the frame; page-wide state fans out and is
+replayed.** A command that needs a frame's content is sent to the process hosting that frame
+with the page identifier valid in that process (`WebPageProxy::sendWithAsyncReplyToProcessContainingFrame`
+plus `webPageIDInProcessForFrame`). Page-wide configuration (an emulated media feature, a user
+agent, an interception pattern) is latched on the page proxy, fanned out
+with `WebPageProxy::forEachWebContentProcess`, and replayed to every process that joins the page
+later: the main-frame process after a swap and a new cross-site frame's process at creation
+(`WebPageCreationParameters`). Inspector network settings (extra HTTP headers, caching disabled)
+are latched on the octopus `ProxyingNetworkAgent` instead, and replayed when it calls
+`enableInstrumentationForProcess` for a joining process. Anything that only does the first half is wrong under site
+isolation. Geometry crosses processes in two steps: the frame's process converts up to its
+local root, and the UI process, which alone knows the whole tree, finishes the conversion to
+main-frame coordinates.
+
+**4. Asynchronous IPC by design, and events arrive process-agnostically.** The design rule is
+that automation and inspector code never makes the UI process block on a WebContent process, and
+that automation and inspector messages are asynchronous. One synchronous query remains today and
+is being removed: the WebContent-to-UI known-element-reference check (`IsKnownNodeReference`),
+which the design replaces with a UI-side remap (see [WebDriver and Site Isolation](WebDriver/SiteIsolation.md#element-references-shadow-roots-and-window-references)). Events are produced by
+whichever process hosts the frame and reach the page proxy through the same handlers whether
+they come from the main-frame process, a `RemotePageProxy`, or a `ProvisionalPageProxy`, so the
+UI-process hooks that turn them into protocol events do not know or care which process sent
+them. WebDriver BiDi subscriptions are consulted in the UI process at emission time and never
+fan out. Enabling an Inspector domain does fan out: the octopus agents send
+`EnableNetworkInstrumentation` / `EnablePageInstrumentation` to every WebContent process (and
+to each process that joins later), so frame-side instrumentation exists only while the domain
+is enabled.
+
+**5. Shared primitives, built once.** Five pieces of UI-process machinery are consumed by both
+clients and must not be duplicated:
+
+| Primitive | Owner | Inspector consumer | WebDriver consumer |
+|---|---|---|---|
+| UI-side frame-tree walker over `WebFrameProxy` | UI process | `Page.getResourceTree` | BiDi `browsingContext.getTree`, context lifecycle events |
+| Emulation / page-configuration store: resolved once per page, one `WebPage` sink per process, replayed to late joiners; last writer wins at the sink | `WebPageProxy` | `Page` override commands | BiDi `emulation.*`, viewport, user agent |
+| Network interception authority (union of every consumer's patterns, one exclusive resolver per paused request, release matrix) with a pause sink in each WebContent process; the Inspector resolves a request both clients match | `WebPageProxy` + each WebContent process | `Network.*Intercept*` | BiDi `network.*` |
+| Composited UI-process view snapshot, clipped to a rectangle computed in the target frame's process | UI process | `Page.snapshotNode` / `snapshotRect`, Timeline screenshots | classic and BiDi screenshots, recording |
+| Partitioned cookie reader over `API::HTTPCookieStore`, served from the network process without touching any WebContent process | UI process | `Storage` domain | classic cookie commands, BiDi `storage.*` |
+
+The implementation status of each primitive is tracked per domain in the Web Inspector page's status tables: [Status and Migration Plan](Web%20Inspector/SiteIsolationExplainer.md#status-and-migration-plan).
+
+### Web Inspector
+
+With content split across WebContent processes, the inspector observes and aggregates protocol
+data from each process. It reuses the existing inspector target multiplexing mechanism
+(`InspectorTargetAgent`) to create a frame target per frame, each connected to a
+`FrameInspectorController` in its WebContent process. Document-scoped domains (Console,
+Runtime, Debugger, DOM, CSS, DOMStorage, Worker, and others as they migrate) are served by
+per-frame agents on those targets. Page-wide domains run in the UI process: Network and Page
+aggregate over per-frame proxies in each process, and Storage reads the authoritative cookie
+store directly. Details, per-domain status and the migration plan:
+[Web Inspector and Site Isolation](Web%20Inspector/SiteIsolationExplainer.md).
+
+### WebDriver
+
+The WebDriver server side (`WebAutomationSession` and the BiDi agents) already lived in the UI
+process, so site isolation mostly moved the last process-local assumptions up to the UI process
+or down to the frame's own process. Frame-scoped commands are routed to the process hosting
+the frame; pointer input is hit-tested in the main-frame process and re-dispatched by the UI
+process to the target frame's process; cookies, screenshots and the frame tree are answered
+from the UI process; realms, element handles and log entries are minted in the hosting process
+and recorded in the UI process. Per-endpoint and per-module designs:
+[WebDriver and Site Isolation](WebDriver/SiteIsolation.md).
 
 ## Strategies for fixing bugs
 Most of the functionality bugs remaining can be described as “we used to follow a pointer to another frame and now we can’t.”  A handful of strategies continue to be quite effective.  The first is maybe we can refactor the code to send a message to the frame via IPC instead of calling a function and operating on the frame directly when we need to do something.  The second is maybe see if we can proactively send state to all processes so when they need to do something they already have the necessary information.  This should only be done with information that is not sensitive because it creates a side channel for speculative execution attacks to read information other sites should not have access to.  The third is maybe we can do something in a privileged process such as the UI process or the GPU process that doesn’t have web content in it but can communicate and know state from multiple sites.  And the fourth is maybe it is correct to do nothing if a frame is in another process.  This last option is rare, but sometimes if access is gated on an origin check it is correct to skip a frame in another process.
