@@ -7,10 +7,11 @@ more websites that would be broken otherwise.
 
 Other browsers have (had) equivalent mechanisms, for example:
 - Opera (Presto) with BrowserJS
-- Firefox (Gekco) with Site Interventions
+- Firefox (Gecko) with Site Interventions
 - DuckDuckGo with Site Mitigations
 
-A list of quirks can be found in [Source/WebCore/page/Quirks.cpp](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Quirks.cpp).
+Quirks are primarily defined in [QuirkTable.json](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/QuirkTable.json), which maps URL patterns to named behaviors. Each Quirk behavior is described in
+[QuirkBehaviors.yaml](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/QuirkBehaviors.yaml), although there are a handful of handwritten quirks defined in [Quirks.cpp](https://github.com/WebKit/WebKit/blob/main/Source/WebCore/page/Quirks.cpp).
 
 ## Why are Quirks needed?
 
@@ -21,7 +22,7 @@ There are many reasons quirks are used in the WebKit codebase, but here are a fe
 - New feature breaking a site
 - Removing an old feature
 
-For example, A high-traffic website might use some deprecated API, so we make an exception for that website through the use
+For example, a high-traffic website might use some deprecated API, so we make an exception for that website through the use
 of a Quirk. This way, the maintainers of the high-traffic site have time to migrate from the deprecated API, while Safari
 users can still enjoy browsing the website like normal.
 
